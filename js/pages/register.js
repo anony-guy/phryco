@@ -132,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             captcha: {
                 serverUrl: 'http://127.0.0.1:8002/api/vaultguard'
             },
+            security: {
+                enableCSP: false
+            },
             callbacks: {
                 onSuccess: (result, id) => {
                     if (result.token) {
