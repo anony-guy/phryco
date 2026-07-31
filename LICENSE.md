@@ -2,7 +2,7 @@
 
 **Version 1.0**
 
-Copyright (c) 2026 Phryco Contributors.
+Copyright (c) 2026 Phryco Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
