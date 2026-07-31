@@ -199,6 +199,22 @@ async function loadVideoData() {
         } catch (e) {
             console.error("Failed to load tiers", e);
         }
+        
+        // Load frames for dropdown
+        try {
+            const frames = await apiFetch('/api/studio/inventory/frames');
+            const frameSelect = document.getElementById('edit-frame');
+            if (frameSelect) {
+                frames.forEach(f => {
+                    frameSelect.innerHTML += `<option value="${f.id}">${f.name}</option>`;
+                });
+                if (video.frame_id) {
+                    frameSelect.value = video.frame_id;
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load frames", e);
+        }
 
         if (video.status === 'PENDING_REVIEW') {
             statusSelect.value = 'PENDING_REVIEW';
@@ -309,6 +325,13 @@ async function saveChanges() {
             method: 'PUT',
             body: { chapters: currentChapters }
         });
+        
+        // 1.6 Update Frame
+        const frameSelect = document.getElementById('edit-frame');
+        if (frameSelect) {
+            const frameId = parseInt(frameSelect.value, 10) || 0;
+            await apiFetch(`/api/studio/videos/${videoId}/frame?frame_id=${frameId}`, { method: 'PUT' });
+        }
         
         // 2. Upload thumbnail if changed
         const thumbFile = document.getElementById('edit-thumbnail').files[0];

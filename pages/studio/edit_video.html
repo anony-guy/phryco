@@ -236,6 +236,9 @@
                     <button class="edit-sidebar-btn" data-target="tab-chapters">
                         <i data-lucide="list"></i> Chapters
                     </button>
+                    <button class="edit-sidebar-btn" data-target="tab-cosmetics">
+                        <i data-lucide="sparkles"></i> Cosmetics
+                    </button>
                 </div>
                 
                 <div class="edit-content">
@@ -403,6 +406,21 @@
                             <button type="button" id="add-chapter-btn" class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
                                 <i data-lucide="plus"></i> Add Chapter
                             </button>
+                        </div>
+                        </div>
+                        
+                        <!-- COSMETICS TAB -->
+                        <div id="tab-cosmetics" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Video Cosmetics</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Apply a cosmetic video player frame from your inventory.</p>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Player Frame Overlay</label>
+                                <select id="edit-frame" class="form-control">
+                                    <option value="0">None (Default)</option>
+                                    <!-- Frames injected here -->
+                                </select>
+                            </div>
                         </div>
                         
                     </form>

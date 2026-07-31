@@ -219,6 +219,15 @@ async function loadWatchPage() {
         avatarImg.onload = () => { document.getElementById('video-channel-avatar').innerHTML = `<img src="${avatarUrl}">`; };
         avatarImg.src = avatarUrl;
         
+        // Inject Frame Overlay if present
+        if (video.frame_path) {
+            const container = document.querySelector('.video-player-container');
+            const frameImg = document.createElement('img');
+            frameImg.src = `${API_BASE_URL}${video.frame_path}`;
+            frameImg.className = 'player-frame-overlay';
+            container.appendChild(frameImg);
+        }
+        
         // Set Video Player Source and Custom Controls
         const player = document.getElementById('video-player');
         player.crossOrigin = "anonymous";
