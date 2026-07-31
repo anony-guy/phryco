@@ -235,7 +235,7 @@
       const keyHandler = (e) => {
         const now = Date.now();
         this._behaviorData.keyPresses.push({
-          key: e.key.length === 1 ? '*' : e.key,
+          key: e.key ? (e.key.length === 1 ? '*' : e.key) : 'Unknown',
           t: now
         });
         if (this._behaviorData.keyPresses.length > 100) {
