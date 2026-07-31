@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const connections = await apiFetch('/api/users/me/connections');
             if (connections.length === 0) {
-                connectionsContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.875rem;">You haven\\'t connected any third-party applications.</p>';
+                connectionsContainer.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.875rem;">You haven't connected any third-party applications.</p>`;
                 return;
             }
             
