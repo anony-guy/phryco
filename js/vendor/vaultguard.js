@@ -1367,7 +1367,7 @@
       }
 
       for (let d = 0; d < digitCount; d++) {
-        const freqs = digitFrequencies[digits[d]];
+        const freqs = digitFrequencies[answer[d]];
         const startSample = Math.floor((d * (digitDuration + gapDuration)) * sampleRate);
         const endSample = startSample + Math.floor(digitDuration * sampleRate);
         const rampSamples = Math.floor(0.02 * sampleRate);
