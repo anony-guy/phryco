@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Phryco</title>
+    <title>Forgot Password - Phryco</title>
     <link rel="stylesheet" href="../../css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
@@ -63,36 +63,25 @@
 
     <div class="layout" style="justify-content: center; align-items: center;">
         <div class="auth-container animate-fade-in">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Welcome Back</h2>
-            <form id="login-container" onsubmit="event.preventDefault();">
+            <h2 style="margin-bottom: 0.5rem; text-align: center;">Forgot Password</h2>
+            <p style="color: var(--text-secondary); text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Enter your email address and we'll send you a 6-digit recovery code.
+            </p>
+            <form id="forgot-password-form">
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="auth-user" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                    <label>Email Address</label>
+                    <input type="email" id="email" required>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="auth-key" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" required>
-                </div>
-                <div style="text-align: right; margin-top: -1rem; margin-bottom: 1.5rem;">
-                    <a href="../../pages/forgot-password/index.html" style="color: var(--accent-primary); text-decoration: none; font-size: 0.875rem;">Forgot Password?</a>
-                </div>
-                <button id="submit-btn" class="btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+                <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 1rem;">Send Recovery Code</button>
             </form>
             <p id="error-msg" style="color: #ef4444; margin-top: 1rem; text-align: center; display: none;"></p>
             <div class="auth-footer">
-                Don't have an account? <a href="../../pages/register/index.html">Sign Up</a>
+                Remembered your password? <a href="../../pages/login/index.html">Log In</a>
             </div>
         </div>
     </div>
 
-    <script>document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            } else {
-                console.error("Lucide script failed to load from CDN.");
-            }
-        });</script>
-    <script type="module" src="../../js/pages/login.js"></script>
-<script type="module" src="../../js/components/header.js"></script>
-    </body>
+    <script>document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); });</script>
+    <script type="module" src="../../js/pages/forgot-password.js"></script>
+</body>
 </html>

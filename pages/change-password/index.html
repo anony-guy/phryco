@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Phryco</title>
+    <title>Change Password - Phryco</title>
     <link rel="stylesheet" href="../../css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
@@ -38,19 +38,6 @@
         .form-group input:focus {
             border-color: var(--accent-primary);
         }
-        .auth-footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-        .auth-footer a {
-            color: var(--accent-primary);
-            text-decoration: none;
-        }
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -63,36 +50,23 @@
 
     <div class="layout" style="justify-content: center; align-items: center;">
         <div class="auth-container animate-fade-in">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Welcome Back</h2>
-            <form id="login-container" onsubmit="event.preventDefault();">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Change Password</h2>
+            <form id="change-password-form">
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="auth-user" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                    <label>New Password</label>
+                    <input type="password" id="new-password" required minlength="8">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="auth-key" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirm-password" required minlength="8">
                 </div>
-                <div style="text-align: right; margin-top: -1rem; margin-bottom: 1.5rem;">
-                    <a href="../../pages/forgot-password/index.html" style="color: var(--accent-primary); text-decoration: none; font-size: 0.875rem;">Forgot Password?</a>
-                </div>
-                <button id="submit-btn" class="btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+                <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 1rem;">Update Password</button>
             </form>
             <p id="error-msg" style="color: #ef4444; margin-top: 1rem; text-align: center; display: none;"></p>
-            <div class="auth-footer">
-                Don't have an account? <a href="../../pages/register/index.html">Sign Up</a>
-            </div>
         </div>
     </div>
 
-    <script>document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            } else {
-                console.error("Lucide script failed to load from CDN.");
-            }
-        });</script>
-    <script type="module" src="../../js/pages/login.js"></script>
-<script type="module" src="../../js/components/header.js"></script>
-    </body>
+    <script>document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); });</script>
+    <script type="module" src="../../js/pages/change-password.js"></script>
+</body>
 </html>
