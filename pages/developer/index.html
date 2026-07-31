@@ -98,14 +98,27 @@
                     <tr>
                         <th>App Name</th>
                         <th>Client ID</th>
+                        <th>Status</th>
                         <th>Redirect URIs</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="apps-table-body">
-                    <tr><td colspan="4" style="text-align: center;">Loading apps...</td></tr>
+                    <tr><td colspan="5" style="text-align: center;">Loading apps...</td></tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="card">
+            <h2>Verification & Security</h2>
+            <p style="font-size: 14px; color: #3c4043; line-height: 1.5;">New apps start with <strong>APPROVED</strong> status, granting limited API access and basic scopes. To unlock full access and advanced scopes, you must upgrade your app to <strong>VERIFIED</strong>.</p>
+            <p style="font-size: 14px; color: #3c4043; line-height: 1.5;"><strong>How to get VERIFIED:</strong></p>
+            <ol style="font-size: 14px; color: #3c4043; line-height: 1.5; padding-left: 20px;">
+                <li>Download the Phryco Verification Crawler: <a href="/assets/downloads/phryco-crawler.js" download class="btn-outline" style="padding: 2px 8px; font-size: 12px; margin-left: 8px;">Download phryco-crawler.js</a></li>
+                <li>Place the script in the same directory as your Redirect URI.</li>
+                <li>Run it locally via Node.js: <code>node phryco-crawler.js &lt;YOUR_CLIENT_ID&gt; &lt;YOUR_CLIENT_SECRET&gt;</code>. It will scan for malicious patterns and securely submit a report to Phryco.</li>
+                <li><strong>IMPORTANT:</strong> You must leave <code>phryco-crawler.js</code> hosted at your Redirect URI path. Phryco continuously checks for its presence. If it is removed, your app will be marked as <strong>MALICIOUS</strong> and locked out for 7 days.</li>
+            </ol>
         </div>
 
         <div class="card">

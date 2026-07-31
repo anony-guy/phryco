@@ -48,15 +48,27 @@ async function loadApps() {
             tbody.innerHTML = '';
             
             if (apps.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">You have not registered any apps yet.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">You have not registered any apps yet.</td></tr>';
                 return;
             }
             
             apps.forEach(app => {
                 const tr = document.createElement('tr');
+                
+                let statusHtml = ``;
+                if (app.status === 'VERIFIED') {
+                    statusHtml = `<span style="background: #10b981; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold;">VERIFIED</span>`;
+                } else if (app.status === 'MALICIOUS') {
+                    const maliciousUntil = new Date(app.malicious_until).toLocaleDateString();
+                    statusHtml = `<span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold;">MALICIOUS</span><br><span style="font-size: 10px; color: #ef4444;">Locked until ${maliciousUntil}</span>`;
+                } else {
+                    statusHtml = `<span style="background: #f59e0b; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold;">APPROVED</span>`;
+                }
+                
                 tr.innerHTML = `
                     <td><strong>${app.name}</strong></td>
                     <td><code>${app.client_id}</code></td>
+                    <td>${statusHtml}</td>
                     <td><code>${app.redirect_uris}</code><br><span style="font-size: 11px; color: #5f6368;">Scopes: ${app.allowed_scopes}</span></td>
                     <td style="display: flex; gap: 8px;">
                         <button class="btn btn-secondary" style="padding: 4px 12px;" onclick="showSecret('${app.client_secret}')">Reveal Secret</button>
