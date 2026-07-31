@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Packs - Phryco Studio</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html" class="active">Emojis</a>
+                <a href="../../pages/studio/ads.html">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <h2 style="margin-bottom: 1rem;">My Emoji Packs</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Manage your custom channel emojis. The first pack is free. Additional packs cost 250 Phrybucks. Max 50 emojis per pack.
+            </p>
+
+            <div id="create-pack-section" style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem;">
+                <h3 style="margin-top: 0;">Create New Pack</h3>
+                <form id="create-pack-form" style="display: flex; gap: 1rem; align-items: flex-end;">
+                    <div style="flex: 1;">
+                        <label>Pack Name</label>
+                        <input type="text" id="pack-name" required style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); margin-top: 0.5rem;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="padding: 0.5rem 1.5rem;">Create</button>
+                </form>
+                <p id="pack-msg" style="margin-top: 1rem;"></p>
+            </div>
+
+            <div id="packs-container" style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Packs populated by JS -->
+                <p style="color: var(--text-secondary);">Loading packs...</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="upload-emoji-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000; backdrop-filter:blur(4px);">
+        <div class="modal" style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:2rem; width:100%; max-width:400px;">
+            <h3 style="margin-top:0;">Upload Emoji</h3>
+            <form id="upload-emoji-form">
+                <input type="hidden" id="modal-pack-id">
+                <div style="margin-bottom: 1rem;">
+                    <label>Emoji Name (alphanumeric_only)</label>
+                    <input type="text" id="emoji-name" required style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); margin-top: 0.5rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label>Image File</label>
+                    <input type="file" id="emoji-file" accept="image/*" required style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
+                </div>
+                <p id="emoji-msg" style="margin-bottom: 1rem;"></p>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" class="btn-secondary" id="cancel-upload">Cancel</button>
+                    <button type="submit" class="btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/studio/emojis.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Portal - Phryco Network</title>
+    <link rel="stylesheet" href="/css/relay-theme.css">
+</head>
+<body style="display: none;" id="dashboard-body">
+    <div class="container">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; background-color: #e8f0fe; border-color: #aecbfa;">
+            <div>
+                <h2 style="color: #1967d2; margin-bottom: 8px;">Integrate Phryco SSO</h2>
+                <p style="margin: 0; font-size: 14px; color: #1967d2;">Enable your users to log in to your third-party applications using their Phryco Identities.</p>
+            </div>
+        </div>
+
+        <div class="card" style="background-color: #f8f9fa; border-left: 4px solid #1a73e8;">
+            <h3 style="margin-top: 0; color: #1a73e8;">👋 Welcome to the Developer Portal</h3>
+            <p style="font-size: 14px; line-height: 1.5; color: #3c4043;">
+                Here you can register your own application to let your users log in with their Phryco account (just like "Sign in with Google"). 
+                <br><br>
+                <strong>How it works:</strong>
+                <br>1. Register your app below to get a unique <code>Client ID</code> and <code>Client Secret</code>.
+                <br>2. Add a "Sign in with Phryco" button to your app that redirects to our authorization page.
+                <br>3. Once a user logs in, we will redirect them back to your app's <strong>Redirect URI</strong> with an authorization code.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Register New App</h2>
+            <p style="font-size: 13px; color: #5f6368; margin-bottom: 16px;">Fill out the details below to create your OAuth 2.0 application.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="font-weight: 500; font-size: 14px; display: block; margin-bottom: 4px;">App Name</label>
+                    <input type="text" id="new-app-name" class="input-field" style="margin-bottom: 4px;" placeholder="e.g., My Awesome Forum">
+                    <span style="font-size: 12px; color: #80868b;">This name will be shown to users when they are asked to authorize your app.</span>
+                </div>
+                
+                <div>
+                    <label style="font-weight: 500; font-size: 14px; display: block; margin-bottom: 4px;">Redirect URI</label>
+                    <input type="url" id="new-app-redirect" class="input-field" style="margin-bottom: 4px;" placeholder="e.g., https://myforum.com/auth/callback">
+                    <span style="font-size: 12px; color: #80868b;">Where we should send the user after they successfully log in. Must be a valid URL.</span>
+                </div>
+                
+                <div>
+                    <label style="font-weight: 500; font-size: 14px; display: block; margin-bottom: 8px;">Requested Scopes</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; max-height: 250px; overflow-y: auto; padding: 12px; border: 1px solid #dadce0; border-radius: 4px; background: #fff;">
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="profile" checked disabled> profile (Required)</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="email"> email</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="videos:read"> videos:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="videos:write"> videos:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="comments:read"> comments:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="comments:write"> comments:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="channel:read"> channel:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="channel:write"> channel:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="phrybucks:read"> phrybucks:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="phrybucks:spend"> phrybucks:spend</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="subscriptions:read"> subscriptions:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="subscriptions:write"> subscriptions:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="likes:read"> likes:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="likes:write"> likes:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="notifications:read"> notifications:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="notifications:write"> notifications:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="ads:read"> ads:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="ads:write"> ads:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="invites:read"> invites:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="invites:write"> invites:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="memberships:read"> memberships:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="memberships:write"> memberships:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="settings:read"> settings:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="settings:write"> settings:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="transactions:read"> transactions:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="clients:read"> clients:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="clients:write"> clients:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="emojis:read"> emojis:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="emojis:write"> emojis:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="analytics:read"> analytics:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="admin:read"> admin:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="admin:write"> admin:write</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="moderation:read"> moderation:read</label>
+                        <label style="font-size: 13px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="scopes" value="moderation:write"> moderation:write</label>
+                    </div>
+                    <span style="font-size: 12px; color: #80868b; display: block; margin-top: 4px;">Select the data your app needs to access.</span>
+                </div>
+                
+                <button id="register-app-btn" class="btn" style="align-self: flex-start; margin-top: 8px;">Register App</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>My Registered Apps</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>App Name</th>
+                        <th>Client ID</th>
+                        <th>Redirect URIs</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="apps-table-body">
+                    <tr><td colspan="4" style="text-align: center;">Loading apps...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Integration Guide &amp; Code Examples</h2>
+            <p style="font-size: 14px; color: #3c4043; line-height: 1.5;">Below are templates to help you quickly integrate Phryco SSO into your application.</p>
+            
+            <h4 style="color: #202124; margin-top: 24px;">1. Frontend: Redirect User to Login</h4>
+            <p style="font-size: 13px; color: #5f6368;">Attach this to your "Sign in with Phryco" button.</p>
+            <pre style="background: #f1f3f4; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #dadce0;"><code>const clientId = "YOUR_CLIENT_ID";
+const redirectUri = encodeURIComponent("https://yourwebsite.com/auth/callback");
+
+// Redirect the user to Phryco's authorization page
+window.location.href = `https://phryco.vercel.app/pages/sso/authorize.html?client_id=${clientId}&redirect_uri=${redirectUri}`;</code></pre>
+
+            <h4 style="color: #202124; margin-top: 24px;">2. Backend: Exchange Code for Access Token (Node.js Example)</h4>
+            <p style="font-size: 13px; color: #5f6368;">Once the user is redirected back to your server with a <code>?code=</code> parameter, exchange it for a token.</p>
+            <pre style="background: #f1f3f4; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #dadce0;"><code>const formData = new URLSearchParams();
+formData.append('grant_type', 'authorization_code');
+formData.append('code', req.query.code); // Code from URL
+formData.append('client_id', 'YOUR_CLIENT_ID');
+formData.append('client_secret', 'YOUR_CLIENT_SECRET'); // Secure!
+formData.append('redirect_uri', 'https://yourwebsite.com/auth/callback');
+
+const tokenResponse = await fetch('https://api.phryco.com/api/sso/token', {
+    method: 'POST',
+    body: formData
+});
+const tokenData = await tokenResponse.json();
+const accessToken = tokenData.access_token;</code></pre>
+
+            <h4 style="color: #202124; margin-top: 24px;">3. Backend: Fetch User Profile</h4>
+            <p style="font-size: 13px; color: #5f6368;">Use the access token to securely retrieve the user's Phryco Identity.</p>
+            <pre style="background: #f1f3f4; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #dadce0;"><code>const userResponse = await fetch('https://api.phryco.com/api/sso/userinfo', {
+    headers: { 'Authorization': `Bearer ${accessToken}` }
+});
+const userData = await userResponse.json();
+
+console.log(`Successfully logged in as ${userData.username}!`);
+// { id: 123, username: "john_doe", avatar_path: "...", role: "USER" }</code></pre>
+        </div>
+    </div>
+
+    <script type="module" src="/js/pages/developer.js"></script>
+</body>
+</html>

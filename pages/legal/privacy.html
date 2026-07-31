@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .doc-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            align-items: flex-start;
+        }
+
+        .doc-sidebar {
+            position: sticky;
+            top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .doc-sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all var(--transition-fast);
+        }
+
+        .doc-sidebar a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .doc-sidebar a.active {
+            color: var(--accent-primary);
+            font-weight: 600;
+            border-left-color: var(--accent-primary);
+        }
+
+        .doc-content h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .doc-content section {
+            margin-bottom: 4rem;
+        }
+
+        .last-updated {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+        }
+
+        .warning-box strong {
+            color: #fca5a5;
+        }
+
+        @media (max-width: 768px) {
+            .doc-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-sidebar {
+                position: relative;
+                top: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+    </header>
+
+    <div class="doc-layout">
+        <aside class="doc-sidebar">
+            <a href="#introduction" class="active">1. Introduction</a>
+            <a href="#collection">2. Information We Collect</a>
+            <a href="#usage">3. How We Use Information</a>
+            <a href="#sharing">4. How We Share Information</a>
+            <a href="#choices">5. Your Choices & Rights</a>
+            <a href="#security">6. Data Security</a>
+            <a href="#retention">7. Data Retention</a>
+            <a href="#children">8. Children's Privacy</a>
+            <a href="#changes">9. Changes to This Policy</a>
+            <div style="height: 1px; background: var(--border-color); margin: 1rem 0;"></div>
+            <a href="../documentation/index.html">Documentation</a>
+            <a href="terms.html">Terms of Service</a>
+        </aside>
+
+        <main class="doc-content markdown-body">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: July 28, 2026</p>
+
+            <div class="warning-box">
+                <p><strong>Disclaimer:</strong> This is a sample Privacy Policy for a fictional project. It is for
+                    demonstration purposes only and should not be considered legal advice. Consult a legal professional
+                    to draft a policy for a real-world application.</p>
+            </div>
+
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>Phryco ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains
+                    how we collect, use, disclose, and safeguard your information when you use our video sharing
+                    platform (the "Service"). By using the Service, you agree to the collection and use of information
+                    in accordance with this policy.</p>
+            </section>
+
+            <section id="collection">
+                <h2>2. Information We Collect</h2>
+                <p>We collect information in a few different ways to provide and improve our Service.</p>
+
+                <h3>Information You Provide to Us</h3>
+                <ul>
+                    <li><strong>Account Information:</strong> When you create an account, we collect your username and a
+                        hashed version of your password.</li>
+                    <li><strong>Profile Information:</strong> You may choose to provide additional information for your
+                        channel profile, such as a channel description, avatar, and banner image.</li>
+                    <li><strong>User Content:</strong> We collect the content you create, upload, or post to the
+                        Service. This includes your videos, comments, QnA forum posts and replies, and custom emojis.
+                    </li>
+                    <li><strong>Birth Date:</strong> To comply with age-related content restrictions, we ask for your
+                        birth date. This information can only be set once and is used to grant or restrict access to
+                        age-sensitive content.</li>
+                </ul>
+
+                <h3>Information We Collect Automatically</h3>
+                <ul>
+                    <li><strong>Usage Data:</strong> We collect information about your activity on the Service, such as
+                        videos you watch (watch history), videos you like, channels you subscribe to, and your
+                        interactions with advertisements.</li>
+                    <li><strong>Telemetry and Analytics:</strong> To improve our recommendation engine and understand
+                        content performance, we collect data such as how long you watch a video (watch time) and which
+                        parts of a video are most replayed (heatmap data).</li>
+                    <li><strong>Device and Connection Information:</strong> We automatically collect certain information
+                        from your device, including your IP address, browser type, operating system, and user agent. We
+                        also infer your country from your IP address to assist with ad targeting and regional content
+                        analysis.</li>
+                    <li><strong>Cookies:</strong> We use cookies (small text files stored on your device) to maintain
+                        your login session. We do not use cookies for cross-site tracking.</li>
+                </ul>
+            </section>
+
+            <section id="usage">
+                <h2>3. How We Use Your Information</h2>
+                <p>We use the information we collect for the following purposes:</p>
+                <ul>
+                    <li><strong>To Provide and Maintain the Service:</strong> To operate our platform, stream videos,
+                        process uploads, and manage accounts.</li>
+                    <li><strong>To Personalize Your Experience:</strong> To recommend videos and content you might like
+                        based on your watch history and engagement.</li>
+                    <li><strong>To Manage the Phrybucks Economy:</strong> To process transactions, calculate creator
+                        earnings, and manage ad campaign budgets.</li>
+                    <li><strong>To Communicate With You:</strong> To send you important notifications about your account
+                        or content, such as when a video is approved or you receive a Phrybucks transfer.</li>
+                    <li><strong>To Enforce Our Policies:</strong> To detect and prevent fraud, abuse, and violations of
+                        our Terms of Service, including content moderation and account actions.</li>
+                    <li><strong>To Improve the Service:</strong> To analyze usage trends and telemetry data to
+                        understand how our Service is used and identify areas for improvement.</li>
+                </ul>
+            </section>
+
+            <section id="sharing">
+                <h2>4. How We Share Your Information</h2>
+                <p>We do not sell your personal data to third-party marketers.</p>
+
+                <h3>Information Shared Publicly</h3>
+                <p>Certain information is always public on Phryco. This includes:</p>
+                <ul>
+                    <li>Your username, channel avatar, banner, and description.</li>
+                    <li>Any content you upload that is set to "Public," including videos, comments, and QnA posts.</li>
+                    <li>Your subscriber count.</li>
+                </ul>
+
+                <h3>Information Shared with Other Users</h3>
+                <ul>
+                    <li>When you transfer Phrybucks to another user, they will see your username as the sender.</li>
+                </ul>
+
+                <h3>For Legal Reasons</h3>
+                <p>We may share your information if we believe that disclosure is reasonably necessary to comply with a
+                    law, regulation, legal process, or governmental request; to enforce our Terms of Service; or to
+                    protect the safety, rights, or property of Phryco, our users, or the public.</p>
+            </section>
+
+            <section id="choices">
+                <h2>5. Your Choices & Rights</h2>
+                <p>You have control over your information on Phryco.</p>
+                <ul>
+                    <li><strong>Access and Update Information:</strong> You can review and update your channel
+                        information (description, avatar, banner) in the Phryco Studio settings.</li>
+                    <li><strong>Ad Preferences:</strong> You can choose to disable ads by purchasing a monthly ad-free
+                        subscription with Phrybucks from your main Account Settings page.</li>
+                    <li><strong>Watch History:</strong> You can view your watch history and have the option to clear it
+                        entirely.</li>
+                    <li><strong>Account Deletion:</strong> You can request the deletion of your account. This action is
+                        irreversible and will schedule your account and all associated content for permanent deletion
+                        from our servers.</li>
+                </ul>
+            </section>
+
+            <section id="security">
+                <h2>6. Data Security</h2>
+                <p>We take the security of your data seriously. We implement measures such as password hashing, rate
+                    limiting, and use of secure protocols (HTTPS) to protect your information. However, please be aware
+                    that no method of transmission over the internet or method of electronic storage is 100% secure.
+                    While we strive to use commercially acceptable means to protect your information, we cannot
+                    guarantee its absolute security.</p>
+            </section>
+
+            <section id="retention">
+                <h2>7. Data Retention</h2>
+                <p>We retain your information for as long as your account is active. If you choose to delete your
+                    account, your data will be permanently removed from our systems in accordance with our data deletion
+                    schedule. Content that is moved to the "trash" will be retained for a short period (1 hour) before
+                    permanent deletion to allow for restoration.</p>
+            </section>
+
+            <section id="children">
+                <h2>8. Children's Privacy</h2>
+                <p>Phryco is not directed to children under the age of 13 (or the relevant age in your country). We do
+                    not knowingly collect personal information from children. If you are a parent or guardian and you
+                    believe your child has provided us with personal information, please contact us. If we become aware
+                    that we have collected personal information from a child without verification of parental consent,
+                    we will take steps to remove that information from our servers.</p>
+            </section>
+
+            <section id="changes">
+                <h2>9. Changes to This Policy</h2>
+                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the
+                    new Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this
+                    Privacy Policy periodically for any changes.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.doc-sidebar a');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').endsWith(entry.target.id));
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+
+</html>

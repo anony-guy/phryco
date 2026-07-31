@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .doc-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            align-items: flex-start;
+        }
+
+        .doc-sidebar {
+            position: sticky;
+            top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .doc-sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all var(--transition-fast);
+        }
+
+        .doc-sidebar a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .doc-sidebar a.active {
+            color: var(--accent-primary);
+            font-weight: 600;
+            border-left-color: var(--accent-primary);
+        }
+
+        .doc-content h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .doc-content section {
+            margin-bottom: 4rem;
+        }
+
+        .last-updated {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .key-term {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--phrybucks-gold);
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+        }
+
+        .warning-box strong {
+            color: #fca5a5;
+        }
+
+        @media (max-width: 768px) {
+            .doc-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-sidebar {
+                position: relative;
+                top: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+    </header>
+
+    <div class="doc-layout">
+        <aside class="doc-sidebar">
+            <a href="#acceptance" class="active">1. Acceptance of Terms</a>
+            <a href="#accounts">2. User Accounts</a>
+            <a href="#user-content">3. User-Generated Content</a>
+            <a href="#prohibited-conduct">4. Prohibited Conduct</a>
+            <a href="#phrybucks">5. The Phrybucks Economy</a>
+            <a href="#admin-accountability">6. Administrator Accountability</a>
+            <a href="#termination">7. Termination</a>
+            <a href="#disclaimers">8. Disclaimers</a>
+            <a href="#liability">9. Limitation of Liability</a>
+            <a href="#changes">10. Changes to Terms</a>
+            <div style="height: 1px; background: var(--border-color); margin: 1rem 0;"></div>
+            <a href="../documentation/index.html">Documentation</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </aside>
+
+        <main class="doc-content markdown-body">
+            <h1>Terms of Service</h1>
+            <p class="last-updated">Last Updated: July 28, 2026</p>
+
+            <div class="warning-box">
+                <p><strong>Disclaimer:</strong> This is a sample Terms of Service document created for a fictional
+                    project. It is not legally binding and should not be used as a template for a real-world service
+                    without consulting a legal professional.</p>
+            </div>
+
+            <section id="acceptance">
+                <h2>1. Acceptance of Terms</h2>
+                <p>Welcome to Phryco ("the Service"). By creating an account, uploading content, or otherwise accessing
+                    or using our Service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree
+                    to these Terms, you may not use the Service.</p>
+            </section>
+
+            <section id="accounts">
+                <h2>2. User Accounts</h2>
+                <p>You are responsible for safeguarding your account and for any activities or actions under your
+                    password. You agree to provide accurate and complete information when creating your account. You may
+                    not use a username that is offensive, vulgar, or infringes on someone else's rights.</p>
+                <p>We reserve the right to suspend or terminate your account if any information provided is found to be
+                    inaccurate, or if you violate any of these Terms.</p>
+            </section>
+
+            <section id="user-content">
+                <h2>3. User-Generated Content</h2>
+                <p>You retain ownership of all intellectual property rights in the content you create and upload to
+                    Phryco, including videos, thumbnails, comments, QnA posts, and custom emojis ("User Content").</p>
+                <p>However, by uploading User Content, you grant Phryco a worldwide, non-exclusive, royalty-free,
+                    sublicensable, and transferable license to use, reproduce, distribute, prepare derivative works of,
+                    display, and perform your User Content in connection with the Service and Phryco's business.</p>
+                <p>You are solely responsible for your User Content and the consequences of posting or publishing it.
+                    You affirm that you have the necessary licenses, rights, consents, and permissions to publish the
+                    User Content you submit.</p>
+            </section>
+
+            <section id="prohibited-conduct">
+                <h2>4. Prohibited Conduct</h2>
+                <p>You agree not to engage in any of the following prohibited activities:</p>
+                <ul>
+                    <li>Uploading content that is unlawful, defamatory, harassing, abusive, fraudulent, obscene, or
+                        otherwise objectionable.</li>
+                    <li>Uploading content that contains hate speech, incites violence, or promotes discrimination.</li>
+                    <li>Infringing on the intellectual property rights of others.</li>
+                    <li>Impersonating another person or entity.</li>
+                    <li>Using the Service for any illegal purpose or in violation of any local, state, national, or
+                        international law.</li>
+                    <li>Attempting to exploit or manipulate the <b class="key-term">Phrybucks</b> economy through bots,
+                        scripts, or any other unauthorized means.</li>
+                    <li>Harassing or bullying other users in comments, the QnA forum, or any other part of the Service.
+                    </li>
+                    <li>Circumventing any content-filtering techniques we employ, such as age-gating or content
+                        warnings.</li>
+                </ul>
+                <p>Violation of these rules may result in content removal, account suspension, or permanent termination.
+                </p>
+            </section>
+
+            <section id="phrybucks">
+                <h2>5. The Phrybucks (PB) Economy</h2>
+                <p>The Service includes a virtual currency known as <b class="key-term">Phrybucks</b>. You acknowledge
+                    and agree to the following:</p>
+                <ul>
+                    <li>Phrybucks are a limited license right and have <strong>no real-world monetary value</strong>.
+                        They cannot be redeemed for cash or any other real-world currency.</li>
+                    <li>All transactions involving Phrybucks are final and non-refundable.</li>
+                    <li>We reserve the right, in our sole discretion, to manage, regulate, control, modify, or eliminate
+                        Phrybucks and the economy as we see fit, and we shall have no liability to you or any third
+                        party for the exercise of such rights.</li>
+                    <li>A 5% fee is applied to all user-to-user transfers of Phrybucks.</li>
+                </ul>
+            </section>
+
+            <section id="admin-accountability">
+                <h2>6. Administrator Conduct and Accountability</h2>
+                <p>To foster a fair and trustworthy community, Phryco holds its administrators, moderators, and owners
+                    ("Admins") to a high standard of conduct. Admins are granted special privileges to maintain the
+                    health of the platform, and they pledge to adhere to the following principles:</p>
+                <ul>
+                    <li><strong>Impartiality:</strong> Admins shall enforce these Terms fairly and consistently, without
+                        personal bias toward any user or type of content. Moderation decisions will be based on the
+                        rules of the platform, not personal opinion.</li>
+                    <li><strong>Proportionality:</strong> Actions taken by Admins will be proportional to the severity
+                        of the violation. Temporary suspensions and warnings will be used for minor infractions where
+                        appropriate, with permanent bans reserved for serious or repeated offenses.</li>
+                    <li><strong>Prohibition of Abuse:</strong> Admins are strictly prohibited from using their tools for
+                        personal gain. This includes, but is not limited to:
+                        <ul>
+                            <li>Artificially inflating views, likes, or subscriber counts for any channel.</li>
+                            <li>Unfairly promoting their own content or the content of their friends.</li>
+                            <li>Granting themselves or others Phrybucks without a valid, system-based reason.</li>
+                            <li>Deleting or demoting content that does not violate the Terms.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Confidentiality:</strong> Admins will not access or disclose non-public user data (such
+                        as private videos or account information) except as strictly necessary to investigate a
+                        violation of these Terms or to comply with legal obligations.</li>
+                    <li><strong>Transparency and Appeals:</strong> When content is removed or an account is suspended,
+                        the user will be notified of the action. Users have the right to appeal a moderation decision by
+                        contacting our support team. While we cannot guarantee all decisions will be overturned, we
+                        commit to a good-faith review of every appeal.</li>
+                </ul>
+            </section>
+
+            <section id="termination">
+                <h2>7. Termination</h2>
+                <p>We may terminate or suspend your access to the Service immediately, without prior notice or
+                    liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+                <p>Upon termination, your right to use the Service will immediately cease. You may terminate your
+                    account by requesting deletion through your account settings, which will schedule your account and
+                    all associated content for permanent deletion.</p>
+            </section>
+
+            <section id="disclaimers">
+                <h2>8. Disclaimers</h2>
+                <p>The Service is provided on an "AS IS" and "AS AVAILABLE" basis. Phryco makes no warranties, expressed
+                    or implied, and hereby disclaims and negates all other warranties, including without limitation,
+                    implied warranties of merchantability, fitness for a particular purpose, or non-infringement of
+                    intellectual property.</p>
+            </section>
+
+            <section id="liability">
+                <h2>9. Limitation of Liability</h2>
+                <p>In no event shall Phryco or its suppliers be liable for any damages (including, without limitation,
+                    damages for loss of data or profit, or due to business interruption) arising out of the use or
+                    inability to use the materials on Phryco's website, even if Phryco has been notified orally or in
+                    writing of the possibility of such damage.</p>
+            </section>
+
+            <section id="changes">
+                <h2>10. Changes to Terms</h2>
+                <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will
+                    provide notice of any changes by posting the new Terms on this page. By continuing to access or use
+                    our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.doc-sidebar a');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').endsWith(entry.target.id));
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+
+</html>

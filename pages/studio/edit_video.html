@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Edit Video</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .edit-container {
+            display: flex;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .edit-sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .edit-sidebar-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            text-align: left;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .edit-sidebar-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .edit-sidebar-btn.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+        
+        .edit-content {
+            flex-grow: 1;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+        }
+        
+        .tab-panel {
+            display: none;
+        }
+        
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Pill Tag Editor */
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            min-height: 46px;
+        }
+        .tag-container.focused {
+            border-color: var(--accent-primary);
+        }
+        .tag-pill {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .tag-pill button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        .tag-pill button:hover { color: #ef4444; }
+        .tag-input {
+            flex-grow: 1;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            outline: none;
+            min-width: 120px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider { background-color: var(--accent-primary); }
+        input:checked + .toggle-slider:before { transform: translateX(20px); }
+        
+        .action-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <div class="action-bar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <a href="content.html" style="color: var(--text-secondary); text-decoration: none;"><i data-lucide="arrow-left"></i></a>
+                    <h2 id="video-title-header">Edit Video</h2>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="discard-btn" class="btn-secondary">Discard Changes</button>
+                    <button id="save-btn" class="btn-primary">Save Changes</button>
+                </div>
+            </div>
+            
+            <div class="edit-container animate-fade-in">
+                <div class="edit-sidebar">
+                    <button class="edit-sidebar-btn active" data-target="tab-details">
+                        <i data-lucide="file-text"></i> Details
+                    </button>
+                    <button class="edit-sidebar-btn" data-target="tab-visibility">
+                        <i data-lucide="eye"></i> Visibility
+                    </button>
+                    <button class="edit-sidebar-btn" data-target="tab-audience">
+                        <i data-lucide="users"></i> Audience
+                    </button>
+                    <button class="edit-sidebar-btn" data-target="tab-monetization">
+                        <i data-lucide="dollar-sign"></i> Monetization
+                    </button>
+                    <button class="edit-sidebar-btn" data-target="tab-media">
+                        <i data-lucide="image"></i> Media
+                    </button>
+                    <button class="edit-sidebar-btn" data-target="tab-chapters">
+                        <i data-lucide="list"></i> Chapters
+                    </button>
+                </div>
+                
+                <div class="edit-content">
+                    <form id="edit-form">
+                        
+                        <!-- DETAILS TAB -->
+                        <div id="tab-details" class="tab-panel active">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Video Details</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Title (required)</label>
+                                <input type="text" id="edit-title" class="form-control" required placeholder="Add a title that describes your video">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="edit-description" class="form-control" rows="6" placeholder="Tell viewers about your video"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Tags</label>
+                                <div class="tag-container" id="tag-container">
+                                    <input type="text" id="tag-input" class="tag-input" placeholder="Add tag and press Enter">
+                                </div>
+                                <div class="form-hint">Tags can be useful if content in your video is commonly misspelled. Otherwise, tags play a minimal role in helping viewers find your video.</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <select id="edit-category" class="form-control">
+                                    <option value="">None</option>
+                                    <option value="Film & Animation">Film & Animation</option>
+                                    <option value="Autos & Vehicles">Autos & Vehicles</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Pets & Animals">Pets & Animals</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Travel & Events">Travel & Events</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="People & Blogs">People & Blogs</option>
+                                    <option value="Comedy">Comedy</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="News & Politics">News & Politics</option>
+                                    <option value="Howto & Style">Howto & Style</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Science & Technology">Science & Technology</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- VISIBILITY TAB -->
+                        <div id="tab-visibility" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Visibility</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Privacy Setting</label>
+                                <select id="edit-status" class="form-control">
+                                    <option value="PUBLIC">Public</option>
+                                    <option value="PRIVATE">Private</option>
+                                    <option value="SUBSCRIBER_ONLY">Subscriber Only</option>
+                                    <option value="MEMBER_ONLY">Member Only</option>
+                                    <option value="PENDING_REVIEW" disabled>Pending Review</option>
+                                </select>
+                                <div class="form-hint">Note: You can only toggle visibility for approved videos. If your video is still pending review, changing this will not take effect until approval.</div>
+                            </div>
+                            
+                            <div class="form-group" id="tier-requirement-container" style="display: none; margin-top: 1.5rem;">
+                                <label class="form-label">Required Membership Tier</label>
+                                <select id="edit-required-tier" class="form-control">
+                                    <option value="">Loading tiers...</option>
+                                </select>
+                                <div class="form-hint">Select the minimum tier required to view this video.</div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top: 2rem;">
+                                <label class="form-label">Schedule Release</label>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Select a date to make your video Public. Until then, it will remain Private.</p>
+                                <input type="datetime-local" id="edit-schedule" class="form-control" style="width: auto;">
+                            </div>
+                        </div>
+                        
+                        <!-- AUDIENCE TAB -->
+                        <div id="tab-audience" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Audience & Safety</h3>
+                            
+                            <div class="toggle-container">
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Made for Kids</strong>
+                                    <span style="color: var(--text-secondary); font-size: 0.875rem;">Set this video as made for kids to comply with COPPA.</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="edit-kids">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="toggle-container">
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Age Restriction (Advanced)</strong>
+                                    <span style="color: var(--text-secondary); font-size: 0.875rem;">Restrict my video to viewers over 18.</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="edit-age">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- MONETIZATION TAB -->
+                        <div id="tab-monetization" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Monetization</h3>
+                            
+                            <div class="toggle-container">
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Enable Ads</strong>
+                                    <span style="color: var(--text-secondary); font-size: 0.875rem;">Allow pre-roll and display ads to be shown on this video.</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="edit-monetization" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-hint" style="margin-top: 1rem;">
+                                Note: You will only earn Phrybucks from ads if you meet the Partner Program requirements.
+                            </div>
+                        </div>
+                        
+                        <!-- MEDIA TAB -->
+                        <div id="tab-media" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Media Assets</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Thumbnail</label>
+                                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                                    <img id="thumbnail-preview" src="" style="width: 256px; height: 144px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-primary);">
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Select or upload a picture that shows what's in your video. A good thumbnail stands out and draws viewers' attention.</p>
+                                        <input type="file" id="edit-thumbnail" accept="image/*" class="form-control" style="max-width: 300px;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+                            
+                            <div class="form-group" id="scrubber-group">
+                                <label class="form-label">Scrubber Icon (Partners Only)</label>
+                                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                                    <img id="scrubber-preview" src="" style="width: 48px; height: 48px; object-fit: contain; border-radius: 50%; border: 1px solid var(--border-color); background: var(--bg-primary); display: none;">
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Upload a custom icon to display on the video timeline scrubber.</p>
+                                        <input type="file" id="edit-scrubber" accept="image/png, image/jpeg" class="form-control" style="max-width: 300px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- CHAPTERS TAB -->
+                        <div id="tab-chapters" class="tab-panel">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Video Chapters</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Add chapters to help viewers navigate through your video. Specify the start time in seconds and a title for each chapter.</p>
+                            
+                            <div id="chapters-list" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+                                <!-- Chapters dynamically injected here -->
+                            </div>
+                            
+                            <button type="button" id="add-chapter-btn" class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="plus"></i> Add Chapter
+                            </button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+            <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+        </main>
+    </div>
+
+    <script type="module" src="../../js/pages/studio/edit_video.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .settings-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .settings-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .settings-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .settings-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .setting-info {
+            flex: 1;
+            padding-right: 2rem;
+        }
+        
+        .setting-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+        
+        .setting-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .setting-action {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* Toggle Switch Styling */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .btn-save {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-save:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+        
+        .btn-save:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        input[type="date"] {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+        }
+        
+        input[type="date"]:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar injected by header.js -->
+
+    <main class="settings-container">
+        <div class="settings-header">
+            <h1>Account Settings</h1>
+        </div>
+        
+        <div class="settings-section">
+            <h2><i data-lucide="user"></i> Personal Information</h2>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Email Address</h3>
+                    <p>Changing your email address will require you to verify the new address before you can continue using the platform.</p>
+                </div>
+                <div class="setting-action" style="align-items: center; display: flex;">
+                    <input type="email" id="email-input" placeholder="Enter your email" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-md); font-family: inherit;">
+                    <div style="display: flex; flex-direction: column; margin-left: 0.75rem;">
+                        <span id="email-status" style="font-size: 0.875rem; font-weight: 600;"></span>
+                        <button id="resend-verification-btn" class="btn-outline" style="display: none; padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-top: 0.25rem;">Resend Email</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Birth Date</h3>
+                    <p>Providing your birth date ensures you get the appropriate experience across Phryco. <strong>Note: This can only be set once.</strong></p>
+                </div>
+                <div class="setting-action">
+                    <input type="date" id="birth-date-input" max="2026-01-01">
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Religion</h3>
+                    <p>Required for certain community guidelines and content filtering.</p>
+                </div>
+                <div class="setting-action">
+                    <select id="religion-select" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-md); font-family: inherit;">
+                        <option value="">Select...</option>
+                        <option value="Islam">Islam</option>
+                        <option value="Non-Muslim">Non-Muslim</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h2><i data-lucide="settings"></i> Preferences</h2>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Show Ads</h3>
+                    <p>Support creators by viewing advertisements, or turn them off for an ad-free experience.</p>
+                </div>
+                <div class="setting-action">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-ads-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="setting-item" id="halal-mode-container" style="display: none;">
+                <div class="setting-info">
+                    <h3>Halal Mode</h3>
+                    <p>Hide videos flagged for containing music, taswir, or being Sharia non-compliant from feeds and recommendations.</p>
+                </div>
+                <div class="setting-action">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="halal-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+            <button id="save-settings-btn" class="btn-save">Save Changes</button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/settings.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

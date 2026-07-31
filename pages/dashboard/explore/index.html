@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .category-section {
+            margin-bottom: 3rem;
+        }
+        .category-title {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <div class="search-bar" style="flex: 1; max-width: 500px; margin: 0 2rem;">
+            <input type="text" placeholder="Search videos..." style="width: 100%; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); outline: none;">
+        </div>
+        <nav class="nav-links">
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins" style="width: 16px; height: 16px;"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/upload.html" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <a href="../../pages/notifications/index.html">
+                <i data-lucide="bell"></i>
+            </a>
+            <div class="user-menu-container" style="position: relative;">
+                <a href="#" id="user-menu-btn" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--bg-secondary); text-decoration: none;">
+                    <i data-lucide="user" style="color: var(--text-secondary);"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="../../"><i data-lucide="home"></i> Home</a>
+            <a href="../../pages/trending/index.html"><i data-lucide="trending-up"></i> Trending</a>
+            <a href="../../pages/explore/index.html" class="active"><i data-lucide="compass"></i> Explore</a>
+            <a href="../../pages/qna/index.html"><i data-lucide="help-circle"></i> QnA Forum</a>
+        </aside>
+
+        <main class="content">
+            <h1 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="compass" style="color: var(--accent-primary); width: 28px; height: 28px;"></i> Explore Videos
+            </h1>
+            <div id="explore-container">
+                <!-- Categories will be injected here via JS -->
+            </div>
+        </main>
+    </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/explore.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

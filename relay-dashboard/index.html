@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phryco Network Dashboard</title>
+    <link rel="stylesheet" href="/relay-dashboard/css/relay-theme.css">
+</head>
+<body style="display: none;" id="dashboard-body">
+
+    <div class="container">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; background-color: #e8f0fe; border-color: #aecbfa;">
+            <div>
+                <h2 style="color: #1967d2; margin-bottom: 8px;">Host a Sub-Relay Node</h2>
+                <p style="margin: 0; font-size: 14px; color: #1967d2;">Download the pre-packaged relay backend to spin up a new node on a VPS instantly.</p>
+            </div>
+            <button id="download-relay-btn" class="btn">Download Relay Software</button>
+        </div>
+
+        <div class="card">
+            <h2>Active Relays Registry</h2>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <input type="url" id="new-relay-url" class="input-field" style="margin-bottom: 0;" placeholder="https://relay1.yourdomain.com">
+                <button id="add-relay-btn" class="btn" style="white-space: nowrap;">Add Relay</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Relay URL</th>
+                        <th>Status</th>
+                        <th>Uptime</th>
+                        <th>Quality Score</th>
+                        <th>Avg Latency</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="relays-table-body">
+                    <tr><td colspan="6" style="text-align: center;">Loading relays...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="container" style="margin-top: 24px;">
+        <div class="card">
+            <h2>OAuth Trust Requests</h2>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Review and manage third-party redirect URIs.</p>
+            
+            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                <button class="btn active-tab-btn" id="tab-pending">Pending Requests</button>
+                <button class="btn outline" id="tab-approved" style="background: transparent; color: #1e293b; border: 1px solid #cbd5e1;">Approved URIs</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client App</th>
+                        <th>Redirect URI</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="trust-requests-body">
+                    <tr><td colspan="5" style="text-align: center;">Loading requests...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module" src="/relay-dashboard/js/app.js"></script>
+</body>
+</html>

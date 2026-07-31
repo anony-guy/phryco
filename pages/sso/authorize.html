@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorize Application - Phryco SSO</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <style>
+        .sso-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .dark-mode .sso-container {
+            background: #1e1e1e;
+            color: #fff;
+        }
+        .btn-approve {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .btn-deny {
+            background: #ccc;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sso-container">
+        <h2>Phryco Single Sign-On</h2>
+        <div id="loading">Loading client info...</div>
+        <div id="auth-content" style="display:none;">
+            <p><strong><span id="client-name"></span></strong> is requesting access to your Phryco account.</p>
+            <div style="margin: 20px 0; text-align: left; font-size: 14px;">
+                <p>This will allow the application to:</p>
+                <div id="scopes-list" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                </div>
+            </div>
+            <button class="btn-approve" id="approve-btn">Authorize</button>
+            <button class="btn-deny" id="deny-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script type="module" src="/js/pages/sso.js"></script>
+</body>
+</html>

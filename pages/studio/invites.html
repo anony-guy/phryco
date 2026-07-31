@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Dashboard</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .channel-header {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+        .channel-banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--accent-primary));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.25rem;
+            object-fit: cover;
+        }
+        .channel-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-primary);
+            border: 4px solid var(--bg-primary);
+            border-radius: 50%;
+            position: absolute;
+            bottom: -30px;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            object-fit: cover;
+            cursor: pointer;
+            overflow: hidden;
+            transition: opacity var(--transition-fast);
+        }
+        .channel-banner:hover, .channel-avatar:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html" class="active">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html">Ads</a>
+                            <a href="../../pages/studio/invites.html" class="active">Invites</a>
+            </nav>
+
+            <div class="channel-header animate-fade-in" style="margin-bottom: 2rem;">
+                <h1>Invite System</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Registration is invite-only. Generate invite codes to allow your friends to join Phryco. 
+                    Generating a code costs <strong>500 Phrybucks</strong>.
+                </p>
+                <div class="alert alert-warning" style="margin-top: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 1rem; border-radius: var(--radius-md);">
+                    <strong>⚠️ Slashing Warning:</strong> If a user you invite is banned for spam or botting, your account will be penalized and you will lose an additional <strong>1,000 Phrybucks</strong>. Only invite people you trust.
+                </div>
+            </div>
+
+            <div class="card animate-fade-in" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Generate Invite Code</h3>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label>Max Uses</label>
+                        <select id="invite-max-uses" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--radius-md);">
+                            <option value="1">1 Use</option>
+                            <option value="5">5 Uses</option>
+                            <option value="10">10 Uses</option>
+                            <option value="-1">Infinite</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label>Expiration</label>
+                        <select id="invite-expiration" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--radius-md);">
+                            <option value="">Never Expires</option>
+                            <option value="1">24 Hours</option>
+                            <option value="7">7 Days</option>
+                            <option value="30">30 Days</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button id="purchase-invite-btn" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="ticket"></i>
+                        Purchase (500 PB)
+                    </button>
+                </div>
+                <p id="purchase-msg" style="display: none; margin-top: 1rem;"></p>
+            </div>
+
+            <div class="card animate-fade-in" style="animation-delay: 0.1s;">
+                <h3>Your Invite Codes</h3>
+                <div id="invites-list" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <p style="color: var(--text-secondary);">Loading invites...</p>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/studio/invites.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

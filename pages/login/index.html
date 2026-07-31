@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-glass);
+            border: 1px solid var(--border-color);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--accent-primary);
+        }
+        .auth-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        .auth-footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+    </header>
+
+    <div class="layout" style="justify-content: center; align-items: center;">
+        <div class="auth-container animate-fade-in">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Welcome Back</h2>
+            <div id="login-container">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="auth-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" id="auth-key" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required style="-webkit-text-security: disc;">
+                </div>
+                <button id="submit-btn" class="btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+            </div>
+            <p id="error-msg" style="color: #ef4444; margin-top: 1rem; text-align: center; display: none;"></p>
+            <div class="auth-footer">
+                Don't have an account? <a href="../../pages/register/index.html">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/login.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

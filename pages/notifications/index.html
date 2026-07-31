@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .notification-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: border-color var(--transition-fast);
+        }
+        .notification-card.unread {
+            border-left: 4px solid var(--accent-primary);
+        }
+        .notification-content p {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .notification-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+    </header>
+
+    <div class="layout" style="justify-content: center;">
+        <main class="content" style="max-width: 800px; width: 100%;">
+            <h2 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="bell"></i> Notifications
+            </h2>
+            <div id="notifications-container" class="animate-fade-in">
+                <!-- Notifications loaded via JS -->
+                <p style="text-align: center; color: var(--text-secondary);">Loading...</p>
+            </div>
+        </main>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/notifications.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

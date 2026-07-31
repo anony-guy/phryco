@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Phryco</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --accent-primary: #8b5cf6;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+            color: var(--accent-primary);
+        }
+        p {
+            margin: 0 0 20px 0;
+            color: #94a3b8;
+        }
+        canvas {
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 100%;
+        }
+        .controls {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        kbd {
+            background: #334155;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: white;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>You are Offline</h1>
+        <p>While you wait for your connection to return, enjoy some space shooting!</p>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    
+    <div class="controls">
+        Move: <kbd>Left</kbd> / <kbd>Right</kbd> | Shoot: <kbd>Space</kbd>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game State
+        let player = { x: 275, y: 350, width: 50, height: 50, speed: 6, lives: 3 };
+        let bullets = [];
+        let enemies = [];
+        let particles = [];
+        let stars = [];
+        let score = 0;
+        let highScore = localStorage.getItem('phryco_offline_highscore') || 0;
+        let gameOver = false;
+        let keys = {};
+        let spawnTimeout;
+
+        // Init Stars
+        for (let i = 0; i < 50; i++) {
+            stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, speed: Math.random() * 2 + 0.5 });
+        }
+
+        document.addEventListener('keydown', (e) => keys[e.code] = true);
+        document.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+            if (e.code === 'Space') e.preventDefault();
+        });
+
+        // Restart on click if game over
+        canvas.addEventListener('click', () => {
+            if (gameOver) {
+                resetGame();
+            }
+        });
+
+        function resetGame() {
+            player.x = 275;
+            player.lives = 3;
+            score = 0;
+            bullets = [];
+            enemies = [];
+            particles = [];
+            gameOver = false;
+            clearTimeout(spawnTimeout);
+            spawnEnemy();
+            requestAnimationFrame(loop);
+        }
+
+        function createParticles(x, y, color) {
+            for(let i=0; i<15; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 1.0,
+                    color: color
+                });
+            }
+        }
+
+        function spawnEnemy() {
+            if (!gameOver) {
+                enemies.push({
+                    x: Math.random() * (canvas.width - 40),
+                    y: -40,
+                    width: 40,
+                    height: 40,
+                    // Slower ramp up
+                    speed: 1.5 + Math.random() * 1.5 + (score * 0.005)
+                });
+                // Slower spawn rate ramp
+                let nextSpawn = 1200 - Math.min(score * 5, 800);
+                spawnTimeout = setTimeout(spawnEnemy, nextSpawn);
+            }
+        }
+
+        function update() {
+            if (gameOver && particles.length === 0) return;
+
+            // Stars
+            stars.forEach(s => {
+                s.y += s.speed;
+                if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+            });
+
+            if (!gameOver) {
+                // Player Movement
+                if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+                if (keys['ArrowRight'] && player.x + player.width < canvas.width) player.x += player.speed;
+                
+                // Shooting (100ms cooldown)
+                if (keys['Space']) {
+                    if (!player.lastShot || Date.now() - player.lastShot > 100) {
+                        bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 12, speed: 9, color: '#38bdf8' });
+                        player.lastShot = Date.now();
+                    }
+                }
+            }
+
+            // Update Bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].y -= bullets[i].speed;
+                if (bullets[i].y < 0) bullets.splice(i, 1);
+            }
+
+            // Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.03;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+
+            if (!gameOver) {
+                // Update Enemies & Collision
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    let e = enemies[i];
+                    e.y += e.speed;
+
+                    // Hit bottom? Lose life
+                    if (e.y >= canvas.height) {
+                        enemies.splice(i, 1);
+                        player.lives--;
+                        if(player.lives <= 0) handleGameOver();
+                        continue;
+                    }
+
+                    // Hit Player?
+                    if (e.x < player.x + player.width && e.x + e.width > player.x &&
+                        e.y < player.y + player.height && e.y + e.height > player.y) {
+                        createParticles(e.x + e.width/2, e.y + e.height/2, '#ef4444');
+                        enemies.splice(i, 1);
+                        player.lives--;
+                        if(player.lives <= 0) handleGameOver();
+                        continue;
+                    }
+
+                    // Hit Bullet?
+                    for (let j = bullets.length - 1; j >= 0; j--) {
+                        let b = bullets[j];
+                        if (b.x < e.x + e.width && b.x + b.width > e.x &&
+                            b.y < e.y + e.height && b.y + b.height > e.y) {
+                            createParticles(e.x + e.width/2, e.y + e.height/2, '#22c55e');
+                            enemies.splice(i, 1);
+                            bullets.splice(j, 1);
+                            score += 10;
+                            if (score > highScore) {
+                                highScore = score;
+                                localStorage.setItem('phryco_offline_highscore', highScore);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        function handleGameOver() {
+            gameOver = true;
+            createParticles(player.x + player.width/2, player.y + player.height/2, '#8b5cf6');
+            createParticles(player.x + player.width/2, player.y + player.height/2, '#ffffff');
+        }
+
+        function draw() {
+            // Clear Canvas
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Stars
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.speed, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            if (!gameOver) {
+                // Draw Player (Emoji)
+                ctx.font = '40px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🚀', player.x + player.width/2, player.y + player.height/2);
+            }
+
+            // Draw Bullets
+            bullets.forEach(b => {
+                ctx.fillStyle = b.color;
+                ctx.fillRect(b.x, b.y, b.width, b.height);
+            });
+
+            // Draw Enemies
+            ctx.font = '35px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            enemies.forEach(e => {
+                ctx.fillText('👾', e.x + e.width/2, e.y + e.height/2);
+            });
+
+            // Draw Particles
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+
+            // Draw Score & Lives
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`Score: ${score}`, 10, 10);
+            ctx.fillText(`HI: ${highScore}`, 10, 35);
+            
+            ctx.textAlign = 'right';
+            ctx.fillText('❤️'.repeat(player.lives), canvas.width - 10, 10);
+
+            if (gameOver && particles.length === 0) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 40px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 20);
+                
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = '20px Arial';
+                ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
+                
+                ctx.fillStyle = '#8b5cf6';
+                ctx.font = '16px Arial';
+                ctx.fillText('Click anywhere to restart', canvas.width / 2, canvas.height / 2 + 70);
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            if (!gameOver || particles.length > 0) {
+                requestAnimationFrame(loop);
+            }
+        }
+
+        // Start
+        spawnEnemy();
+        loop();
+
+        // Check for online event to reload
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>

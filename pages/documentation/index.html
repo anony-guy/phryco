@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Phryco - Documentation</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .doc-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            align-items: flex-start;
+        }
+
+        .doc-sidebar {
+            position: sticky;
+            top: 100px; /* Adjust based on header height */
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .doc-sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all var(--transition-fast);
+        }
+
+        .doc-sidebar a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .doc-sidebar a.active {
+            color: var(--accent-primary);
+            font-weight: 600;
+            border-left-color: var(--accent-primary);
+        }
+        
+        .doc-content h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .doc-content h2 i {
+            color: var(--accent-primary);
+        }
+        
+        .doc-content h3 {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .doc-content section {
+            margin-bottom: 4rem;
+        }
+        
+        .key-term {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--phrybucks-gold);
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .doc-layout {
+                grid-template-columns: 1fr;
+            }
+            .doc-sidebar {
+                position: relative;
+                top: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <nav class="nav-links">
+             <a href="../../pages/studio/upload.html" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <div class="user-menu-container" style="position: relative;">
+                <a href="#" id="user-menu-btn" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--bg-secondary); text-decoration: none;">
+                    <i data-lucide="user" style="color: var(--text-secondary);"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="doc-layout">
+        <aside class="doc-sidebar">
+            <a href="#introduction" class="active">Introduction</a>
+            <a href="#phrybucks">The Phrybucks Economy</a>
+            <a href="#content-lifecycle">Content Lifecycle</a>
+            <a href="#creator-tools">Creator Tools</a>
+            <a href="#community-features">Community Features</a>
+            <a href="#watch-experience">The Watch Experience</a>
+            <a href="#ad-free">Ad-Free Experience</a>
+            <div style="height: 1px; background: var(--border-color); margin: 1rem 0;"></div>
+            <a href="../legal/terms.html">Terms of Service</a>
+            <a href="../legal/privacy.html">Privacy Policy</a>
+        </aside>
+
+        <main class="doc-content markdown-body">
+            <h1 style="font-size: 2.5em;">Welcome to Phryco</h1>
+
+            <section id="introduction">
+                <h2><i data-lucide="sparkles"></i> Introduction to Phryco</h2>
+                <p>
+                    Welcome! Phryco is more than just a video sharing platform; it's a dynamic community with its own virtual economy. While you can browse, watch, and share videos like on any other platform, Phryco introduces a unique layer of interaction and monetization through a system called <b class="key-term">Phrybucks</b>. This guide will walk you through the special features and mechanics that make Phryco unique.
+                </p>
+            </section>
+
+            <section id="phrybucks">
+                <h2><i data-lucide="coins"></i> The Phrybucks Economy</h2>
+                <p>
+                    Phrybucks (PB) are the lifeblood of the Phryco platform. It's a virtual currency that you can earn and spend in various ways. New users are seeded with <strong>5.0 PB</strong> to get started.
+                </p>
+                <h3>How to Earn Phrybucks</h3>
+                <ul>
+                    <li><strong>Views:</strong> For every unique view on your video, you earn a small amount of PB (0.01 PB).</li>
+                    <li><strong>Ad Revenue:</strong> If your video has monetization enabled, you earn 1.0 PB each time an ad is shown before it.</li>
+                    <li><strong>Transfers:</strong> Other users can directly transfer Phrybucks to you.</li>
+                    <li><strong>Membership Payments:</strong> If you set up Channel Memberships, you receive the full PB price from users who join your tiers.</li>
+                </ul>
+                <h3>How to Spend Phrybucks</h3>
+                <ul>
+                    <li><strong>Uploading Videos:</strong> Uploading costs PB based on the qualities you choose to encode and the total file size. Higher qualities and larger files cost more.</li>
+                    <li><strong>Ad Campaigns:</strong> You can pay PB to run your own video as a pre-roll ad across the platform. The cost is <code>1 PB * Target Audience * Target Times</code>.</li>
+                    <li><strong>Channel Memberships:</strong> Join a creator's channel by paying a monthly PB fee to access exclusive perks.</li>
+                    <li><strong>Transfers:</strong> Send PB to other users. Note that a <strong>5% transaction fee</strong> applies to all transfers (waived for Admins/Owners).</li>
+                    <li><strong>Ad-Free Experience:</strong> You can pay a monthly PB fee to disable all ads on the platform.</li>
+                    <li><strong>Emoji Packs:</strong> Your first custom emoji pack is free. Subsequent packs cost 250 PB each.</li>
+                </ul>
+            </section>
+
+            <section id="content-lifecycle">
+                <h2><i data-lucide="recycle"></i> The Content Lifecycle</h2>
+                <p>When you upload a video, it doesn't go public immediately. It passes through several stages to ensure quality and safety.</p>
+                <ol>
+                    <li><strong>DRAFT:</strong> Immediately after upload and while processing, your video is in a draft state. It's visible only to you in the Creator Studio.</li>
+                    <li><strong>PENDING_REVIEW:</strong> Once you're happy with your video's details, you must submit it for review. An administrator will check it for compliance.</li>
+                    <li><strong>PUBLIC / PRIVATE:</strong> If approved, the video becomes <code>PUBLIC</code> (or <code>PRIVATE</code>, if you've set it). You will receive a notification of its approval.</li>
+                    <li><strong>REMOVED:</strong> If a video is deleted, it's moved to a "trash" state for 1 hour before being permanently deleted. It can be restored during this time from the Creator Studio.</li>
+                </ol>
+                <h3>Content Visibility</h3>
+                <p>Beyond Public and Private, creators can set special visibility options for their videos:</p>
+                <ul>
+                    <li><strong>SUBSCRIBER_ONLY:</strong> The video is only viewable by users who are subscribed to your channel.</li>
+                    <li><strong>MEMBER_ONLY:</strong> The video is only viewable by users who have an active, paid membership to your channel. You can even restrict it to a specific membership tier.</li>
+                </ul>
+            </section>
+            
+            <section id="creator-tools">
+                <h2><i data-lucide="sliders-horizontal"></i> Creator Tools (Phryco Studio)</h2>
+                <p>Phryco Studio is your hub for managing your content, channel, and earnings. Here are some of the powerful features available to you:</p>
+                <h3>Channel Memberships</h3>
+                <p>
+                    Create multiple tiers of paid memberships for your channel. For each tier, you can set a monthly Phrybucks price and offer exclusive perks like:
+                </p>
+                <ul>
+                    <li><strong>Custom Badges:</strong> A unique icon that appears next to a member's name in comments on your videos.</li>
+                    <li><strong>Exclusive Emojis:</strong> Custom emojis that your members can use in comments across the entire platform.</li>
+                </ul>
+                <h3>Advertising Campaigns</h3>
+                <p>
+                    You can turn any of your public videos into a pre-roll ad. From the upload page, simply enable the "Ad Campaign" option and set a budget based on your target audience size and how many times you want the ad to be seen. You can manage and track the performance of your campaigns in the "Ads" tab of the studio.
+                </p>
+                <h3>Advanced Video Editing</h3>
+                <p>
+                    After uploading, you can go back and edit many aspects of your video, including:
+                </p>
+                <ul>
+                    <li>Title, description, tags, and category.</li>
+                    <li>Visibility settings and scheduled release dates.</li>
+                    <li>Audience settings (Made for Kids, Age Restricted).</li>
+                    <li><strong>Chapters:</strong> Add timestamps and titles to break your video into sections, making it easier for viewers to navigate.</li>
+                    <li><strong>Custom Scrubber Icon:</strong> As a partner, you can upload a custom icon that appears on the video player's progress bar.</li>
+                </ul>
+            </section>
+            
+            <section id="community-features">
+                <h2><i data-lucide="users"></i> Community Features</h2>
+                <h3>QnA Forum</h3>
+                <p>
+                    The QnA Forum is a dedicated space to ask questions and get answers from the community. When you ask a question, you can provide a title, a detailed question (with Markdown support), and attach images. Other users can post replies, and as the original poster, you can <strong>accept one reply as the correct answer</strong>. This will mark the thread as "RESOLVED" and lock it from further replies.
+                </p>
+                <h3>Custom Emojis in Comments</h3>
+                <p>
+                    Make your comments stand out with custom emojis! You can access them via the emoji picker (<code><i data-lucide="smile" style="display:inline; width:1em; height:1em;"></i></code>) in the comment box. There are two types:
+                </p>
+                <ul>
+                    <li><strong>Global Emojis:</strong> Available to everyone on Phryco.</li>
+                    <li><strong>Channel Emojis:</strong> Exclusive emojis from creators you have a paid membership with. These are locked unless you are an active member of the required tier.</li>
+                </ul>
+            </section>
+
+            <section id="watch-experience">
+                <h2><i data-lucide="play-circle"></i> The Watch Experience</h2>
+                <p>We've packed the video player with features to enhance your viewing experience.</p>
+                <ul>
+                    <li><strong>Keyboard Shortcuts:</strong> Control playback with your keyboard. <code>Space/K</code> to play/pause, <code>J/L</code> to seek, <code>M</code> to mute, <code>F</code> for fullscreen, and number keys (<code>0-9</code>) to jump to a percentage of the video.</li>
+                    <li><strong>Timestamps:</strong> Descriptions and comments can contain timestamps (like <code>1:35</code>). Clicking them will jump the video to that exact moment.</li>
+                    <li><strong>Heatmap & Chapters:</strong> Hover over the progress bar to see a "heatmap" of the most replayed parts of the video. The bar is also segmented into chapters if the creator added them.</li>
+                    <li><strong>Picture-in-Picture & Theater Mode:</strong> Watch videos in a floating window or expand the player for a more cinematic experience.</li>
+                    <li><strong>Screenshots:</strong> Use the camera icon (or <code>S</code> key) to instantly download a high-quality screenshot of the current frame.</li>
+                </ul>
+            </section>
+            
+            <section id="ad-free">
+                <h2><i data-lucide="zap-off"></i> Ad-Free Experience</h2>
+                <p>
+                    While ads support our creators, we understand you might prefer an ad-free experience. You can disable all advertisements on Phryco by paying a monthly fee in Phrybucks from your <a href="../settings/index.html">Account Settings</a> page.
+                </p>
+                <p>
+                    The price for the ad-free subscription is dynamic. It starts at <strong>50 PB</strong> for the first month and increases by 15% each subsequent month to encourage a sustainable economy. If you don't have enough PB for the renewal, your ad-free status will be removed, and ads will be re-enabled.
+                </p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.doc-sidebar a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 120) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(a => {
+                    a.classList.remove('active');
+                    if (a.getAttribute('href') === '#' + current) {
+                        a.classList.add('active');
+                    }
+                });
+            });
+
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

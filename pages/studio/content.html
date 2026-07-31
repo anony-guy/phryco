@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Content</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-draft { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        .status-public { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .status-removed { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html">Dashboard</a>
+                <a href="../../pages/studio/content.html" class="active">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <h2 style="margin-bottom: 1.5rem;">Channel Content</h2>
+
+            <div class="animate-fade-in" style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Video</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="content-table-body">
+                        <!-- Content populated by JS -->
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/studio/content.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

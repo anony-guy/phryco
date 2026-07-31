@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Ads</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        tbody tr {
+            transition: background var(--transition-fast);
+        }
+        tbody tr.hover-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        th {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(0,0,0,0.2);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-badge.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        .status-badge.completed {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+        }
+        .status-badge.inactive {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: var(--radius-sm);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html" class="active">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <h2 style="margin-bottom: 1rem;">My Ad Campaigns</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                View and manage your active ad campaigns. Remember, you can launch new campaigns directly from the Upload page by checking "Run as an Ad Campaign".
+            </p>
+
+            <div class="animate-fade-in" style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Status</th>
+                            <th>Views (Progress)</th>
+                            <th>Targeting</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ads-table-body">
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/studio/ads.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

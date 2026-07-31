@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch History - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .history-card {
+            display: flex;
+            gap: 1.5rem;
+            text-decoration: none;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-fast), border-color var(--transition-fast);
+        }
+        .history-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .history-thumbnail {
+            width: 240px;
+            height: 135px;
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .history-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .history-title {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .history-meta {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .history-desc {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <div class="search-bar" style="flex: 1; max-width: 500px; margin: 0 2rem;">
+            <input type="text" placeholder="Search videos..." style="width: 100%; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); outline: none;">
+        </div>
+        <nav class="nav-links">
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins" style="width: 16px; height: 16px;"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/upload.html" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <a href="../../pages/notifications/index.html">
+                <i data-lucide="bell"></i>
+            </a>
+            <div class="user-menu-container" style="position: relative;">
+                <a href="#" id="user-menu-btn" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--bg-secondary); text-decoration: none;">
+                    <i data-lucide="user" style="color: var(--text-secondary);"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="../../"><i data-lucide="home"></i> Home</a>
+            <a href="../../pages/trending/index.html"><i data-lucide="trending-up"></i> Trending</a>
+            <a href="../../pages/explore/index.html"><i data-lucide="compass"></i> Explore</a>
+            <a href="../../pages/qna/index.html"><i data-lucide="help-circle"></i> QnA Forum</a>
+            <a href="../../pages/history/index.html" class="active"><i data-lucide="history"></i> History</a>
+        </aside>
+
+        <main class="content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                    <i data-lucide="history"></i> Watch History
+                </h1>
+                <button id="clear-history-btn" class="btn-primary" style="background: transparent; border-color: #ef4444; color: #ef4444; display: none; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;">
+                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Clear All
+                </button>
+            </div>
+            <div class="history-list" id="history-container">
+                <!-- Video cards will be injected here via JS -->
+            </div>
+        </main>
+    </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/history.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

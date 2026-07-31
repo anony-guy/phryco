@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Economy</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        .wallet-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .wallet-balance {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--phrybucks-gold);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .amount-positive { color: #10b981; font-weight: 600; }
+        .amount-negative { color: #ef4444; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html" class="active">Transactions</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <div class="wallet-card animate-fade-in">
+                <div>
+                    <h3 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: normal;">Available Balance</h3>
+                    <div class="wallet-balance" id="wallet-balance">0.0 PB</div>
+                    <button id="open-transfer-btn" style="margin-top: 1rem; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600; border: none; cursor: pointer; background: var(--phrybucks-gold); color: black;">
+                        Transfer Phrybucks
+                    </button>
+                </div>
+                <i data-lucide="coins" style="width: 64px; height: 64px; color: var(--phrybucks-gold); opacity: 0.5;"></i>
+            </div>
+            
+            <!-- Transfer Modal -->
+            <div id="transfer-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                <div style="background: var(--bg-secondary); width: 90%; max-width: 400px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1.25rem;">Transfer Phrybucks</h3>
+                        <button onclick="document.getElementById('transfer-modal').style.display='none'" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer;"><i data-lucide="x"></i></button>
+                    </div>
+                    <form id="transfer-form" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Recipient Username</label>
+                            <input type="text" id="transfer-recipient" required style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Amount</label>
+                            <input type="number" id="transfer-amount" required min="0.01" step="0.01" max="10000" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                        </div>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">Note: A 5% fee applies to all transfers.</p>
+                        <button type="submit" id="submit-transfer-btn" style="width: 100%; padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; border: none; cursor: pointer; background: var(--accent-primary); color: white; margin-top: 0.5rem;">
+                            Send Transfer
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Transaction History</h3>
+            
+            <div class="animate-fade-in" style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-table-body">
+                        <!-- Content populated by JS -->
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/studio/economy.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>

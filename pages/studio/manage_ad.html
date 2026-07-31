@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Manage Ad</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .manage-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .manage-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .panel h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .small-chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            outline: none;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .status-badge.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+        
+        .status-badge.active:hover {
+            background: rgba(46, 204, 113, 0.2);
+        }
+        
+        .status-badge.inactive {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        .status-badge.inactive:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html" class="active">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <a href="ads.html" class="back-link"><i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Campaigns</a>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 id="campaign-title">Loading Campaign...</h2>
+                <button id="toggle-status-btn" class="status-badge" style="display: none;">
+                    <!-- Populated by JS -->
+                </button>
+            </div>
+
+            <div class="manage-grid animate-fade-in">
+                <!-- Analytics Pane -->
+                <div class="analytics-pane">
+                    <div class="panel">
+                        <h3><i data-lucide="trending-up"></i> 7-Day Performance</h3>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-row">
+                        <div class="panel">
+                            <h3><i data-lucide="globe"></i> Viewers by Region</h3>
+                            <div class="small-chart-container">
+                                <canvas id="countryChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <h3><i data-lucide="smartphone"></i> Viewers by Device</h3>
+                            <div class="small-chart-container">
+                                <canvas id="deviceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Management Pane -->
+                <div class="management-pane">
+                    <div class="panel">
+                        <h3><i data-lucide="settings"></i> Campaign Settings</h3>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Campaign Progress</span>
+                                <span id="progress-text" style="font-weight: 500;">0 / 0 Views</span>
+                            </div>
+                            <div class="progress-bar-container" style="background: var(--bg-primary); border-radius: var(--radius-sm); height: 8px; overflow: hidden;">
+                                <div id="progress-bar" style="height: 100%; background: var(--accent-primary); border-radius: var(--radius-sm); width: 0%;"></div>
+                            </div>
+                        </div>
+                        
+                        <form id="targeting-form">
+                            <div class="form-group">
+                                <label>Target Country</label>
+                                <select id="target-country" class="form-control">
+                                    <option value="">Global (Any Country)</option>
+                                    <option value="US">United States</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="DE">Germany</option>
+                                    <option value="FR">France</option>
+                                    <option value="JP">Japan</option>
+                                    <option value="BR">Brazil</option>
+                                    <option value="IN">India</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Target Device</label>
+                                <select id="target-device" class="form-control">
+                                    <option value="">Any Device</option>
+                                    <option value="Desktop">Desktop Only</option>
+                                    <option value="Mobile">Mobile Only</option>
+                                </select>
+                            </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+                            
+                            <div class="form-group">
+                                <label>Ad Playback Type</label>
+                                <select id="is-skippable" class="form-control">
+                                    <option value="true">Skippable</option>
+                                    <option value="false">Unskippable (Video max 20s)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="skip-seconds-group">
+                                <label>Skip after seconds (5-15)</label>
+                                <input type="number" id="skip-after-seconds" class="form-control" min="5" max="15" value="5">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/studio/manage_ad.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

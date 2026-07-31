@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Phryco</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="theme-dark">
+    <header class="app-header">
+        <a href="/" class="brand">
+            <i data-lucide="video"></i>
+            <span>Phryco</span>
+        </a>
+    </header>
+
+    <div class="layout" style="justify-content: center; align-items: center; text-align: center;">
+        <div class="auth-container animate-fade-in" style="max-width: 400px;">
+            <div id="loading-state">
+                <i data-lucide="loader" class="spin" style="width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+                <h2>Verifying Email...</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Please wait while we verify your email address.</p>
+            </div>
+            
+            <div id="success-state" style="display: none;">
+                <i data-lucide="check-circle" style="width: 48px; height: 48px; color: #10b981; margin-bottom: 1rem;"></i>
+                <h2>Email Verified!</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 1.5rem;">Your account is now verified. You can access all features.</p>
+                <a href="/" class="btn-primary" style="display: inline-block; padding: 0.75rem 2rem;">Go to Home</a>
+            </div>
+            
+            <div id="error-state" style="display: none;">
+                <i data-lucide="x-circle" style="width: 48px; height: 48px; color: #ef4444; margin-bottom: 1rem;"></i>
+                <h2>Verification Failed</h2>
+                <p id="error-msg" style="color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 1.5rem;">The verification link is invalid or has expired.</p>
+                <a href="/pages/login/index.html" class="btn-outline" style="display: inline-block; padding: 0.75rem 2rem;">Go to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../js/pages/verify.js"></script>
+</body>
+</html>

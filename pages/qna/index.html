@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QnA Forum - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <style>
+        .qna-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .qna-post-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .qna-post-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+        .qna-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .qna-user-pfp {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .qna-username {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .qna-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        .qna-question {
+            font-size: 1.125rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .qna-answer-box {
+            background: rgba(168, 85, 247, 0.05);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-top: 1rem;
+        }
+        .qna-answered-by {
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .qna-answer-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            outline: none;
+            resize: vertical;
+        }
+        .form-control:focus {
+            border-color: var(--accent-primary);
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <div class="search-bar" style="flex: 1; max-width: 500px; margin: 0 2rem;">
+            <input type="text" placeholder="Search videos..." style="width: 100%; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); outline: none;">
+        </div>
+        <nav class="nav-links">
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins" style="width: 16px; height: 16px;"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/upload.html" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <a href="../../pages/notifications/index.html">
+                <i data-lucide="bell"></i>
+            </a>
+            <div class="user-menu-container" style="position: relative;">
+                <a href="#" id="user-menu-btn" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--bg-secondary); text-decoration: none;">
+                    <i data-lucide="user" style="color: var(--text-secondary);"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="../../"><i data-lucide="home"></i> Home</a>
+            <a href="../../pages/trending/index.html"><i data-lucide="trending-up"></i> Trending</a>
+            <a href="../../pages/explore/index.html"><i data-lucide="compass"></i> Explore</a>
+            <a href="../../pages/qna/index.html" class="active"><i data-lucide="help-circle"></i> QnA Forum</a>
+        </aside>
+
+        <main class="content">
+            <div class="qna-header">
+                <h1 style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i data-lucide="message-circle" style="color: var(--accent-primary); width: 28px; height: 28px;"></i> QnA Forum
+                </h1>
+                <button class="btn-primary" id="ask-btn">Ask Question</button>
+            </div>
+            
+            <div id="posts-container">
+                <!-- Posts will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Ask Question Modal -->
+    <div id="ask-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Ask a Question</h2>
+            <div class="form-group">
+                <label>Header (Title)</label>
+                <input type="text" id="ask-title-input" class="form-control" placeholder="Summarize your question">
+            </div>
+            <div class="form-group">
+                <label>Your Question</label>
+                <textarea id="ask-question-input" class="form-control" rows="4" placeholder="What's on your mind?"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Attach Images</label>
+                <input type="file" id="ask-image-upload" accept="image/*" class="form-control" style="background: transparent; border: none; padding: 0;">
+                <div id="ask-image-preview" style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="ask-cancel">Cancel</button>
+                <button class="btn-primary" id="ask-submit">Post to Forum</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/qna.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

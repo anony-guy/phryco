@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - My Memberships</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .settings-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .settings-section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .membership-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .membership-info h3 { margin: 0 0 0.25rem 0; font-size: 1rem; }
+        .membership-info p { margin: 0; color: var(--text-secondary); font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; overflow-x: auto;">
+                <a href="../../pages/studio/index.html" style="color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem;">Dashboard</a>
+                <a href="../../pages/studio/settings.html" style="color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem;">Settings</a>
+                <a href="../../pages/studio/memberships.html" style="color: white; background: var(--accent-primary); text-decoration: none; padding: 0.5rem 1rem; border-radius: var(--radius-md);">My Memberships</a>
+                <a href="../../pages/studio/content.html" style="color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem;">Content</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <div class="settings-section animate-fade-in">
+                <h2>My Active Memberships</h2>
+                <div id="memberships-list">
+                    <p style="color: var(--text-secondary);">Loading memberships...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => { if (typeof lucide !== 'undefined') lucide.createIcons(); });</script>
+    <script type="module" src="../../js/pages/studio/memberships.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

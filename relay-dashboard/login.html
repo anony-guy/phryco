@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Phryco Network Dashboard</title>
+    <link rel="stylesheet" href="/relay-dashboard/css/relay-theme.css">
+    <style>
+        .login-card {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-bottom: 8px;
+        }
+        .login-card p {
+            color: #5f6368;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card card">
+        <div class="logo" style="justify-content: center; margin-bottom: 24px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1a73e8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span>Phryco</span> Network
+        </div>
+        <h2>Admin Authentication</h2>
+        <p>Sign in with your Phryco Admin account to manage the relay network.</p>
+        <button id="login-btn" class="btn">Login with Phryco SSO</button>
+    </div>
+
+    <script src="/relay-dashboard/js/app.js"></script>
+    <script>
+        document.getElementById('login-btn').addEventListener('click', () => {
+            // Need a known client_id. We'll use "relay-dashboard" 
+            // The master node backend needs to have this registered, or we can hardcode for this dashboard
+            const clientId = "relay-dashboard";
+            const redirectUri = window.location.origin + "/relay-dashboard/index.html";
+            window.location.href = `/pages/sso/authorize.html?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+        });
+    </script>
+</body>
+</html>

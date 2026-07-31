@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Dashboard</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .channel-header {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+        .channel-banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--accent-primary));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.25rem;
+            object-fit: cover;
+        }
+        .channel-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-primary);
+            border: 4px solid var(--bg-primary);
+            border-radius: 50%;
+            position: absolute;
+            bottom: -30px;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            object-fit: cover;
+            cursor: pointer;
+            overflow: hidden;
+            transition: opacity var(--transition-fast);
+        }
+        .channel-banner:hover, .channel-avatar:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .studio-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .studio-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .studio-nav a.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco Studio
+        </a>
+    </header>
+
+    <div class="layout">
+        <main class="content">
+            <nav class="studio-nav">
+                <a href="../../pages/studio/index.html" class="active">Dashboard</a>
+                <a href="../../pages/studio/content.html">Content</a>
+                <a href="../../pages/studio/upload.html">Upload</a>
+                <a href="../../pages/studio/economy.html">Economy</a>
+                <a href="../../pages/studio/emojis.html">Emojis</a>
+                <a href="../../pages/studio/ads.html">Ads</a>
+                            <a href="../../pages/studio/invites.html">Invites</a>
+            </nav>
+
+            <div class="channel-header animate-fade-in">
+                <!-- Channel Banner -->
+                <input type="file" id="banner-input" style="display: none;" accept="image/*">
+                <div class="channel-banner" id="banner-placeholder" onclick="document.getElementById('banner-input').click()">
+                    <span>Click to upload Banner</span>
+                </div>
+                <!-- Channel Avatar -->
+                <input type="file" id="avatar-input" style="display: none;" accept="image/*">
+                <div class="channel-avatar" id="avatar-placeholder" onclick="document.getElementById('avatar-input').click()">
+                    <i data-lucide="user"></i>
+                </div>
+            </div>
+
+            <div style="margin-left: 9rem; display: flex; align-items: center; gap: 1rem;">
+                <h1 id="channel-name">Your Channel</h1>
+                <a href="../../pages/studio/settings.html" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.25rem 0.5rem; font-size: 0.875rem; border-radius: var(--radius-md); cursor: pointer; text-decoration: none;">
+                    Channel Settings
+                </a>
+            </div>
+
+            <div class="analytics-grid animate-fade-in">
+                <div class="stat-card">
+                    <span class="label">Total Views</span>
+                    <span class="value" id="stat-views">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Total Likes</span>
+                    <span class="value" id="stat-likes">0</span>
+                </div>
+                <div class="stat-card" style="border-color: rgba(251, 191, 36, 0.3);">
+                    <span class="label" style="color: var(--phrybucks-gold);">Phrybucks Balance</span>
+                    <span class="value" id="stat-phrybucks">0 PB</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error("Lucide script failed to load from CDN.");
+            }
+        });</script>
+    <script type="module" src="../../js/pages/studio/dashboard.js"></script>
+<script type="module" src="../../js/components/header.js"></script>
+    </body>
+</html>
