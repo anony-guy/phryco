@@ -226,6 +226,15 @@ async function loadWatchPage() {
             frameImg.src = `../..${video.frame_path}`;
             frameImg.className = 'player-frame-overlay';
             container.appendChild(frameImg);
+            
+            // Adapt video to fit inside frame area
+            const innerContent = document.getElementById('video-inner-content');
+            if (video.frame_path.includes('angel-wings')) {
+                innerContent.style.transform = 'scale(0.83)';
+            } else {
+                innerContent.style.transform = 'scale(0.95)';
+            }
+            innerContent.style.transformOrigin = 'center center';
         }
         
         // Set Video Player Source and Custom Controls
