@@ -223,7 +223,7 @@ async function loadWatchPage() {
         if (video.frame_path) {
             const container = document.querySelector('.video-player-container');
             const frameImg = document.createElement('img');
-            frameImg.src = `${API_BASE_URL}${video.frame_path}`;
+            frameImg.src = `../..${video.frame_path}`;
             frameImg.className = 'player-frame-overlay';
             container.appendChild(frameImg);
         }
