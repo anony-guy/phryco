@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phryco-cache-v3';
+const CACHE_NAME = 'phryco-cache-v4';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -33,9 +33,9 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
     // 1. Network Only for API and Video Streams
-    if (url.pathname.startsWith('/api/') || 
-        url.pathname.includes('/stream') || 
-        url.pathname.endsWith('.m3u8') || 
+    if (url.pathname.startsWith('/api/') ||
+        url.pathname.includes('/stream') ||
+        url.pathname.endsWith('.m3u8') ||
         url.pathname.endsWith('.ts')) {
         return; // Let the browser handle it normally (bypass service worker)
     }
@@ -61,11 +61,11 @@ self.addEventListener('fetch', (event) => {
     }
 
     // 3. Cache First (Stale-While-Revalidate) for Static Assets (JS, CSS, Images, CDNs)
-    const isStaticAsset = url.pathname.endsWith('.css') || 
-                          url.pathname.endsWith('.js') || 
-                          url.pathname.endsWith('.png') || 
-                          url.pathname.endsWith('.jpg') ||
-                          url.hostname === 'cdn.jsdelivr.net';
+    const isStaticAsset = url.pathname.endsWith('.css') ||
+        url.pathname.endsWith('.js') ||
+        url.pathname.endsWith('.png') ||
+        url.pathname.endsWith('.jpg') ||
+        url.hostname === 'cdn.jsdelivr.net';
 
     if (isStaticAsset) {
         event.respondWith(
@@ -81,7 +81,7 @@ self.addEventListener('fetch', (event) => {
                 }).catch(() => {
                     // Ignore fetch errors for static assets if we already have cache
                 });
-                
+
                 return cachedResponse || fetchPromise;
             })
         );
