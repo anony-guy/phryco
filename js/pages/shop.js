@@ -20,7 +20,7 @@ async function loadFrames() {
             <div class="frame-card">
                 <div class="frame-preview">
                     <span style="color: #666; font-size: 0.8rem;">Video Preview</span>
-                    <img src="${API_BASE_URL}${f.image_path}" class="frame-overlay" alt="${f.name}">
+                    <img src="../..${f.image_path}" class="frame-overlay" alt="${f.name}">
                 </div>
                 <div class="frame-info">
                     <div class="frame-title">${f.name}</div>
