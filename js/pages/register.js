@@ -1,5 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { setToken } from '../utils/auth.js';
+import { API_BASE_URL } from '../utils/config.js';
 
 let vaultguardToken = null;
 let challengeToken = null;
@@ -39,7 +40,7 @@ const submitForm = async () => {
         formData.append('challenge_token', challengeToken);
         formData.append('human_file', fileInput.files[0]);
 
-        const res = await fetch('/api/auth/signup', {
+        const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
             method: 'POST',
             body: formData
         });
