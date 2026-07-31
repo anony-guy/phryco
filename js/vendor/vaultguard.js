@@ -1178,23 +1178,55 @@
      * @param {string} puzzleId - Optional specific puzzle ID
      * @returns {Object} Challenge with question, images, and correct answer indices
      */
-    imagePuzzle(puzzleId = null) {
-      const puzzle = puzzleId ? ImagePuzzles.getPuzzle(puzzleId) : ImagePuzzles.getRandomPuzzle();
+    imagePuzzle(options = null) {
+      const isServerMode = (options && typeof options === 'object');
+      let rawPuzzleId = isServerMode ? options.puzzleId : (typeof options === 'string' ? options : null);
+      if (rawPuzzleId && !rawPuzzleId.startsWith('select-all-')) {
+          rawPuzzleId = 'select-all-' + rawPuzzleId;
+      }
       
-      const allImages = [
-        ...puzzle.correctImages.map(url => ({ url, correct: true })),
-        ...puzzle.incorrectImages.map(url => ({ url, correct: false }))
-      ];
+      const puzzle = rawPuzzleId ? ImagePuzzles.getPuzzle(rawPuzzleId) : ImagePuzzles.getRandomPuzzle();
       
-      const shuffledImages = ImagePuzzles.shuffleArray(allImages);
-      const correctIndices = shuffledImages
-        .map((img, index) => img.correct ? index : -1)
-        .filter(index => index !== -1);
+      let shuffledImages;
+      let finalCorrectIndices;
+
+      if (isServerMode && options.correctIndices) {
+        const totalImages = options.imageCount || 9;
+        shuffledImages = new Array(totalImages).fill(null);
+        
+        const correctCount = options.correctIndices.length;
+        const incorrectCount = totalImages - correctCount;
+
+        const correctSubset = ImagePuzzles.shuffleArray([...puzzle.correctImages]).slice(0, correctCount);
+        const incorrectSubset = ImagePuzzles.shuffleArray([...puzzle.incorrectImages]).slice(0, incorrectCount);
+
+        let correctPtr = 0;
+        let incorrectPtr = 0;
+        
+        for (let i = 0; i < totalImages; i++) {
+           if (options.correctIndices.includes(i)) {
+             shuffledImages[i] = { url: correctSubset[correctPtr++], correct: true };
+           } else {
+             shuffledImages[i] = { url: incorrectSubset[incorrectPtr++], correct: false };
+           }
+        }
+        finalCorrectIndices = options.correctIndices;
+      } else {
+        const allImages = [
+          ...puzzle.correctImages.map(url => ({ url, correct: true })),
+          ...puzzle.incorrectImages.map(url => ({ url, correct: false }))
+        ];
+        
+        shuffledImages = ImagePuzzles.shuffleArray(allImages);
+        finalCorrectIndices = shuffledImages
+          .map((img, index) => img.correct ? index : -1)
+          .filter(index => index !== -1);
+      }
       
       return {
         question: puzzle.question,
         images: shuffledImages.map(img => img.url),
-        correctIndices: correctIndices,
+        correctIndices: finalCorrectIndices,
         puzzleId: puzzle.id
       };
     },
@@ -1206,7 +1238,7 @@
      * Bots cannot scrape the answer via DOM traversal, OCR requires rendering the canvas.
      * @returns {Object} Challenge with question, canvas element, and answer
      */
-    textIllusion() {
+    textIllusion(options = null) {
       const words = [
         'shield', 'castle', 'bridge', 'garden', 'planet',
         'rocket', 'forest', 'stream', 'temple', 'crystal',
@@ -1215,7 +1247,8 @@
         'phoenix', 'quartz', 'riddle', 'summit', 'thunder',
         'umbra', 'voyage', 'willow', 'xenon', 'zenith'
       ];
-      const answer = words[CryptoUtils.randomInt(0, words.length - 1)];
+      const providedWord = (options && typeof options === 'object') ? options.word : null;
+      const answer = providedWord || words[CryptoUtils.randomInt(0, words.length - 1)];
 
       const canvas = document.createElement('canvas');
       canvas.width = 280;
@@ -1300,14 +1333,21 @@
      * via AudioBuffer — avoids OfflineAudioContext compatibility issues.
      * @returns {Object} Challenge with question, sample rate, and answer
      */
-    audio() {
-      const digitCount = 4;
-      const digits = [];
-      for (let i = 0; i < digitCount; i++) {
-        digits.push(CryptoUtils.randomInt(0, 9).toString());
+    audio(options = null) {
+      const providedWord = (options && typeof options === 'object') ? options.word : null;
+      let answer;
+      if (providedWord) {
+        answer = providedWord;
+      } else {
+        const digitCount = 4;
+        const digits = [];
+        for (let i = 0; i < digitCount; i++) {
+          digits.push(CryptoUtils.randomInt(0, 9).toString());
+        }
+        answer = digits.join('');
       }
-      const answer = digits.join('');
 
+      const digitCount = answer.length;
       const sampleRate = 22050;
       const digitDuration = 0.45;
       const gapDuration = 0.25;
@@ -1678,18 +1718,20 @@
           minTracePoints: serverChallenge.minTracePoints || null,
           pathType: serverChallenge.pathType || null,
           word: serverChallenge.word || null,
-          digitCount: serverChallenge.digitCount || null
+          digitCount: serverChallenge.digitCount || null,
+          correctIndices: serverChallenge.correctIndices || null
         };
 
         this.challenges.set(serverChallenge.id, challengeData);
 
-        if (['textIllusion', 'audio', 'visualPath'].includes(serverChallenge.type)) {
+        if (['textIllusion', 'audio', 'visualPath', 'imagePuzzle'].includes(serverChallenge.type)) {
           const generator = ChallengeGenerators[serverChallenge.type];
           const localRender = generator(challengeData);
           if (localRender.canvas) challengeData.canvas = localRender.canvas;
           if (localRender.audioSamples) challengeData.audioSamples = localRender.audioSamples;
           if (localRender.audioSampleRate) challengeData.audioSampleRate = localRender.audioSampleRate;
           if (localRender.pathPoints) challengeData.pathPoints = localRender.pathPoints;
+          if (localRender.images) challengeData.images = localRender.images;
         }
 
         this._emitHook('onChallengeGenerated', {
