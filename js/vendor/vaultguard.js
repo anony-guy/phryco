@@ -2013,6 +2013,7 @@
           return {
             success: true,
             verified: true,
+            token: result.token || result.challengeId || challenge.id,
             trustScore: result.trustScore || null,
             brand: VAULTGUARD.name
           };
