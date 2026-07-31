@@ -1,10 +1,10 @@
 export function renderHeader(user) {
     const isRelaysPage = window.location.pathname.includes('/index.html') || window.location.pathname.endsWith('/relay-dashboard/') || window.location.pathname.endsWith('/relay-dashboard');
-    const isDeveloperPage = window.location.pathname.includes('/developer.html');
+    const isDeveloperPage = window.location.pathname.includes('/pages/developer');
     
     // If regular user (not admin), redirect away from relays page
     if (user.role !== 'ADMIN' && user.role !== 'OWNER' && isRelaysPage) {
-        window.location.href = '/relay-dashboard/developer.html';
+        window.location.href = '/pages/developer/';
         return;
     }
 
@@ -13,12 +13,12 @@ export function renderHeader(user) {
     // Only show Relays tab to admins/owners
     if (user.role === 'ADMIN' || user.role === 'OWNER') {
         navHtml += `
-            <a href="/relay-dashboard/index.html" class="nav-link ${isRelaysPage ? 'active' : ''}">Relays</a>
+            <a href="/relay-dashboard/" class="nav-link ${isRelaysPage ? 'active' : ''}">Relays</a>
         `;
     }
     
     navHtml += `
-        <a href="/relay-dashboard/developer.html" class="nav-link ${isDeveloperPage ? 'active' : ''}">Developer Portal</a>
+        <a href="/pages/developer/" class="nav-link ${isDeveloperPage ? 'active' : ''}">Developer Portal</a>
     `;
 
     const header = document.createElement('header');

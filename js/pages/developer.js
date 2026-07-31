@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '../utils/config.js';
-import { renderHeader } from '../components/header.js';
+import { renderHeader } from '../../relay-dashboard/js/components/header.js';
 
 async function checkAuth() {
     const token = localStorage.getItem('relay_sso_token');
