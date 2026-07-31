@@ -8,10 +8,12 @@ export async function apiFetch(endpoint, options = {}) {
         ...options.headers
     };
 
-    // If body is an object and not FormData, stringify it and set content-type
-    if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
-        options.body = JSON.stringify(options.body);
-        headers['Content-Type'] = 'application/json';
+    // If body is present and not FormData, ensure Content-Type is application/json and stringify if object
+    if (options.body && !(options.body instanceof FormData)) {
+        if (typeof options.body === 'object') {
+            options.body = JSON.stringify(options.body);
+        }
+        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
     }
 
     const config = {
@@ -38,7 +40,17 @@ export async function apiFetch(endpoint, options = {}) {
         }
 
         if (!response.ok) {
-            throw new Error(data?.detail || response.statusText);
+            let errorMsg = response.statusText;
+            if (data && data.detail) {
+                if (Array.isArray(data.detail)) {
+                    errorMsg = data.detail.map(err => `${err.loc ? err.loc.join('.') + ': ' : ''}${err.msg}`).join(' | ');
+                } else if (typeof data.detail === 'object') {
+                    errorMsg = JSON.stringify(data.detail);
+                } else {
+                    errorMsg = data.detail;
+                }
+            }
+            throw new Error(errorMsg);
         }
 
         return data;

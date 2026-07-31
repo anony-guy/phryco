@@ -435,7 +435,7 @@ document.getElementById('frame-price-form')?.addEventListener('submit', async (e
     try {
         await apiFetch(`/api/admin/frames/${id}/price`, {
             method: 'PUT',
-            body: JSON.stringify(payload)
+            body: payload
         });
         document.getElementById('frame-modal').style.display = 'none';
         loadAdminFrames();
@@ -454,7 +454,7 @@ document.getElementById('clear-promo-btn')?.addEventListener('click', async () =
     try {
         await apiFetch(`/api/admin/frames/${id}/price`, {
             method: 'PUT',
-            body: JSON.stringify({ clear_temp_price: true })
+            body: { clear_temp_price: true }
         });
         document.getElementById('frame-modal').style.display = 'none';
         loadAdminFrames();
