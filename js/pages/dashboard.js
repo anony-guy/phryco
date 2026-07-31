@@ -299,6 +299,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         if (target === 'approvals') loadQueue();
         if (target === 'videos') loadAllVideos();
         if (target === 'emojis') loadGlobalEmojis();
+        if (target === 'frames') loadAdminFrames();
     });
 });
 
@@ -349,6 +350,117 @@ document.getElementById('global-emoji-form')?.addEventListener('submit', async (
         msg.style.color = '#ef4444';
     } finally {
         btn.disabled = false;
+    }
+});
+
+window.openFrameModal = function(id, name, currentStandardPrice, currentTempPrice) {
+    document.getElementById('frame-modal-title').textContent = `Configure Pricing: ${name}`;
+    document.getElementById('frame-modal-id').value = id;
+    document.getElementById('frame-standard-price').value = currentStandardPrice || '';
+    document.getElementById('frame-temp-price').value = currentTempPrice || '';
+    document.getElementById('frame-temp-duration').value = '';
+    document.getElementById('frame-modal-error').style.display = 'none';
+    document.getElementById('frame-modal').style.display = 'flex';
+};
+
+async function loadAdminFrames() {
+    const tbody = document.getElementById('frames-table-body');
+    if (!tbody) return;
+    try {
+        const frames = await apiFetch('/api/admin/frames');
+        if (frames.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No frames found.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = frames.map(f => {
+            const hasPromo = f.temp_price_phrybucks !== null && f.temp_price_phrybucks !== undefined;
+            let promoDisplay = '<span style="color: #666;">None</span>';
+            let expiryDisplay = '<span class="status-badge status-user">Standard Pricing</span>';
+            
+            if (hasPromo && f.temp_price_expires_at) {
+                const isDiscount = f.price_phrybucks !== null && f.temp_price_phrybucks < f.price_phrybucks;
+                const isHike = f.price_phrybucks !== null && f.temp_price_phrybucks > f.price_phrybucks;
+                const badgeColor = isDiscount ? 'var(--accent-secondary, #10b981)' : (isHike ? '#f97316' : '#60a5fa');
+                const badgeText = isDiscount ? 'SALE (Discount)' : (isHike ? 'SURGE (Price Raise)' : 'Active Override');
+                promoDisplay = `<strong style="color: ${badgeColor};">${f.temp_price_phrybucks} PB</strong>`;
+                
+                const expiresDate = new Date(f.temp_price_expires_at);
+                expiryDisplay = `<span class="status-badge" style="background: rgba(255,255,255,0.1); color: ${badgeColor}; border: 1px solid ${badgeColor};">${badgeText} until ${expiresDate.toLocaleDateString()}</span>`;
+            }
+            
+            return `
+                <tr>
+                    <td style="display: flex; align-items: center; gap: 1rem;">
+                        <img src="../..${f.image_path}" style="width: 48px; height: 36px; object-fit: contain; background: #111; border-radius: 4px; border: 1px solid #333;" alt="${escapeHTML(f.name)}">
+                        <div>
+                            <strong>${escapeHTML(f.name)}</strong><br>
+                            <small style="color: var(--text-secondary);">${escapeHTML(f.description || '')}</small>
+                        </div>
+                    </td>
+                    <td>${f.price_phrybucks !== null ? `<strong>${f.price_phrybucks} PB</strong>` : '<em style="color: #ef4444;">Not Set (Unavailable)</em>'}</td>
+                    <td>${promoDisplay}</td>
+                    <td>${expiryDisplay}</td>
+                    <td>
+                        <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem;" onclick="window.openFrameModal(${f.id}, '${escapeHTML(f.name)}', ${f.price_phrybucks || 'null'}, ${f.temp_price_phrybucks || 'null'})">Configure Price</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ef4444;">Failed to load frames.</td></tr>';
+    }
+}
+
+document.getElementById('frame-price-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = parseInt(document.getElementById('frame-modal-id').value, 10);
+    const standardPriceVal = document.getElementById('frame-standard-price').value;
+    const tempPriceVal = document.getElementById('frame-temp-price').value;
+    const durationVal = document.getElementById('frame-temp-duration').value;
+    const errEl = document.getElementById('frame-modal-error');
+    errEl.style.display = 'none';
+
+    const payload = {};
+    if (standardPriceVal !== '') payload.price_phrybucks = parseFloat(standardPriceVal);
+    if (tempPriceVal !== '') {
+        payload.temp_price_phrybucks = parseFloat(tempPriceVal);
+        payload.duration_days = parseInt(durationVal || '0', 10);
+        if (payload.duration_days <= 0 || payload.duration_days > 30) {
+            errEl.textContent = "Duration must be between 1 and 30 days when setting an override price.";
+            errEl.style.display = 'block';
+            return;
+        }
+    }
+
+    try {
+        await apiFetch(`/api/admin/frames/${id}/price`, {
+            method: 'PUT',
+            body: JSON.stringify(payload)
+        });
+        document.getElementById('frame-modal').style.display = 'none';
+        loadAdminFrames();
+    } catch (err) {
+        errEl.textContent = err.message || "Failed to save frame price";
+        errEl.style.display = 'block';
+    }
+});
+
+document.getElementById('clear-promo-btn')?.addEventListener('click', async () => {
+    const id = parseInt(document.getElementById('frame-modal-id').value, 10);
+    if (!id || !confirm("Are you sure you want to clear the active limited-time price override for this frame?")) return;
+    const errEl = document.getElementById('frame-modal-error');
+    errEl.style.display = 'none';
+
+    try {
+        await apiFetch(`/api/admin/frames/${id}/price`, {
+            method: 'PUT',
+            body: JSON.stringify({ clear_temp_price: true })
+        });
+        document.getElementById('frame-modal').style.display = 'none';
+        loadAdminFrames();
+    } catch (err) {
+        errEl.textContent = err.message || "Failed to clear override";
+        errEl.style.display = 'block';
     }
 });
 

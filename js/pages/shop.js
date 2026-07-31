@@ -16,8 +16,46 @@ async function loadFrames() {
             return;
         }
         
-        container.innerHTML = frames.map(f => `
-            <div class="frame-card">
+        container.innerHTML = frames.map(f => {
+            const hasPromo = f.temp_price_phrybucks !== null && f.temp_price_phrybucks !== undefined && f.temp_price_expires_at;
+            let badgeHTML = '';
+            let priceHTML = `<div class="frame-price"><i data-lucide="coins" style="width: 16px; height: 16px;"></i> ${f.active_price || f.price_phrybucks} PB</div>`;
+            
+            if (hasPromo) {
+                const expiresDate = new Date(f.temp_price_expires_at);
+                const diffMs = expiresDate - new Date();
+                const daysLeft = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+                
+                if (f.is_discount) {
+                    badgeHTML = `
+                        <div style="position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 800; font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; box-shadow: 0 2px 8px rgba(16,185,129,0.4); z-index: 10; display: flex; align-items: center; gap: 4px;">
+                            <i data-lucide="tag" style="width: 12px; height: 12px;"></i> SALE! (${daysLeft}d left)
+                        </div>
+                    `;
+                    priceHTML = `
+                        <div class="frame-price" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="text-decoration: line-through; color: var(--text-secondary); font-size: 0.9rem;">${f.price_phrybucks} PB</span>
+                            <span style="color: #10b981; font-weight: 800;"><i data-lucide="coins" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> ${f.temp_price_phrybucks} PB</span>
+                        </div>
+                    `;
+                } else if (f.is_price_hike) {
+                    badgeHTML = `
+                        <div style="position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, #f97316, #dc2626); color: #fff; font-weight: 800; font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; box-shadow: 0 2px 8px rgba(249,115,22,0.4); z-index: 10; display: flex; align-items: center; gap: 4px;">
+                            <i data-lucide="flame" style="width: 12px; height: 12px;"></i> HIGH DEMAND
+                        </div>
+                    `;
+                    priceHTML = `
+                        <div class="frame-price" style="display: flex; flex-direction: column; align-items: flex-start;">
+                            <span style="color: #f97316; font-weight: 800;"><i data-lucide="coins" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> ${f.temp_price_phrybucks} PB</span>
+                            <small style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1;">Surge ends in ${daysLeft} days (Normal: ${f.price_phrybucks} PB)</small>
+                        </div>
+                    `;
+                }
+            }
+            
+            return `
+            <div class="frame-card" style="position: relative; overflow: hidden;">
+                ${badgeHTML}
                 <div class="frame-preview">
                     <span style="color: #666; font-size: 0.8rem;">Video Preview</span>
                     <img src="../..${f.image_path}" class="frame-overlay" alt="${f.name}">
@@ -25,17 +63,15 @@ async function loadFrames() {
                 <div class="frame-info">
                     <div class="frame-title">${f.name}</div>
                     <div class="frame-desc">${f.description || ''}</div>
-                    <div class="frame-price">
-                        <i data-lucide="coins" style="width: 16px; height: 16px;"></i>
-                        ${f.price_phrybucks} PB
-                    </div>
+                    ${priceHTML}
                 </div>
                 <button class="btn-primary" style="width: 100%; ${f.owned ? 'background: #444; cursor: default;' : ''}"
-                    ${f.owned ? 'disabled' : `onclick="window.buyFrame(${f.id}, '${f.name}')"`}>
+                    ${f.owned ? 'disabled' : `onclick="window.buyFrame(${f.id}, '${f.name.replace(/'/g, "\\'")}')"`}>
                     ${f.owned ? 'Owned' : 'Buy Frame'}
                 </button>
             </div>
-        `).join('');
+            `;
+        }).join('');
         
         if (typeof lucide !== 'undefined') lucide.createIcons();
     } catch (e) {
