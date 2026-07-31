@@ -4,8 +4,15 @@
 // If window.PHRYCO_API_URL is set (e.g. by CI or a script tag), use it.
 // If the app is hosted on the same domain as the backend, fallback to window.location.origin.
 // Otherwise, use the default Cloudflare Tunnel URL.
-export const API_BASE_URL = window.PHRYCO_API_URL || 
-    (window.location.origin.includes('localhost') || window.location.origin.includes('trycloudflare') ? 'https://convertible-nuts-champagne-handheld.trycloudflare.com' : window.location.origin);
+let baseUrl = window.location.origin;
+
+if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
+    baseUrl = 'http://localhost:8000';
+} else if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
+    baseUrl = 'https://convertible-nuts-champagne-handheld.trycloudflare.com';
+}
+
+export const API_BASE_URL = window.PHRYCO_API_URL || baseUrl;
 
 
 
