@@ -146,4 +146,67 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveBtn.disabled = false;
         }
     });
+
+    // Load Connections
+    const connectionsContainer = document.getElementById('connections-container');
+    
+    async function loadConnections() {
+        if (!connectionsContainer) return;
+        
+        try {
+            const connections = await apiFetch('/api/users/me/connections');
+            if (connections.length === 0) {
+                connectionsContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.875rem;">You haven\\'t connected any third-party applications.</p>';
+                return;
+            }
+            
+            connectionsContainer.innerHTML = '';
+            connections.forEach(conn => {
+                const item = document.createElement('div');
+                item.className = 'setting-item';
+                
+                const grantedDate = new Date(conn.granted_at).toLocaleDateString();
+                
+                item.innerHTML = `
+                    <div class="setting-info">
+                        <h3>${conn.name}</h3>
+                        <p>Scopes: ${conn.scopes}</p>
+                        <p style="font-size: 0.75rem; margin-top: 0.25rem;">Authorized on: ${grantedDate}</p>
+                    </div>
+                    <div class="setting-action">
+                        <button class="btn-revoke" data-client-id="${conn.client_id}" style="background: var(--bg-tertiary); color: #ef4444; border: 1px solid #ef4444; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s ease;">Revoke Access</button>
+                    </div>
+                `;
+                connectionsContainer.appendChild(item);
+            });
+            
+            // Add revoke listeners
+            document.querySelectorAll('.btn-revoke').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const clientId = e.target.getAttribute('data-client-id');
+                    if (confirm('Are you sure you want to revoke access for this application?')) {
+                        try {
+                            e.target.disabled = true;
+                            e.target.textContent = 'Revoking...';
+                            await apiFetch(`/api/users/me/connections/${clientId}`, { method: 'DELETE' });
+                            loadConnections(); // Reload list
+                        } catch (err) {
+                            console.error(err);
+                            alert('Failed to revoke access.');
+                            e.target.disabled = false;
+                            e.target.textContent = 'Revoke Access';
+                        }
+                    }
+                });
+            });
+        } catch (e) {
+            console.error(e);
+            if (connectionsContainer) {
+                connectionsContainer.innerHTML = '<p style="color: #ef4444; font-size: 0.875rem;">Failed to load connections.</p>';
+            }
+        }
+    }
+    
+    // Trigger load
+    loadConnections();
 });
