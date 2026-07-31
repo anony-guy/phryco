@@ -229,7 +229,7 @@ async function loadWatchPage() {
             
             // Adapt video to fit inside frame area
             const innerContent = document.getElementById('video-inner-content');
-            if (video.frame_path.includes('angel-wings') || video.frame_path.includes('fire-ring')) {
+            if (video.frame_path.includes('angel-wings') || video.frame_path.includes('fire-ring') || video.frame_path.includes('golden-luxury')) {
                 innerContent.style.transform = 'scale(0.83)';
             } else {
                 innerContent.style.transform = 'scale(0.95)';

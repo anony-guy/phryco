@@ -1,5 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="none">
     <defs>
+        <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <filter id="intenseGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="15" result="blur1"/>
+            <feGaussianBlur stdDeviation="5" result="blur2"/>
+            <feMerge>
+                <feMergeNode in="blur1"/>
+                <feMergeNode in="blur2"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+
         <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#BF953F" />
             <stop offset="25%" stop-color="#FCF6BA" />
@@ -7,12 +24,109 @@
             <stop offset="75%" stop-color="#FBF5B7" />
             <stop offset="100%" stop-color="#AA771C" />
         </linearGradient>
+
+        <linearGradient id="ingotGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFF59D"/>
+            <stop offset="20%" stop-color="#FBC02D"/>
+            <stop offset="50%" stop-color="#F57F17"/>
+            <stop offset="80%" stop-color="#B76E00"/>
+            <stop offset="100%" stop-color="#FFF59D"/>
+        </linearGradient>
+        
+        <linearGradient id="ingotBevel" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+            <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.1"/>
+            <stop offset="70%" stop-color="#000000" stop-opacity="0.1"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.6"/>
+        </linearGradient>
+
+        <g id="sparkle">
+            <path d="M 0 -15 L 2 -3 L 15 0 L 2 3 L 0 15 L -2 3 L -15 0 L -2 -3 Z" fill="#FFFFFF" filter="url(#intenseGlow)">
+                <animateTransform attributeName="transform" type="scale" values="0; 1; 0" dur="2s" repeatCount="indefinite"/>
+            </path>
+        </g>
+
+        <!-- Shining Gold Ingot (width 160, height 50) -->
+        <g id="ingot">
+            <!-- Shadow -->
+            <rect x="-82" y="-22" width="164" height="54" rx="6" fill="#000000" opacity="0.6" filter="url(#goldGlow)"/>
+            
+            <!-- Base Ingot -->
+            <rect x="-80" y="-25" width="160" height="50" rx="4" fill="url(#ingotGrad)"/>
+            
+            <!-- Inner Raised Face (Trapezoid) -->
+            <polygon points="-70,-15 70,-15 60,15 -60,15" fill="url(#gold)"/>
+            <polygon points="-70,-15 70,-15 60,15 -60,15" fill="url(#ingotBevel)"/>
+            
+            <!-- Sweeping Shine Animation -->
+            <g clip-path="url(#ingotClip)">
+                <path d="M -40,-30 L -10,-30 L -40,30 L -70,30 Z" fill="#FFFFFF" opacity="0.4">
+                    <animateTransform attributeName="transform" type="translate" values="-100,0; 250,0; -100,0" dur="3.5s" repeatCount="indefinite"/>
+                </path>
+            </g>
+        </g>
+
+        <!-- Clip path for shine -->
+        <clipPath id="ingotClip">
+            <rect x="-80" y="-25" width="160" height="50" rx="4"/>
+        </clipPath>
+        
+        <g id="cornerDiamond">
+            <polygon points="0,-40 40,0 0,40 -40,0" fill="url(#gold)" stroke="#FFF" stroke-width="2" filter="url(#goldGlow)"/>
+            <polygon points="0,-30 30,0 0,30 -30,0" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6"/>
+            <circle cx="0" cy="0" r="10" fill="#FFFFFF" filter="url(#intenseGlow)"/>
+        </g>
     </defs>
     
-    <rect width="100%" height="100%" fill="transparent" />
+    <!-- Outer and Inner Frames defining the border area -->
+    <!-- The space between 1920x1080 and 1600x900 is filled with dark luxury background -->
+    <path d="M 0 0 L 1920 0 L 1920 1080 L 0 1080 Z M 160 90 L 160 990 L 1760 990 L 1760 90 Z" fill="#0a0701" opacity="0.95" />
     
-    <rect x="0" y="0" width="1920" height="1080" fill="none" stroke="url(#gold)" stroke-width="40">
-        <animate attributeName="stroke-width" values="30;40;30" dur="4s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="40" y="40" width="1840" height="1000" fill="none" stroke="#FFF" stroke-width="2" opacity="0.5"/>
+    <!-- Outer ornate line -->
+    <rect x="5" y="5" width="1910" height="1070" fill="none" stroke="url(#gold)" stroke-width="10" rx="10" filter="url(#goldGlow)"/>
+    <rect x="15" y="15" width="1890" height="1050" fill="none" stroke="#FCF6BA" stroke-width="2" rx="6" opacity="0.5"/>
+
+    <!-- Inner ornate line bounding the video player -->
+    <rect x="155" y="85" width="1610" height="910" fill="none" stroke="url(#gold)" stroke-width="10" rx="6" filter="url(#goldGlow)"/>
+    <rect x="160" y="90" width="1600" height="900" fill="none" stroke="#FCF6BA" stroke-width="2" opacity="0.8"/>
+    
+    <!-- Top Ingots -->
+    <use href="#ingot" x="480" y="45"/>
+    <use href="#ingot" x="960" y="45"/>
+    <use href="#ingot" x="1440" y="45"/>
+    
+    <!-- Bottom Ingots -->
+    <use href="#ingot" x="480" y="1035"/>
+    <use href="#ingot" x="960" y="1035"/>
+    <use href="#ingot" x="1440" y="1035"/>
+    
+    <!-- Left Ingots (Rotated 90 deg) -->
+    <g transform="translate(80, 360) rotate(90)"><use href="#ingot" /></g>
+    <g transform="translate(80, 540) rotate(90)"><use href="#ingot" /></g>
+    <g transform="translate(80, 720) rotate(90)"><use href="#ingot" /></g>
+
+    <!-- Right Ingots (Rotated 90 deg) -->
+    <g transform="translate(1840, 360) rotate(90)"><use href="#ingot" /></g>
+    <g transform="translate(1840, 540) rotate(90)"><use href="#ingot" /></g>
+    <g transform="translate(1840, 720) rotate(90)"><use href="#ingot" /></g>
+
+    <!-- Corner Diamonds -->
+    <use href="#cornerDiamond" x="80" y="45"/>
+    <use href="#cornerDiamond" x="1840" y="45"/>
+    <use href="#cornerDiamond" x="80" y="1035"/>
+    <use href="#cornerDiamond" x="1840" y="1035"/>
+    
+    <!-- Extra floating sparkles -->
+    <use href="#sparkle" x="300" y="45">
+        <animate attributeName="opacity" values="0.2;1;0.2" dur="3s" repeatCount="indefinite"/>
+    </use>
+    <use href="#sparkle" x="1200" y="1035">
+        <animate attributeName="opacity" values="1;0.2;1" dur="2.5s" repeatCount="indefinite"/>
+    </use>
+    <use href="#sparkle" x="80" y="200">
+        <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+    </use>
+    <use href="#sparkle" x="1840" y="900">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </use>
 </svg>
