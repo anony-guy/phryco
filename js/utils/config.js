@@ -9,10 +9,11 @@ let baseUrl = window.location.origin;
 if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
     baseUrl = 'http://localhost:8000';
 } else if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
-    baseUrl = 'https://flashers-argue-arise-lets.trycloudflare.com';
+    baseUrl = 'https://bool-switched-bacterial-important.trycloudflare.com';
 }
 
 export const API_BASE_URL = window.PHRYCO_API_URL || baseUrl;
+
 
 
 
