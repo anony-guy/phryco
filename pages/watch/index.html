@@ -16,6 +16,27 @@
             <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
             Phryco
         </a>
+        <div class="search-bar search-bar-container">
+            <input type="text" placeholder="Search cinematic videos & creators..." class="input-pill">
+        </div>
+        <nav class="nav-links">
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/upload.html" class="btn-primary">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <a href="../../pages/notifications/index.html" class="icon-btn" title="Notifications">
+                <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+            </a>
+            <div class="user-menu-container">
+                <a href="#" id="user-menu-btn" class="icon-btn" title="User Menu">
+                    <i data-lucide="user" style="width: 18px; height: 18px;"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
     </header>
 
     <div class="layout" style="display: block; padding-top: 2rem;">
@@ -113,7 +134,7 @@
                     
                     <div class="channel-info">
                         <a id="channel-link" href="#" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem;">
-                            <div class="channel-avatar" id="video-channel-avatar">
+                            <div class="watch-channel-avatar" id="video-channel-avatar">
                                 <i data-lucide="user"></i>
                             </div>
                             <div>

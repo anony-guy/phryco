@@ -86,6 +86,19 @@ video {
   outline: none;
 }
 
+/* Cosmetic Video Frame Overlay (Must sit absolutely over stream) */
+.player-frame-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.35s ease;
+}
+
 /* Floating Glassmorphic Player Controls Capsule */
 .player-controls {
   position: absolute;
@@ -246,9 +259,11 @@ video:paused + .player-controls {
   border-bottom: 1px solid var(--border-color);
 }
 
-.channel-avatar {
-  width: 52px;
-  height: 52px;
+.watch-channel-avatar,
+.channel-info .channel-avatar {
+  position: static !important;
+  width: 48px !important;
+  height: 48px !important;
   border-radius: 50%;
   background: var(--bg-secondary);
   display: flex;
@@ -257,9 +272,14 @@ video:paused + .player-controls {
   overflow: hidden;
   border: 1px solid var(--border-highlight);
   box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+  margin: 0 !important;
+  bottom: auto !important;
+  left: auto !important;
 }
 
-.channel-avatar img {
+.watch-channel-avatar img,
+.channel-info .channel-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;

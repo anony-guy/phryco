@@ -235,15 +235,6 @@ async function loadWatchPage() {
             frameImg.src = `../..${video.frame_path}`;
             frameImg.className = 'player-frame-overlay';
             container.appendChild(frameImg);
-            
-            // Adapt video to fit inside frame area
-            const innerContent = document.getElementById('video-inner-content');
-            if (video.frame_path.includes('angel-wings') || video.frame_path.includes('fire-ring') || video.frame_path.includes('golden-luxury')) {
-                innerContent.style.transform = 'scale(0.83)';
-            } else {
-                innerContent.style.transform = 'scale(0.95)';
-            }
-            innerContent.style.transformOrigin = 'center center';
         }
         
         // Set Video Player Source and Custom Controls
@@ -879,19 +870,18 @@ async function loadWatchPage() {
                     items.forEach(v => {
                         const card = document.createElement('a');
                         card.href = `/pages/watch/index.html?v=${v.id}`;
-                        card.className = 'video-card animate-fade-in';
-                        card.style = 'text-decoration: none; display: flex; gap: 0.5rem;';
+                        card.className = 'up-next-card animate-fade-in';
                         card.innerHTML = `
-                            <div style="width: 160px; height: 90px; background: var(--bg-secondary); border-radius: var(--radius-md); position: relative; overflow: hidden; flex-shrink: 0;">
-                                <img src="${API_BASE_URL}/api/videos/${v.id}/thumbnail" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="up-next-thumbnail">
+                                <img src="${API_BASE_URL}/api/videos/${v.id}/thumbnail" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
                                     <i data-lucide="play-circle" style="color: var(--text-secondary);"></i>
                                 </div>
                             ${v.duration_seconds ? `<div class="video-duration">${formatDuration(v.duration_seconds)}</div>` : ""}</div>
-                            <div>
-                                <h4 style="margin: 0 0 0.25rem 0; font-size: 0.875rem; color: var(--text-primary); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(v.title)}</h4>
-                                <p style="margin: 0; font-size: 0.75rem; color: var(--text-secondary);">${escapeHTML(v.owner_username)}</p>
-                                <p style="margin: 0; font-size: 0.75rem; color: var(--text-secondary);">${v.views.toLocaleString()} views</p>
+                            <div class="up-next-info">
+                                <h4 class="up-next-title">${escapeHTML(v.title)}</h4>
+                                <p class="up-next-author">${escapeHTML(v.owner_username)}</p>
+                                <p class="up-next-views">${v.views.toLocaleString()} views</p>
                             </div>
                         `;
                         recommendedContainer.insertBefore(card, sentinel);
