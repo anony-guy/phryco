@@ -1,6 +1,44 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
 import { escapeHTML } from '../utils/security.js';
+import { customizer } from './ui_customizer.js';
+
+function initBrandingAndAnimations() {
+    const logoEl = document.querySelector('header .logo');
+    if (logoEl) {
+        const logoPath = '/assets/phryco-logo-animated.svg';
+        logoEl.innerHTML = `
+            <img src="${logoPath}" alt="Phryco" style="height: 42px; width: auto; object-fit: contain; background: transparent; filter: drop-shadow(0 2px 10px rgba(99,102,241,0.4)); transition: transform 0.25s ease;">
+        `;
+        logoEl.onmouseover = () => { const img = logoEl.querySelector('img'); if(img) img.style.transform = 'scale(1.05)'; };
+        logoEl.onmouseout = () => { const img = logoEl.querySelector('img'); if(img) img.style.transform = 'scale(1)'; };
+    }
+
+    const pbBadge = document.getElementById('phrybucks-display');
+    if (pbBadge && !pbBadge.querySelector('.coin-anim')) {
+        const iconContainer = document.createElement('span');
+        iconContainer.className = 'coin-anim';
+        iconContainer.style.cssText = 'display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.7)); margin-right: 4px;';
+        iconContainer.innerHTML = `
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="url(#coin-radial)" stroke="#f59e0b" stroke-width="1.5">
+                    <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <path d="M12 6.5V17.5M8.5 10H14.5C15.5 10 16 10.8 16 11.8C16 12.8 15.5 13.5 14.5 13.5H9.5C8.5 13.5 8 14.2 8 15.2C8 16.2 8.5 17 9.5 17H15.5" stroke="#78350f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <radialGradient id="coin-radial" cx="30%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#fef08a" />
+                        <stop offset="50%" stop-color="#f59e0b" />
+                        <stop offset="100%" stop-color="#92400e" />
+                    </radialGradient>
+                </defs>
+            </svg>
+        `;
+        const oldIcon = pbBadge.querySelector('i[data-lucide="coins"]');
+        if (oldIcon) oldIcon.replaceWith(iconContainer);
+        else pbBadge.insertBefore(iconContainer, pbBadge.firstChild);
+    }
+}
 
 // Setup User Dropdown
 async function initHeader() {
@@ -198,49 +236,15 @@ function initMobileMenu() {
 function initThemeSwitcher() {
     const navLinks = document.querySelector('nav.nav-links');
     if (!navLinks) return;
-    if (document.getElementById('theme-switcher')) return;
-    
-    const themeBtn = document.createElement('a');
-    themeBtn.href = '#';
-    themeBtn.id = 'theme-switcher';
-    themeBtn.innerHTML = '<i data-lucide="moon"></i>';
-    themeBtn.style.cursor = 'pointer';
-    themeBtn.setAttribute('data-tooltip', 'Toggle Theme');
-    
     const userMenu = document.querySelector('.user-menu-container');
-    if (userMenu) {
-        navLinks.insertBefore(themeBtn, userMenu);
-    } else {
-        navLinks.appendChild(themeBtn);
-    }
-    
-    const currentTheme = localStorage.getItem('phryco_theme') || 'dark';
-    if (currentTheme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        themeBtn.innerHTML = '<i data-lucide="sun"></i>';
-    }
-    
-    themeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const theme = document.documentElement.getAttribute('data-theme');
-        if (theme === 'light') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('phryco_theme', 'dark');
-            themeBtn.innerHTML = '<i data-lucide="moon"></i>';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('phryco_theme', 'light');
-            themeBtn.innerHTML = '<i data-lucide="sun"></i>';
-        }
-        if (window.lucide) window.lucide.createIcons();
-    });
+    customizer.initTrigger(navLinks, userMenu);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    initBrandingAndAnimations();
     initHeader();
     initMobileMenu();
     initThemeSwitcher();
     initSearchBar();
-    // We also need to run createIcons initially in case the main HTML hasn't.
     if (window.lucide) window.lucide.createIcons();
 });

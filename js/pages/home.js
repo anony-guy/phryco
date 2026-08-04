@@ -80,12 +80,19 @@ function renderVideoCard(video) {
 }
 
 const emptyStateHTML = `
-    <div style="text-align: center; padding: 4rem 1rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); grid-column: 1 / -1;">
-        <i data-lucide="compass" style="width: 48px; height: 48px; color: var(--text-secondary); margin-bottom: 1rem;"></i>
-        <h2 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">Watch some videos to get personalized recommendations!</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">We need a little help figuring out what you like.</p>
-        <a href="../../pages/trending/index.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i> Go to Trending
+    <div style="text-align: center; padding: 5rem 2rem; background: var(--bg-glass); border-radius: var(--radius-xl); border: 1px solid var(--border-color); grid-column: 1 / -1; backdrop-filter: blur(20px); box-shadow: var(--shadow-lg); max-width: 720px; margin: 2rem auto;">
+        <!-- Futuristic Radar / Space Discovery Vector -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1.5rem auto; filter: drop-shadow(0 0 16px var(--accent-glow));">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+            <path d="m19.07 4.93-7.07 7.07"></path>
+        </svg>
+        <h2 class="text-gradient" style="margin: 0 0 0.75rem 0; font-size: 1.6rem; font-family: 'Outfit', sans-serif;">Discover Cinematic Masterpieces</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto;">Your personalized recommendation feed is currently calibrated for exploration. Watch videos or visit trending to shape your universe.</p>
+        <a href="./pages/trending/index.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.6rem;">
+            <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i> Explore Trending Now
         </a>
     </div>
 `;
@@ -94,10 +101,10 @@ function renderSkeletonCard() {
     const card = document.createElement('div');
     card.className = 'video-card skeleton-card';
     card.innerHTML = `
-        <div class="video-thumbnail skeleton" style="width:100%; aspect-ratio:16/9;"></div>
-        <div class="video-info" style="display:flex; flex-direction:column; gap:0.5rem;">
-            <div class="skeleton" style="width:80%; height:1rem; border-radius:4px;"></div>
-            <div class="skeleton" style="width:60%; height:0.875rem; border-radius:4px;"></div>
+        <div class="video-thumbnail skeleton-shimmer" style="width:100%; aspect-ratio:16/9;"></div>
+        <div class="video-info" style="display:flex; flex-direction:column; gap:0.6rem;">
+            <div class="skeleton-shimmer" style="width:85%; height:1.1rem; border-radius:var(--radius-sm);"></div>
+            <div class="skeleton-shimmer" style="width:50%; height:0.85rem; border-radius:var(--radius-sm);"></div>
         </div>
     `;
     return card;

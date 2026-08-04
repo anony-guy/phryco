@@ -1,0 +1,377 @@
+/**
+ * Phryco Design System - Video Player & Theater Aura (player.css)
+ * Isolates video player layout, floating glassmorphic control capsules, theater mode transitions,
+ * and live background aura canvas effects.
+ */
+
+.watch-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 2.5rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  transition: all var(--transition-normal);
+}
+
+.watch-layout.theater-mode {
+  display: block;
+  max-width: 100%;
+  padding: 0;
+}
+
+.watch-layout.theater-mode .player-wrapper {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 0;
+  margin-bottom: 2rem;
+}
+
+.watch-layout.theater-mode .primary-column {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 2.5rem;
+}
+
+/* Ambient Aura Canvas Wrapper */
+.player-aura-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ambient-aura-canvas {
+  position: absolute;
+  top: -4%;
+  left: -4%;
+  width: 108%;
+  height: 108%;
+  filter: blur(75px);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.6s ease;
+}
+
+[data-glow="off"] .ambient-aura-canvas {
+  display: none;
+}
+
+.video-player-container {
+  width: 100%;
+  background: #000000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  max-height: 75vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--border-color);
+  z-index: 2;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  outline: none;
+}
+
+/* Floating Glassmorphic Player Controls Capsule */
+.player-controls {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: calc(100% - 30px);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+  z-index: 20;
+}
+
+.video-player-container:hover .player-controls,
+.player-controls.active,
+video:paused + .player-controls {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  position: relative;
+  border-radius: var(--radius-pill);
+  transition: height 0.15s ease;
+}
+
+.progress-bar-container:hover {
+  height: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-hover));
+  width: 0%;
+  border-radius: var(--radius-pill);
+  position: relative;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.scrubber-head {
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-primary);
+  transition: transform 0.15s ease;
+}
+
+.progress-bar-container:hover .scrubber-head {
+  transform: translateY(-50%) scale(1);
+}
+
+.controls-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+}
+
+.controls-left, .controls-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.control-btn:hover {
+  color: var(--accent-primary);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.time-display {
+  font-size: 0.85rem;
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Quality Menu */
+.quality-menu {
+  position: absolute;
+  bottom: 65px;
+  right: 20px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 0;
+  min-width: 140px;
+  display: none;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  z-index: 30;
+}
+
+.quality-menu.show {
+  display: flex;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.quality-option {
+  padding: 8px 16px;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.quality-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent-primary);
+}
+
+/* Video Details & Channel Badge */
+.video-details {
+  margin-bottom: 2.5rem;
+}
+
+.channel-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.channel-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border-highlight);
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+}
+
+.channel-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 2.5rem;
+}
+
+.comment-input-area {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.comment-input-area input {
+  flex: 1;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+}
+
+.comment-input-area input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-glow);
+  background: var(--bg-secondary);
+}
+
+.comment {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.comment:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--border-color);
+}
+
+.comment-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-content h4 {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.comment-content p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+  .video-player-container {
+    max-height: 65vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .watch-layout {
+    padding: 0;
+  }
+  .video-player-container {
+    border-radius: 0;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    width: calc(100% + 2rem);
+  }
+  .controls-main {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .controls-left, .controls-right {
+    justify-content: space-between;
+  }
+  .time-display {
+    margin-left: auto;
+  }
+}

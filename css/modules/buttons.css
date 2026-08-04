@@ -1,0 +1,129 @@
+/**
+ * Phryco Design System - Interactive Controls Module (buttons.css)
+ * Handles buttons, pills, search bars, glowing badges, and tactile user feedback.
+ */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+  color: #ffffff !important;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow), 0 0 8px #ffffff;
+  filter: brightness(1.1);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-highlight);
+  color: #ffffff;
+}
+
+/* Phrybucks Gold Badge */
+.phrybucks-badge {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(180, 83, 9, 0.15));
+  color: var(--phrybucks-gold);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
+  transition: all var(--transition-fast);
+}
+
+.phrybucks-badge:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+/* Standard Pill Inputs & Search */
+.input-pill {
+  width: 100%;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.input-pill:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: var(--bg-secondary);
+}
+
+.search-bar-container {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 2rem;
+  position: relative;
+}
+
+/* Navigation & Header utility cleanups */
+.header-nav-icons {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--accent-primary);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 16px var(--accent-glow);
+  transform: translateY(-2px);
+}

@@ -3,11 +3,13 @@ import { API_BASE_URL } from '../utils/config.js';
 import { escapeHTML } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 import { showToast } from '../utils/toast.js';
+import { initAmbientAura } from '../components/ambient_aura.js';
 
 window.currentPlayingVideoId = null;
 window.hlsInstance = null;
 
 function loadVideoStream(url, playerElement, vidId) {
+    initAmbientAura(playerElement);
     window.currentPlayingVideoId = vidId;
     if (window.hlsInstance) {
         window.hlsInstance.destroy();
