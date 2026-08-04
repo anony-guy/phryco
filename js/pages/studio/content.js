@@ -6,15 +6,19 @@ import { InfiniteScroller } from '../../utils/pagination.js';
 let currentVideos = [];
 let scroller;
 
-function getStatusBadge(status) {
-    const s = status.toLowerCase();
-    switch(s) {
+function getStatusBadge(v) {
+    if (typeof v === 'object' && v !== null) {
+        if (v.is_failed_processing) return `<span class="status-badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;">Compression Failed</span>`;
+        if (v.is_processing) return `<span class="status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b;">Processing...</span>`;
+    }
+    const status = (typeof v === 'string' ? v : (v.status || '')).toLowerCase();
+    switch(status) {
         case 'draft': return `<span class="status-badge status-draft">Draft</span>`;
         case 'pending_review': return `<span class="status-badge status-pending">Pending Review</span>`;
         case 'public': return `<span class="status-badge status-public">Public</span>`;
         case 'private': return `<span class="status-badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">Private</span>`;
         case 'removed': return `<span class="status-badge status-removed">Removed</span>`;
-        default: return `<span class="status-badge">${status}</span>`;
+        default: return `<span class="status-badge">${status.toUpperCase()}</span>`;
     }
 }
 
@@ -28,8 +32,11 @@ function renderVideoRow(v) {
     } else {
         actionHtml = `<button style="background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: var(--radius-md); margin-right: 0.5rem; cursor: pointer;" onclick="openEditModal(${v.id})">Edit</button>`;
         
-        // Add a submit button if the video is still a draft
-        if (v.status === 'DRAFT') {
+        if (v.is_failed_processing) {
+            actionHtml += `<button class="btn-primary" style="background: #ef4444; color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-right: 0.5rem; cursor: pointer;" onclick="retryCompression(${v.id})">Retry Compression</button>`;
+        } else if (v.is_processing) {
+            actionHtml += `<span style="color: #f59e0b; font-size: 0.75rem; margin-right: 0.5rem;">Processing...</span>`;
+        } else if (v.status === 'DRAFT') {
             actionHtml += `<button class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-right: 0.5rem;" onclick="submitForReview(${v.id})">Submit for Review</button>`;
         } else if (v.status === 'PUBLIC') {
             actionHtml += `<a href="../../../pages/watch/index.html?v=${v.id}" target="_blank" style="color: var(--accent-primary); font-size: 0.875rem; margin-left: 0.5rem; margin-right: 0.5rem;">Watch</a>`;
@@ -41,9 +48,10 @@ function renderVideoRow(v) {
     tr.innerHTML = `
         <td>
             <strong>${safeTitle}</strong>
+            ${v.is_failed_processing ? `<div style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem;">Video compression encountered an error. Click Retry Compression to attempt processing again.</div>` : ''}
             ${v.status === 'REMOVED' ? `<div style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem;">Deletes permanently on ${new Date(v.scheduled_deletion_date).toLocaleString()}</div>` : ''}
         </td>
-        <td>${getStatusBadge(v.status)}</td>
+        <td>${getStatusBadge(v)}</td>
         <td>${v.views.toLocaleString()}</td>
         <td>${v.likes.toLocaleString()}</td>
         <td style="display: flex; align-items: center;">${actionHtml}</td>
@@ -114,6 +122,17 @@ window.restoreVideo = async function(videoId) {
 
 window.openEditModal = function(videoId) {
     window.location.href = `edit_video.html?id=${videoId}`;
+};
+
+window.retryCompression = async function(videoId) {
+    if (!confirm("Attempt to re-run video compression for this video?")) return;
+    try {
+        await apiFetch(`/api/videos/${videoId}/retry-compression`, { method: 'POST' });
+        alert("Compression retry initiated successfully!");
+        loadContent();
+    } catch (error) {
+        alert("Failed to retry compression: " + error.message);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
