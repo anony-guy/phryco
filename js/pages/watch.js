@@ -384,18 +384,18 @@ async function loadWatchPage() {
         
         // Intelligent Controls Auto-Hide & Inactivity Timer
         let controlsTimeout = null;
-        function showPlayerControls() {
-            playerContainer.classList.add('show-controls');
+        function resetControlsTimeout() {
+            playerContainer.classList.remove('hide-controls');
             if (controlsTimeout) clearTimeout(controlsTimeout);
             if (!player.paused) {
                 controlsTimeout = setTimeout(() => {
-                    if (!player.paused) playerContainer.classList.remove('show-controls');
+                    if (!player.paused) playerContainer.classList.add('hide-controls');
                 }, 2500);
             }
         }
-        playerContainer.addEventListener('mousemove', showPlayerControls);
-        playerContainer.addEventListener('click', showPlayerControls);
-        playerContainer.addEventListener('touchstart', showPlayerControls, { passive: true });
+        playerContainer.addEventListener('mousemove', resetControlsTimeout);
+        playerContainer.addEventListener('click', resetControlsTimeout);
+        playerContainer.addEventListener('touchstart', resetControlsTimeout, { passive: true });
 
         function formatTime(seconds) {
             if(isNaN(seconds)) return "0:00";
@@ -407,12 +407,12 @@ async function loadWatchPage() {
         // Synchronize UI Icons directly with native DOM Media Events
         player.addEventListener('play', () => {
             playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
-            showPlayerControls();
+            resetControlsTimeout();
             lucide.createIcons();
         });
         player.addEventListener('pause', () => {
             playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
-            playerContainer.classList.add('show-controls');
+            playerContainer.classList.remove('hide-controls');
             if (controlsTimeout) clearTimeout(controlsTimeout);
             lucide.createIcons();
         });
