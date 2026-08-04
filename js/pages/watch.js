@@ -368,15 +368,22 @@ async function loadWatchPage() {
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const settingsBtn = document.getElementById('settings-btn');
         
-        // Custom Scrubber Icon
+        // Custom Scrubber Icon Overrides
         if (video.has_scrubber) {
             const scrubberHead = document.getElementById('scrubber-head');
             const tokenParam = token ? `?token=${token}` : '';
+            scrubberHead.classList.add('custom-scrubber');
             scrubberHead.style.backgroundImage = `url('${API_BASE_URL}/api/videos/${video.id}/scrubber${tokenParam}')`;
+            scrubberHead.style.backgroundSize = 'contain';
+            scrubberHead.style.backgroundPosition = 'center';
+            scrubberHead.style.backgroundRepeat = 'no-repeat';
             scrubberHead.style.backgroundColor = 'transparent';
-            scrubberHead.style.width = '24px'; // make it a bit larger for custom images
-            scrubberHead.style.height = '24px';
-            scrubberHead.style.right = '-12px';
+            scrubberHead.style.borderRadius = '0';
+            scrubberHead.style.boxShadow = 'none';
+            scrubberHead.style.filter = 'drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7))';
+            scrubberHead.style.width = '28px';
+            scrubberHead.style.height = '28px';
+            scrubberHead.style.right = '-14px';
         }
         const qualityMenu = document.getElementById('quality-menu');
         const qualityOptionsContainer = document.getElementById('quality-options');

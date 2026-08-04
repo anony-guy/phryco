@@ -121,19 +121,19 @@ video {
   z-index: 100;
 }
 
-.video-player-container.hide-controls:not(:hover) .player-controls,
-.video-player-container.hide-controls .player-controls:not(:hover) {
+.video-player-container.hide-controls:not(:hover) .player-controls {
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%) translateY(12px);
 }
 
 .video-player-container:hover .player-controls,
+.video-player-container:focus-within .player-controls,
 .player-controls:hover,
 video:paused ~ .player-controls {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
 }
 
 .progress-bar-container {
@@ -174,8 +174,20 @@ video:paused ~ .player-controls {
   z-index: 5;
 }
 
+/* Override default circle dot shape and glowing outline for custom scrubber icons */
+.scrubber-head.custom-scrubber {
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+}
+
 .progress-bar-container:hover .scrubber-head {
   transform: translateY(-50%) scale(1.3);
+}
+
+.progress-bar-container:hover .scrubber-head.custom-scrubber {
+  transform: translateY(-50%) scale(1.25);
 }
 
 /* Floating Heatmap Graph Overlay */
