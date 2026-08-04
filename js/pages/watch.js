@@ -382,6 +382,21 @@ async function loadWatchPage() {
         const qualityOptionsContainer = document.getElementById('quality-options');
         const playerContainer = document.getElementById('player-container');
         
+        // Intelligent Controls Auto-Hide & Inactivity Timer
+        let controlsTimeout = null;
+        function showPlayerControls() {
+            playerContainer.classList.add('show-controls');
+            if (controlsTimeout) clearTimeout(controlsTimeout);
+            if (!player.paused) {
+                controlsTimeout = setTimeout(() => {
+                    if (!player.paused) playerContainer.classList.remove('show-controls');
+                }, 2500);
+            }
+        }
+        playerContainer.addEventListener('mousemove', showPlayerControls);
+        playerContainer.addEventListener('click', showPlayerControls);
+        playerContainer.addEventListener('touchstart', showPlayerControls, { passive: true });
+
         function formatTime(seconds) {
             if(isNaN(seconds)) return "0:00";
             const m = Math.floor(seconds / 60);
@@ -389,24 +404,20 @@ async function loadWatchPage() {
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
         
-        // Play/Pause
-        function togglePlay() {
-            if (player.paused) {
-                player.play();
-                playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
-            } else {
-                player.pause();
-                playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
-            }
+        // Synchronize UI Icons directly with native DOM Media Events
+        player.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
+            showPlayerControls();
             lucide.createIcons();
-        }
-        playPauseBtn.addEventListener('click', togglePlay);
-        player.addEventListener('click', togglePlay);
-        
-        // Volume
-        muteBtn.addEventListener('click', () => {
-            player.muted = !player.muted;
-            if (player.muted) {
+        });
+        player.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+            playerContainer.classList.add('show-controls');
+            if (controlsTimeout) clearTimeout(controlsTimeout);
+            lucide.createIcons();
+        });
+        player.addEventListener('volumechange', () => {
+            if (player.muted || player.volume === 0) {
                 muteBtn.innerHTML = '<i data-lucide="volume-x"></i>';
                 volumeSlider.value = 0;
             } else {
@@ -415,11 +426,26 @@ async function loadWatchPage() {
             }
             lucide.createIcons();
         });
+
+        // Play/Pause Interaction
+        function togglePlay(e) {
+            if (e && (e.target.closest('.player-controls') || e.target.closest('.quality-menu'))) return;
+            if (player.paused) player.play();
+            else player.pause();
+        }
+        playPauseBtn.addEventListener('click', () => {
+            if (player.paused) player.play();
+            else player.pause();
+        });
+        player.addEventListener('click', togglePlay);
+        
+        // Volume
+        muteBtn.addEventListener('click', () => {
+            player.muted = !player.muted;
+        });
         volumeSlider.addEventListener('input', (e) => {
             player.volume = e.target.value;
             player.muted = player.volume === 0;
-            muteBtn.innerHTML = player.muted ? '<i data-lucide="volume-x"></i>' : '<i data-lucide="volume-2"></i>';
-            lucide.createIcons();
         });
         
         // Progress
@@ -452,11 +478,11 @@ async function loadWatchPage() {
         function drawHeatmap(data) {
             if (!data || data.length === 0) return;
             const canvas = document.getElementById('heatmap-canvas');
-            if (!canvas) return;
+            if (!canvas || !progressContainer.offsetWidth) return;
             const ctx = canvas.getContext('2d');
             
             canvas.width = progressContainer.offsetWidth;
-            canvas.height = 40;
+            canvas.height = 32;
             
             const maxVal = Math.max(...data);
             if (maxVal === 0) return;
@@ -465,20 +491,40 @@ async function loadWatchPage() {
             const segmentWidth = canvas.width / numSegments;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            
+            // Vibrant glowing accent gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.85)');
+            gradient.addColorStop(1, 'rgba(99, 102, 241, 0.05)');
+            
             ctx.beginPath();
             ctx.moveTo(0, canvas.height);
             
+            const points = [];
             for (let i = 0; i < numSegments; i++) {
                 const val = data[i] || 0;
-                const height = (val / maxVal) * canvas.height;
-                const x = i * segmentWidth;
+                const height = Math.max(2, (val / maxVal) * (canvas.height - 4));
+                const x = i * segmentWidth + segmentWidth / 2;
                 const y = canvas.height - height;
-                ctx.lineTo(x + segmentWidth / 2, y);
+                ctx.lineTo(x, y);
+                points.push({ x, y });
             }
             
             ctx.lineTo(canvas.width, canvas.height);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
             ctx.fill();
+            
+            // Draw bright glowing stroke along top ridge
+            if (points.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height);
+                points.forEach(p => ctx.lineTo(p.x, p.y));
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.strokeStyle = '#818cf8';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
         }
 
         if (video.heatmap_data) {
@@ -594,30 +640,6 @@ async function loadWatchPage() {
                         requestAnimationFrame(() => drawHeatmap(video.heatmap_data));
                     }
                 }
-            });
-        }
-        
-        // Ambilight Logic
-        const ambilightCanvas = document.getElementById('ambilight-canvas');
-        if (ambilightCanvas) {
-            const ambiCtx = ambilightCanvas.getContext('2d');
-            
-            function updateAmbilight() {
-                if (player.paused || player.ended) return;
-                if (player.videoWidth > 0 && player.videoHeight > 0) {
-                    ambilightCanvas.width = player.videoWidth / 4;
-                    ambilightCanvas.height = player.videoHeight / 4;
-                    ambiCtx.drawImage(player, 0, 0, ambilightCanvas.width, ambilightCanvas.height);
-                    ambilightCanvas.style.opacity = '0.7';
-                }
-                requestAnimationFrame(updateAmbilight);
-            }
-            
-            player.addEventListener('play', () => {
-                requestAnimationFrame(updateAmbilight);
-            });
-            player.addEventListener('pause', () => {
-                ambilightCanvas.style.opacity = '0';
             });
         }
         
@@ -809,12 +831,18 @@ async function loadWatchPage() {
             }
         });
         // Autoplay Logic
+        const autoplayToggle = document.getElementById('autoplay-toggle');
+        if (autoplayToggle) {
+            autoplayToggle.checked = localStorage.getItem('phryco_autoplay') !== 'false';
+            autoplayToggle.addEventListener('change', (e) => {
+                localStorage.setItem('phryco_autoplay', e.target.checked);
+            });
+        }
         let autoplayCountdownInterval = null;
         player.addEventListener('ended', () => {
             if (window.currentPlayingVideoId == video.id) {
-                const autoplayToggle = document.getElementById('autoplay-toggle');
                 if (autoplayToggle && autoplayToggle.checked) {
-                    const firstRecommended = document.querySelector('#recommended-videos .video-card');
+                    const firstRecommended = document.querySelector('#recommended-videos .up-next-card, #recommended-videos .video-card');
                     if (firstRecommended) {
                         const overlay = document.getElementById('autoplay-overlay');
                         const countdownEl = document.getElementById('autoplay-countdown');
