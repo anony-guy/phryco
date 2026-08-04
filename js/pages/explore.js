@@ -2,6 +2,7 @@ import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
 import { escapeHTML } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
+import { setupVideoCardPreview } from '../utils/preview_player.js';
 
 function formatDuration(seconds) {
     if(!seconds) return "0:00";
@@ -55,35 +56,7 @@ function renderCategorySection(categoryName, videos) {
             </div>
         `;
         
-        let hoverTimer;
-        card.addEventListener('mouseenter', () => {
-            hoverTimer = setTimeout(() => {
-                const preview = card.querySelector('.video-preview');
-                const img = card.querySelector('.thumbnail-img');
-                if (preview && !preview.src) {
-                    const token = localStorage.getItem('phryco_token');
-                    const tokenParam = token ? `?token=${token}` : '';
-                    preview.src = `${API_BASE_URL}/api/videos/${video.id}/stream${tokenParam}`;
-                }
-                if (preview) {
-                    preview.play().then(() => {
-                        preview.style.opacity = '1';
-                        if(img) img.style.opacity = '0';
-                    }).catch(e => console.log('Preview play blocked', e));
-                }
-            }, 500);
-        });
-        card.addEventListener('mouseleave', () => {
-            clearTimeout(hoverTimer);
-            const preview = card.querySelector('.video-preview');
-            const img = card.querySelector('.thumbnail-img');
-            if (preview) {
-                preview.pause();
-                preview.currentTime = 0;
-                preview.style.opacity = '0';
-            }
-            if (img) img.style.opacity = '1';
-        });
+        setupVideoCardPreview(card, video.id);
         
         grid.appendChild(card);
     });

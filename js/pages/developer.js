@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '../utils/config.js';
 import { renderHeader } from '../../relay-dashboard/js/components/header.js';
+import { showSecretModal } from '../components/secret_modal.js';
 
 async function checkAuth() {
     const token = localStorage.getItem('relay_sso_token');
@@ -108,10 +109,11 @@ async function registerApp() {
         });
         
         if (res.ok) {
+            const data = await res.json();
             document.getElementById('new-app-name').value = '';
             document.getElementById('new-app-redirect').value = '';
             loadApps();
-            alert("App registered successfully! Please store your client_secret securely.");
+            showSecretModal(data.client_secret);
         } else {
             const err = await res.json();
             alert("Failed to register app: " + (err.detail || "Unknown error"));
@@ -122,7 +124,7 @@ async function registerApp() {
 }
 
 window.showSecret = function(secret) {
-    alert("Your Client Secret is:\n\n" + secret + "\n\nStore this securely, it is required for token exchanges.");
+    showSecretModal(secret);
 };
 
 window.deleteApp = async function(client_id) {
