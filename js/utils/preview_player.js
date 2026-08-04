@@ -24,7 +24,13 @@ export function setupVideoCardPreview(card, videoId) {
                 if (!hlsInstance) {
                     hlsInstance = new Hls({
                         capLevelToPlayerSize: true,
-                        autoStartLoad: true
+                        autoStartLoad: true,
+                        xhrSetup: (xhr, url) => {
+                            const tok = localStorage.getItem('phryco_token');
+                            if (tok) {
+                                xhr.setRequestHeader('Authorization', `Bearer ${tok}`);
+                            }
+                        }
                     });
                     hlsInstance.loadSource(hlsUrl);
                     hlsInstance.attachMedia(preview);

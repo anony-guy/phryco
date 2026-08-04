@@ -17,7 +17,14 @@ function loadVideoStream(url, playerElement, vidId) {
     }
     
     if (typeof Hls !== 'undefined' && Hls.isSupported() && url.includes('.m3u8')) {
-        window.hlsInstance = new Hls();
+        window.hlsInstance = new Hls({
+            xhrSetup: (xhr, url) => {
+                const token = localStorage.getItem('phryco_token');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                }
+            }
+        });
         window.hlsInstance.loadSource(url);
         window.hlsInstance.attachMedia(playerElement);
         
