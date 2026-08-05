@@ -11,12 +11,17 @@
 <body style="display: none;" id="dashboard-body">
 
     <div class="container">
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center; background-color: #e8f0fe; border-color: #aecbfa;">
-            <div>
-                <h2 style="color: #1967d2; margin-bottom: 8px;">Host a Sub-Relay Node</h2>
-                <p style="margin: 0; font-size: 14px; color: #1967d2;">Download the pre-packaged relay backend to spin up a new node on a VPS instantly.</p>
+        <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #334155; color: #f8fafc; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span style="background: #10b981; color: #022c22; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 8px;">Economic Incentive Active</span>
+                    <h2 style="color: #f8fafc; margin-bottom: 8px; font-size: 1.5rem; font-weight: 700;">Host a Sub-Relay Node & Earn PhryBucks</h2>
+                    <p style="margin: 0; font-size: 14px; color: #94a3b8; line-height: 1.5; max-width: 650px;">
+                        Sub-Relay owners automatically earn <strong style="color: #fbbf24;">1.0 PB per minute</strong> for every active node that stays online. Earn extra bonus rewards—up to <strong style="color: #fbbf24;">2.5 PB per minute</strong>—when your node maintains high uptime (&ge;70% prioritized routing) and top quality scores (&ge;80 low-latency health)!
+                    </p>
+                </div>
+                <button id="download-relay-btn" class="btn" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); border: none; color: white; padding: 12px 20px; font-weight: 600; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);">Download Relay Software</button>
             </div>
-            <button id="download-relay-btn" class="btn">Download Relay Software</button>
         </div>
 
         <div class="card">
@@ -30,15 +35,17 @@
                 <thead>
                     <tr>
                         <th>Relay URL</th>
+                        <th>Owner</th>
                         <th>Status</th>
                         <th>Uptime</th>
                         <th>Quality Score</th>
                         <th>Avg Latency</th>
+                        <th>Earning Rate</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="relays-table-body">
-                    <tr><td colspan="6" style="text-align: center;">Loading relays...</td></tr>
+                    <tr><td colspan="8" style="text-align: center;">Loading relays...</td></tr>
                 </tbody>
             </table>
         </div>

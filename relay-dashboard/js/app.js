@@ -140,26 +140,51 @@ async function loadRelays() {
         if (res.ok) {
             const relays = await res.json();
             if (relays.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No relays registered yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No relays registered yet.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = relays.map(r => `
+            tbody.innerHTML = relays.map(r => {
+                let earningRate = 0.0;
+                let statusTag = '';
+                if (!r.is_active) {
+                    statusTag = '<span style="color: #ef4444; font-weight: 600;">🔴 0.0 PB/min (Offline)</span>';
+                } else {
+                    earningRate += 1.0; // Base online reward
+                    let bonuses = [];
+                    if ((r.uptime_percentage || 0) >= 70.0) {
+                        earningRate += 0.5;
+                        bonuses.push('Prioritized');
+                    }
+                    if ((r.quality_score || 0) >= 90) {
+                        earningRate += 1.0;
+                        bonuses.push('Elite Quality');
+                    } else if ((r.quality_score || 0) >= 80) {
+                        earningRate += 0.5;
+                        bonuses.push('High Quality');
+                    }
+                    const bonusText = bonuses.length > 0 ? ` <span style="font-size: 11px; color: #10b981; display: block;">(${bonuses.join(', ')})</span>` : '';
+                    statusTag = `<span style="color: #10b981; font-weight: 700;">🟢 ${earningRate.toFixed(1)} PB/min</span>${bonusText}`;
+                }
+
+                return `
                 <tr>
-                    <td>${r.url}</td>
-                    <td><span style="color: ${r.is_active ? 'green' : 'red'};">${r.is_active ? 'Active' : 'Offline'}</span></td>
-                    <td>${r.uptime_percentage.toFixed(2)}%</td>
-                    <td>${r.quality_score.toFixed(1)}</td>
-                    <td>${r.avg_latency_ms.toFixed(0)} ms</td>
+                    <td style="font-weight: 600; color: #38bdf8;">${r.url}</td>
+                    <td style="font-weight: 600;">${r.added_by || '<span style="color: #64748b;">System</span>'}</td>
+                    <td><span style="color: ${r.is_active ? '#10b981' : '#ef4444'}; font-weight: 600;">${r.is_active ? 'Active' : 'Offline'}</span></td>
+                    <td>${(r.uptime_percentage || 0).toFixed(2)}%</td>
+                    <td>${(r.quality_score || 0).toFixed(1)}</td>
+                    <td>${(r.avg_latency_ms || 0).toFixed(0)} ms</td>
+                    <td>${statusTag}</td>
                     <td>
                         <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">Edit</button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         } else {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Error loading relays.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">Error loading relays.</td></tr>`;
         }
     } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Error fetching relays.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">Error fetching relays.</td></tr>`;
     }
 }
 
