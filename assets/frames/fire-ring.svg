@@ -61,8 +61,7 @@
         </g>
     </defs>
     
-    <!-- Outer letterbox backdrop for fire contrast -->
-    <path d="M 0 0 L 1920 0 L 1920 1080 L 0 1080 Z M 160 90 L 160 990 L 1760 990 L 1760 90 Z" fill="#0c0201" opacity="0.85" />
+    <!-- Transparent background around flames -->
 
     <!-- Top Wall of Fire (Raging Upward) -->
     <g transform="translate(0, 130)">
