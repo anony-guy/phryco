@@ -1,5 +1,8 @@
 import { API_BASE_URL } from './config.js';
 
+// Cache video IDs known to be legacy MP4 (where HLS master.m3u8 returns 404)
+const legacyMp4Cache = new Set();
+
 /**
  * Attaches hover preview playback logic to a video card.
  * Handles both HLS (.m3u8 via Hls.js or native Safari) and legacy MP4 streams gracefully
@@ -15,10 +18,24 @@ export function setupVideoCardPreview(card, videoId) {
             const img = card.querySelector('.thumbnail-img');
             if (!preview) return;
 
+            // Attach onplaying handler directly to the video element so that whether HLS succeeds
+            // or we fall back asynchronously to legacy MP4, the visual transition is guaranteed to run!
+            preview.onplaying = () => {
+                preview.style.opacity = '1';
+                if (img) img.style.opacity = '0';
+            };
+
             const token = localStorage.getItem('phryco_token');
             const tokenParam = token ? `?token=${token}` : '';
             const hlsUrl = `${API_BASE_URL}/api/videos/${videoId}/hls/master.m3u8${tokenParam}`;
             const mp4Url = `${API_BASE_URL}/api/videos/${videoId}/stream${tokenParam}`;
+
+            // If we already know this video lacks HLS manifests (legacy MP4), bypass HLS entirely
+            if (legacyMp4Cache.has(videoId)) {
+                preview.src = mp4Url;
+                preview.play().catch(() => {});
+                return;
+            }
 
             if (typeof Hls !== 'undefined' && Hls.isSupported()) {
                 if (!hlsInstance) {
@@ -35,10 +52,13 @@ export function setupVideoCardPreview(card, videoId) {
                     hlsInstance.loadSource(hlsUrl);
                     hlsInstance.attachMedia(preview);
                     hlsInstance.on(Hls.Events.ERROR, (event, data) => {
-                        if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                            // Fallback to standard MP4/stream if HLS master playlist not found
-                            hlsInstance.destroy();
-                            hlsInstance = null;
+                        if (data.fatal) {
+                            // Fallback to standard MP4/stream if HLS master playlist not found or errors
+                            legacyMp4Cache.add(videoId);
+                            if (hlsInstance) {
+                                hlsInstance.destroy();
+                                hlsInstance = null;
+                            }
                             preview.src = mp4Url;
                             preview.play().catch(() => {});
                         }
@@ -49,6 +69,11 @@ export function setupVideoCardPreview(card, videoId) {
                 if (!preview.src || !preview.src.includes('hls')) {
                     preview.src = hlsUrl;
                 }
+                preview.onerror = () => {
+                    legacyMp4Cache.add(videoId);
+                    preview.src = mp4Url;
+                    preview.play().catch(() => {});
+                };
             } else {
                 // Direct stream fallback
                 if (!preview.src) {
@@ -56,12 +81,14 @@ export function setupVideoCardPreview(card, videoId) {
                 }
             }
 
-            preview.play().then(() => {
-                preview.style.opacity = '1';
-                if (img) img.style.opacity = '0';
-            }).catch(e => {
+            preview.play().catch(e => {
                 // If autoplay was blocked or source threw NotSupportedError, fallback cleanly without console spam
                 if (e.name === 'NotSupportedError' && !preview.src.includes('/stream')) {
+                    legacyMp4Cache.add(videoId);
+                    if (hlsInstance) {
+                        hlsInstance.destroy();
+                        hlsInstance = null;
+                    }
                     preview.src = mp4Url;
                     preview.play().catch(() => {});
                 }
@@ -74,6 +101,8 @@ export function setupVideoCardPreview(card, videoId) {
         const preview = card.querySelector('.video-preview');
         const img = card.querySelector('.thumbnail-img');
         if (preview) {
+            preview.onplaying = null;
+            preview.onerror = null;
             preview.pause();
             preview.currentTime = 0;
             preview.removeAttribute('src');

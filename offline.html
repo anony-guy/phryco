@@ -72,6 +72,12 @@
     <div class="controls">
         Move: <kbd>Left</kbd> / <kbd>Right</kbd> | Shoot: <kbd>Space</kbd>
     </div>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <button id="return-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: transform 0.1s ease;">
+            🔄 Check Connection & Return
+        </button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -323,9 +329,17 @@
         spawnEnemy();
         loop();
 
-        // Check for online event to reload
+        function returnToApp() {
+            const returnUrl = localStorage.getItem('phryco_return_url') || '/';
+            localStorage.removeItem('phryco_return_url');
+            window.location.href = returnUrl;
+        }
+
+        document.getElementById('return-btn').addEventListener('click', returnToApp);
+
+        // Check for online event to restore user to their original page
         window.addEventListener('online', () => {
-            window.location.reload();
+            returnToApp();
         });
     </script>
 </body>
