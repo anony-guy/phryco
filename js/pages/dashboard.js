@@ -147,11 +147,18 @@ function renderUserRow(u) {
         ? `<span class="status-badge status-admin">${u.role}</span>` 
         : `<span class="status-badge status-user">USER</span>`;
         
+    let badgesHtml = '';
+    const trustedColor = u.is_trusted_creator ? '#10b981' : 'var(--text-secondary)';
+    const halalColor = u.halal_verified ? '#3b82f6' : 'var(--text-secondary)';
+    badgesHtml += `<button style="background: transparent; border: 1px solid ${trustedColor}; color: ${trustedColor}; padding: 2px 6px; border-radius: 4px; margin-right: 4px; font-size: 0.75rem; cursor: pointer;" onclick="toggleBadge(${u.id}, 'trusted')"><i data-lucide="shield-check" style="width:12px;height:12px;vertical-align:middle;"></i> Trusted Creator</button>`;
+    badgesHtml += `<button style="background: transparent; border: 1px solid ${halalColor}; color: ${halalColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;" onclick="toggleBadge(${u.id}, 'halal')"><i data-lucide="check" style="width:12px;height:12px;vertical-align:middle;"></i> Halal Verified</button>`;
+
     const escapedUsername = escapeHTML(u.username).replace(/'/g, "\\'");
     tr.innerHTML = `
         <td><strong>${escapeHTML(u.username)}</strong></td>
         <td>${roleHtml}</td>
         <td>${statusHtml}</td>
+        <td>${badgesHtml}</td>
         <td class="btn-group" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn-primary" style="background: transparent; border-color: var(--border-color); color: var(--text-primary); padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="openModal(${u.id}, 'notify', '${escapedUsername}')">Notify</button>
             <button class="btn-primary" style="background: transparent; border-color: var(--border-color); color: var(--text-primary); padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="openModal(${u.id}, 'role', '${escapedUsername}')">Role</button>
@@ -163,6 +170,15 @@ function renderUserRow(u) {
     `;
     return tr;
 }
+
+window.toggleBadge = async function(userId, badgeType) {
+    try {
+        await apiFetch(`/api/admin/users/${userId}/toggle_badge?badge_type=${badgeType}`, { method: 'POST' });
+        loadUsers();
+    } catch (e) {
+        alert("Failed to toggle badge: " + e.message);
+    }
+};
 
 async function loadUsers() {
     const tbody = document.getElementById('users-table-body');
@@ -300,6 +316,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         if (target === 'videos') loadAllVideos();
         if (target === 'emojis') loadGlobalEmojis();
         if (target === 'frames') loadAdminFrames();
+        if (target === 'promo') loadPromoCodes();
     });
 });
 
@@ -467,3 +484,68 @@ document.getElementById('clear-promo-btn')?.addEventListener('click', async () =
 document.addEventListener('DOMContentLoaded', () => {
     loadQueue();
 });
+
+window.loadPromoCodes = async function() {
+    const tbody = document.getElementById('promo-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading promo codes...</td></tr>';
+    try {
+        const promos = await apiFetch('/api/promo/list');
+        tbody.innerHTML = '';
+        if (!promos || promos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No promo codes configured yet.</td></tr>';
+            return;
+        }
+        promos.forEach(p => {
+            const statusBadge = p.is_active ? `<span style="color: #10b981; font-weight: bold;">ACTIVE</span>` : `<span style="color: #ef4444;">INACTIVE</span>`;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong style="color: var(--accent-primary); letter-spacing: 1px;">${escapeHTML(p.code)}</strong></td>
+                <td>${p.phrybucks_reward} PB</td>
+                <td>${p.fee_waiver_days} Days</td>
+                <td><strong>${p.total_redemptions}</strong> / ${p.global_ceiling}</td>
+                <td>${p.per_user_ceiling} per user</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="togglePromo(${p.id})">${p.is_active ? 'Disable' : 'Enable'}</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch(e) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #ef4444;">Failed to load promo codes: ${e.message}</td></tr>`;
+    }
+};
+
+window.togglePromo = async function(id) {
+    try {
+        await apiFetch(`/api/promo/${id}/toggle`, { method: 'POST' });
+        loadPromoCodes();
+    } catch(e) {
+        alert("Failed to toggle promo code: " + e.message);
+    }
+};
+
+const promoForm = document.getElementById('create-promo-form');
+if (promoForm) {
+    promoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            await apiFetch('/api/promo/create', {
+                method: 'POST',
+                body: {
+                    code: document.getElementById('p-code').value.trim(),
+                    phrybucks_reward: parseFloat(document.getElementById('p-reward').value || 0),
+                    fee_waiver_days: parseInt(document.getElementById('p-waiver').value || 0),
+                    global_ceiling: parseInt(document.getElementById('p-global').value || 100),
+                    per_user_ceiling: parseInt(document.getElementById('p-user').value || 1)
+                }
+            });
+            document.getElementById('p-code').value = '';
+            loadPromoCodes();
+            alert("Promo code generated successfully!");
+        } catch(err) {
+            alert("Error creating promo code: " + err.message);
+        }
+    });
+}

@@ -1,6 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
-import { escapeHTML } from '../utils/security.js';
+import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 
 let scroller;
@@ -30,7 +30,7 @@ function renderHistoryCard(video) {
         <div class="history-info">
             <h3 class="history-title">${escapeHTML(video.title)}</h3>
             <div class="history-meta">
-                <span>${escapeHTML(video.owner_username)}</span>
+                <span>${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}</span>
                 <span>${video.views} views</span>
             </div>
             <div class="history-desc">${escapeHTML(video.description || '')}</div>

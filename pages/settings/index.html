@@ -268,6 +268,57 @@
             </div>
         </div>
 
+        <div class="settings-section" style="border: 1px solid rgba(139, 92, 246, 0.25); background: linear-gradient(135deg, rgba(30, 27, 75, 0.4), rgba(15, 23, 42, 0.6)); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-top: 1.5rem;">
+            <h2><i data-lucide="award" style="color: #8b5cf6;"></i> Gamified Economy & Milestones</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem;">Earn interactive micro-bounties and milestone bonuses while adhering to fair-use economy limits.</p>
+            <div id="economy-stats-container" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <div style="background: rgba(255, 255, 255, 0.04); padding: 1rem 1.5rem; border-radius: var(--radius-lg); flex: 1; min-width: 200px; border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="font-size: 0.75rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 600;">Daily Micro-Bounty Cap</div>
+                    <div id="bounty-cap-text" style="font-size: 1.25rem; font-weight: 700; color: #10b981; margin-top: 0.25rem;">2.50 PB Max / Day</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Includes views (0.05 PB), comments (0.25 PB), subscribes (0.50 PB), & daily login (1.00 PB)</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.04); padding: 1rem 1.5rem; border-radius: var(--radius-lg); flex: 1; min-width: 200px; border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="font-size: 0.75rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 600;">P2P Transfer Security Lock</div>
+                    <div id="p2p-lock-status" style="font-size: 1.25rem; font-weight: 700; color: #f59e0b; margin-top: 0.25rem;">Checking status...</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Requires 30+ day account age and verified milestones</div>
+                </div>
+            </div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="trophy" style="width:18px; height:18px; color: #fbbf24;"></i> Verified Milestone Achievements</h3>
+            <div id="milestones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                <!-- Populate dynamically -->
+            </div>
+        </div>
+
+        <div class="settings-section" style="border: 1px solid rgba(244, 63, 94, 0.25); background: linear-gradient(135deg, rgba(88, 28, 135, 0.2), rgba(15, 23, 42, 0.7)); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-top: 1.5rem;">
+            <h2><i data-lucide="shield-check" style="color: #f43f5e;"></i> VaultGuard Alt-Account Switcher & Sybil Shields</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem;">VaultGuard automatically links secondary accounts in an alt-cluster to prevent smurfing and quota bypasses.</p>
+            
+            <div id="cluster-info-card" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <span style="font-weight: 600; color: white;">Cluster Status: <strong id="cluster-id-badge" style="color: #f43f5e; font-family: monospace; background: rgba(244, 63, 94, 0.15); padding: 0.2rem 0.5rem; border-radius: 4px;">Standalone / Protected</strong></span>
+                    <span style="font-size: 0.75rem; background: #10b981; color: white; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px;">ACTIVE SHIELD</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                    • <strong>Shared Upload Quota:</strong> Unified limit of max 5 videos & 1.0 GB volume per day across all accounts in cluster.<br>
+                    • <strong>Anti-Smurfing Lock:</strong> Peer-to-peer PhryBuck transfers between cluster accounts are permanently blocked.
+                </div>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="users" style="width:18px; height:18px; color: #38bdf8;"></i> Linked Accounts Switcher</h3>
+            <div id="alt-accounts-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">Loading linked accounts...</p>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 1rem;">
+                <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: white;">Link Secondary Account</h4>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="alt-username-input" placeholder="Username" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: white; padding: 0.5rem; border-radius: var(--radius-sm); flex: 1; min-width: 150px;">
+                    <input type="password" id="alt-password-input" placeholder="Password" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: white; padding: 0.5rem; border-radius: var(--radius-sm); flex: 1; min-width: 150px;">
+                    <button id="link-alt-btn" style="background: #38bdf8; color: #0f172a; font-weight: 700; border: none; padding: 0.5rem 1.25rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;">Link Account</button>
+                </div>
+            </div>
+        </div>
+
         <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
             <button id="save-settings-btn" class="btn-save">Save Changes</button>
         </div>

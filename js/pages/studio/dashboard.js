@@ -1,5 +1,6 @@
 import { apiFetch } from '../../api/client.js';
 import { API_BASE_URL } from '../../utils/config.js';
+import { escapeHTML, renderCreatorBadges } from '../../utils/security.js';
 
 async function loadAnalytics() {
     try {
@@ -28,7 +29,7 @@ async function loadAnalytics() {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 username = payload.sub;
-                document.getElementById('channel-name').textContent = username + "'s Channel";
+                document.getElementById('channel-name').innerHTML = `${escapeHTML(username)}'s Channel${renderCreatorBadges(data)}`;
                 
                 // Try to load custom avatar and banner
                 const avatarEl = document.getElementById('avatar-placeholder');

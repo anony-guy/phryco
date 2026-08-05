@@ -1,6 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
-import { escapeHTML } from '../utils/security.js';
+import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 
 let scroller;
@@ -30,7 +30,7 @@ function renderSearchResultCard(video) {
             
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
                 <img src="${API_BASE_URL}/api/users/${video.owner_username}/avatar" onerror="this.src=''; this.style.display='none';" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--bg-primary);">
-                <span style="color: var(--text-secondary); font-size: 0.875rem;">${escapeHTML(video.owner_username)}</span>
+                <span style="color: var(--text-secondary); font-size: 0.875rem;">${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}</span>
             </div>
             
             <p class="search-result-desc">${escapeHTML(video.description || '')}</p>

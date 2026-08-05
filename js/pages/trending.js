@@ -1,6 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
-import { escapeHTML } from '../utils/security.js';
+import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 import { setupVideoCardPreview } from '../utils/preview_player.js';
 
@@ -41,7 +41,7 @@ function renderVideoCard(video, rank) {
         <div class="video-info">
             <div class="video-title">${escapeHTML(video.title)}</div>
             <div class="video-meta">
-                <span>${escapeHTML(video.owner_username)}</span>
+                <span>${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}</span>
                 <span>${video.views} views • ${video.likes} likes${dateHtml}</span>
             </div>
         </div>

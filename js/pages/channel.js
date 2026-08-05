@@ -1,6 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
-import { escapeHTML } from '../utils/security.js';
+import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 
 function formatDuration(seconds) {
@@ -13,7 +13,7 @@ function formatDuration(seconds) {
 let scroller;
 
 async function setupChannelDetails(data, username) {
-    document.getElementById('channel-name').textContent = data.username;
+    document.getElementById('channel-name').innerHTML = `${escapeHTML(data.username)}${renderCreatorBadges(data)}`;
     const statsEl = document.getElementById('channel-stats');
     statsEl.textContent = `${data.subscriber_count.toLocaleString()} Subscribers`;
     

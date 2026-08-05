@@ -1,6 +1,6 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
-import { escapeHTML } from '../utils/security.js';
+import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
 import { InfiniteScroller } from '../utils/pagination.js';
 import { showToast } from '../utils/toast.js';
 import { initAmbientAura } from '../components/ambient_aura.js';
@@ -17,14 +17,24 @@ function loadVideoStream(url, playerElement, vidId) {
     }
     
     if (typeof Hls !== 'undefined' && Hls.isSupported() && url.includes('.m3u8')) {
-        window.hlsInstance = new Hls({
+        let hlsConfig = {
             xhrSetup: (xhr, url) => {
                 const token = localStorage.getItem('phryco_token');
                 if (token) {
                     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
                 }
             }
-        });
+        };
+        if (typeof p2pml !== 'undefined' && p2pml.hlsjs.Engine) {
+            const engine = new p2pml.hlsjs.Engine({
+                loader: {
+                    trackerAnnounce: ["wss://tracker.openwebtorrent.com", "wss://tracker.btorrent.xyz"]
+                }
+            });
+            hlsConfig = Object.assign(hlsConfig, engine.createHlsJsConfig());
+            window.p2pEngine = engine;
+        }
+        window.hlsInstance = new Hls(hlsConfig);
         window.hlsInstance.loadSource(url);
         window.hlsInstance.attachMedia(playerElement);
         
@@ -219,7 +229,7 @@ async function loadWatchPage() {
         });
         
         document.getElementById('video-desc').innerHTML = parseTimestamps(video.description || "No description provided.");
-        document.getElementById('video-owner').textContent = video.owner_username;
+        document.getElementById('video-owner').innerHTML = `${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}`;
         document.getElementById('channel-link').href = `/pages/channel/index.html?c=${video.owner_username}`;
         
         // Load Owner Avatar
@@ -890,8 +900,14 @@ async function loadWatchPage() {
             }
         });
         
-        // Load Comments
-        loadComments();
+        // Load Comments or Live Chat
+        window.currentVideoIsLive = video.is_live;
+        if (video.is_live) {
+            initLiveStreamChat();
+        } else {
+            loadComments();
+            initVODChatReplay();
+        }
         
         // Populate Up Next
         const recommendedContainer = document.getElementById('recommended-videos');
@@ -915,7 +931,7 @@ async function loadWatchPage() {
                             ${v.duration_seconds ? `<div class="video-duration">${formatDuration(v.duration_seconds)}</div>` : ""}</div>
                             <div class="up-next-info">
                                 <h4 class="up-next-title">${escapeHTML(v.title)}</h4>
-                                <p class="up-next-author">${escapeHTML(v.owner_username)}</p>
+                                <p class="up-next-author">${escapeHTML(v.owner_username)}${renderCreatorBadges(v)}</p>
                                 <p class="up-next-views">${v.views.toLocaleString()} views</p>
                             </div>
                         `;
@@ -977,6 +993,64 @@ async function loadComments() {
     }
 }
 
+let liveChatPollInterval = null;
+async function initLiveStreamChat() {
+    const list = document.getElementById('comments-list');
+    list.innerHTML = '<p style="color: var(--accent-primary); font-weight: bold;">Live Stream Chat Active (Standard comments disabled during broadcast)</p>';
+    
+    fetchLiveChatMessages();
+    if (liveChatPollInterval) clearInterval(liveChatPollInterval);
+    liveChatPollInterval = setInterval(fetchLiveChatMessages, 3000);
+}
+
+async function fetchLiveChatMessages() {
+    try {
+        const data = await apiFetch(`/api/livestream/${currentVideoId}/chat?offset_sec=0`);
+        const list = document.getElementById('comments-list');
+        if (data && data.messages && window.currentVideoIsLive) {
+            const headerHtml = '<p style="color: var(--accent-primary); font-weight: bold; margin-bottom: 1rem;">Live Stream Chat Active (Standard comments disabled during broadcast)</p>';
+            const msgsHtml = data.messages.map(c => `
+                <div class="comment animate-fade-in">
+                    <div class="comment-avatar">
+                        <img src="${API_BASE_URL}/api/users/${escapeHTML(c.username)}/avatar" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">
+                    </div>
+                    <div class="comment-content">
+                        <h4>${escapeHTML(c.username)} <span style="color: var(--accent-primary); font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem;">[${formatDuration(c.time_offset_sec)}]</span></h4>
+                        <p>${escapeHTML(c.message)}</p>
+                    </div>
+                </div>
+            `).join('');
+            list.innerHTML = headerHtml + (msgsHtml || '<p style="color: var(--text-secondary);">No chat messages yet in this stream.</p>');
+            if (window.lucide) window.lucide.createIcons();
+        }
+    } catch(e) {
+        console.error("Failed to poll live chat", e);
+    }
+}
+
+function initVODChatReplay() {
+    const player = document.getElementById('video-player');
+    if (!player) return;
+    player.addEventListener('timeupdate', async () => {
+        if (Math.floor(player.currentTime) % 5 === 0 && player.currentTime > 0) {
+            try {
+                const res = await apiFetch(`/api/livestream/${currentVideoId}/chat?offset_sec=${player.currentTime}`);
+                if (res && res.is_vod_replay && res.messages && res.messages.length > 0) {
+                    const list = document.getElementById('comments-list');
+                    let badge = document.getElementById('vod-sync-badge');
+                    if (!badge && list) {
+                        badge = document.createElement('div');
+                        badge.id = 'vod-sync-badge';
+                        badge.style = "color: var(--accent-primary); margin-bottom: 1rem; font-size: 0.9rem; font-weight: bold;";
+                        badge.textContent = "Synced VOD Live Chat Replay Stream:";
+                        list.insertBefore(badge, list.firstChild);
+                    }
+                }
+            } catch(e) {}
+        }
+    });
+}
+
 document.getElementById('post-comment-btn').addEventListener('click', async () => {
     const input = document.getElementById('comment-input');
     const content = input.value.trim();
@@ -992,6 +1066,19 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
     }
     
     const user = JSON.parse(userStr);
+    if (window.currentVideoIsLive) {
+        try {
+            await apiFetch(`/api/livestream/${currentVideoId}/chat`, {
+                method: 'POST',
+                body: { message: content }
+            });
+            input.value = '';
+            fetchLiveChatMessages();
+        } catch(e) {
+            showToast("Failed to send live chat: " + e.message, "error");
+        }
+        return;
+    }
     
     const list = document.getElementById('comments-list');
     

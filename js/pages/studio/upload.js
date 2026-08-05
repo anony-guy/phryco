@@ -220,6 +220,122 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
         formData.append('file_size_bytes', currentFileSizeBytes);
         formData.append('duration_seconds', Math.floor(currentDurationSeconds));
 
+        const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
+        const totalChunks = Math.ceil(videoFile.size / CHUNK_SIZE);
+
+        if (videoFile.size > 20 * 1024 * 1024) {
+            btn.textContent = 'Initializing Upload...';
+            const initData = new FormData();
+            initData.append('title', document.getElementById('title').value);
+            initData.append('description', document.getElementById('description').value);
+            initData.append('file_size_bytes', currentFileSizeBytes);
+            initData.append('total_chunks', totalChunks);
+            initData.append('qualities', selectedQualities.join(','));
+            initData.append('duration_seconds', Math.floor(currentDurationSeconds));
+            if (thumbFile) initData.append('custom_thumbnail', thumbFile);
+            if (subFile) initData.append('subtitles', subFile);
+            if (isAd) {
+                initData.append('is_ad', 'true');
+                initData.append('target_audience', document.getElementById('target-audience').value);
+                initData.append('target_times', document.getElementById('target-times').value);
+                const cardType = document.getElementById('card-type').value;
+                initData.append('card_type', cardType);
+                if (cardType === 'CUSTOM') {
+                    initData.append('promo_header', document.getElementById('promo-header').value);
+                    initData.append('promo_description', document.getElementById('promo-description').value);
+                    initData.append('promo_link', document.getElementById('promo-link').value);
+                    const bannerFile = document.getElementById('promo-banner').files[0];
+                    if (bannerFile) initData.append('promo_banner', bannerFile);
+                    const iconFile = document.getElementById('promo-icon').files[0];
+                    if (iconFile) initData.append('promo_icon', iconFile);
+                }
+            }
+
+            const initRes = await fetch(`${API_BASE_URL}/api/videos/upload/init`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('phryco_token') || ''}` },
+                body: initData
+            });
+            if (!initRes.ok) {
+                const errJson = await initRes.json();
+                throw new Error(errJson.detail || "Failed to initialize chunked upload.");
+            }
+            const { upload_session_id } = await initRes.json();
+            
+            document.getElementById('progress-container').style.display = 'block';
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            btn.textContent = 'Uploading Chunks...';
+            
+            const statusRes = await fetch(`${API_BASE_URL}/api/videos/upload/status/${upload_session_id}`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('phryco_token') || ''}` }
+            });
+            const statusData = await statusRes.json();
+            const receivedSet = new Set(statusData.received_chunks || []);
+
+            let uploadedBytes = receivedSet.size * CHUNK_SIZE;
+            
+            for (let i = 0; i < totalChunks; i++) {
+                if (receivedSet.has(i)) continue;
+                
+                const start = i * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, videoFile.size);
+                const chunkBlob = videoFile.slice(start, end);
+                
+                const chunkData = new FormData();
+                chunkData.append('upload_session_id', upload_session_id);
+                chunkData.append('chunk_index', i);
+                chunkData.append('chunk', chunkBlob, `chunk_${i}.mp4`);
+                
+                let attempts = 0;
+                while (attempts < 3) {
+                    try {
+                        const chunkRes = await fetch(`${API_BASE_URL}/api/videos/upload/chunk`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${localStorage.getItem('phryco_token') || ''}` },
+                            body: chunkData
+                        });
+                        if (!chunkRes.ok) throw new Error("Chunk upload failed");
+                        break;
+                    } catch(err) {
+                        attempts++;
+                        if (attempts >= 3) throw new Error(`Network error on chunk ${i} after 3 retries.`);
+                        await new Promise(r => setTimeout(r, 1000 * attempts));
+                    }
+                }
+                uploadedBytes = Math.min(videoFile.size, (i + 1) * CHUNK_SIZE);
+                const percent = Math.round((uploadedBytes / videoFile.size) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = `Uploading Chunks (${i + 1}/${totalChunks}) - ${percent}%`;
+            }
+            
+            btn.textContent = 'Finalizing Upload...';
+            const finalizeData = new FormData();
+            finalizeData.append('upload_session_id', upload_session_id);
+            const finRes = await fetch(`${API_BASE_URL}/api/videos/upload/finalize`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('phryco_token') || ''}` },
+                body: finalizeData
+            });
+            if (!finRes.ok) {
+                const finErr = await finRes.json();
+                throw new Error(finErr.detail || "Failed to finalize upload.");
+            }
+            const data = await finRes.json();
+            showToast(data.message || "Upload successful via slice-based protocol!", "success");
+            document.getElementById('upload-form').reset();
+            dropTitle.textContent = "Drag & Drop Video Here";
+            dropDesc.textContent = "Or click to browse files (MP4, M4V)";
+            currentFileSizeBytes = 0; 
+            currentDurationSeconds = 0; 
+            calculateCost();
+            document.getElementById('progress-container').style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'Upload Video';
+            return;
+        }
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `${API_BASE_URL}/api/videos/upload`);
         const token = localStorage.getItem('phryco_token');

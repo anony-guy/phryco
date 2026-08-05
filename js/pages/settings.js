@@ -209,4 +209,135 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Trigger load
     loadConnections();
+    loadEconomyAndAlts();
+
+    async function loadEconomyAndAlts() {
+        const milestonesContainer = document.getElementById('milestones-container');
+        const p2pLockStatus = document.getElementById('p2p-lock-status');
+        const clusterBadge = document.getElementById('cluster-id-badge');
+        const altAccountsList = document.getElementById('alt-accounts-list');
+        const linkAltBtn = document.getElementById('link-alt-btn');
+
+        try {
+            let fp = localStorage.getItem('phryco_vg_fp');
+            if (!fp) {
+                fp = 'vg_' + Math.random().toString(36).substring(2, 10) + '_' + (navigator.userAgent || '').length;
+                localStorage.setItem('phryco_vg_fp', fp);
+            }
+            await apiFetch('/api/users/me/vaultguard', {
+                method: 'POST',
+                body: { fingerprint: fp }
+            });
+        } catch (e) {
+            console.warn("VaultGuard telemetry reporting failed:", e);
+        }
+
+        try {
+            const [profile, altsData] = await Promise.all([
+                apiFetch('/api/users/me'),
+                apiFetch('/api/users/me/alts')
+            ]);
+
+            if (milestonesContainer) {
+                const availableMilestones = [
+                    { id: "first_upload", name: "First Upload", reward: "+25 PB", desc: "Upload 1+ videos" },
+                    { id: "10_subscribers", name: "10 Subscribers", reward: "+50 PB", desc: "Reach 10 channel subs" },
+                    { id: "50_subscribers", name: "50 Subscribers", reward: "+150 PB", desc: "Reach 50 channel subs" },
+                    { id: "100_views", name: "100 Total Views", reward: "+100 PB", desc: "Receive 100+ views" }
+                ];
+                const achieved = profile.milestones || [];
+                
+                milestonesContainer.innerHTML = availableMilestones.map(m => {
+                    const isCompleted = achieved.includes(m.id);
+                    return `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid ${isCompleted ? '#10b981' : 'rgba(255,255,255,0.08)'}; border-radius: var(--radius-md); padding: 1rem; position: relative; overflow: hidden;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 700; font-size: 0.9rem; color: white;">${m.name}</span>
+                                <span style="font-size: 0.75rem; font-weight: 700; background: ${isCompleted ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.08)'}; color: ${isCompleted ? '#10b981' : 'var(--text-tertiary)'}; padding: 0.2rem 0.5rem; border-radius: 4px;">${m.reward}</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">${m.desc}</p>
+                            <div style="margin-top: 0.75rem; font-size: 0.75rem; font-weight: 700; color: ${isCompleted ? '#10b981' : '#f59e0b'}; display: flex; align-items: center; gap: 0.35rem;">
+                                ${isCompleted ? '<i data-lucide="check-circle" style="width:14px; height:14px;"></i> Verified & Paid' : '<i data-lucide="clock" style="width:14px; height:14px;"></i> In Progress'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+
+            if (p2pLockStatus) {
+                const achievedCount = (profile.milestones || []).length;
+                if (profile.role === 'ADMIN' || profile.role === 'OWNER' || achievedCount > 0) {
+                    p2pLockStatus.textContent = "Unlocked (Verified)";
+                    p2pLockStatus.style.color = "#10b981";
+                } else {
+                    p2pLockStatus.textContent = "Locked (Milestone Needed)";
+                    p2pLockStatus.style.color = "#ef4444";
+                }
+            }
+
+            if (clusterBadge) {
+                clusterBadge.textContent = altsData.cluster_id || "Standalone / Protected";
+            }
+
+            if (altAccountsList) {
+                altAccountsList.innerHTML = altsData.accounts.map(acc => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #38bdf8; color: #0f172a; display: flex; align-items: center; justify-content: center; font-weight: 800; text-transform: uppercase;">
+                                ${acc.username.charAt(0)}
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: white;">${acc.username} ${acc.is_current ? '<span style="font-size: 0.7rem; background: #8b5cf6; color: white; padding: 0.15rem 0.5rem; border-radius: 8px; margin-left: 0.4rem;">ACTIVE</span>' : ''}</div>
+                                <div style="font-size: 0.75rem; color: #10b981; font-weight: 600;">Balance: ${acc.phrybucks_balance.toFixed(2)} PB</div>
+                            </div>
+                        </div>
+                        <div>
+                            ${acc.is_current ? '<span style="color: var(--text-tertiary); font-size: 0.8rem; font-weight: 600;">Currently Logged In</span>' : `<button class="btn-switch-account" data-username="${acc.username}" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">Switch</button>`}
+                        </div>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.btn-switch-account').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const targetUser = e.target.getAttribute('data-username');
+                        alert(`To switch to account '${targetUser}', please re-authenticate on the login screen with your credentials or VaultGuard token.`);
+                        localStorage.removeItem('phryco_token');
+                        window.location.href = '../../pages/login/index.html';
+                    });
+                });
+            }
+        } catch (e) {
+            console.error("Failed to load economy & alt account data:", e);
+            if (altAccountsList) altAccountsList.innerHTML = '<p style="color: #ef4444; font-size: 0.875rem;">Error loading linked accounts.</p>';
+        }
+
+        if (linkAltBtn) {
+            linkAltBtn.addEventListener('click', async () => {
+                const userVal = document.getElementById('alt-username-input').value.trim();
+                const passVal = document.getElementById('alt-password-input').value;
+                if (!userVal || !passVal) {
+                    alert("Please provide both username and password for the account to link.");
+                    return;
+                }
+                try {
+                    linkAltBtn.textContent = "Linking...";
+                    linkAltBtn.disabled = true;
+                    const resp = await apiFetch('/api/users/me/link_alt', {
+                        method: 'POST',
+                        body: { username: userVal, password: passVal }
+                    });
+                    alert(resp.message);
+                    document.getElementById('alt-username-input').value = "";
+                    document.getElementById('alt-password-input').value = "";
+                    loadEconomyAndAlts();
+                } catch (err) {
+                    alert("Error: " + (err.detail || err.message || "Failed to link account. Check credentials."));
+                } finally {
+                    linkAltBtn.textContent = "Link Account";
+                    linkAltBtn.disabled = false;
+                }
+            });
+        }
+    }
 });

@@ -143,6 +143,7 @@
                 <button class="tab-btn" data-target="videos">Video Management</button>
                 <button class="tab-btn" data-target="emojis">Global Emojis</button>
                 <button class="tab-btn" data-target="frames">Cosmetic Frames</button>
+                <button class="tab-btn" data-target="promo">Promo Codes</button>
             </div>
 
             <!-- Approvals Tab -->
@@ -174,11 +175,12 @@
                                 <th>Username</th>
                                 <th>Role</th>
                                 <th>Status</th>
+                                <th>Creator Badges</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="users-table-body">
-                            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">Loading...</td></tr>
+                            <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -243,6 +245,55 @@
                         </thead>
                         <tbody id="frames-table-body">
                             <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading frames...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Promo Codes Tab -->
+            <div id="promo" class="tab-content animate-fade-in">
+                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 1rem; color: var(--accent-primary);">Create VIP Promo Code</h3>
+                    <form id="create-promo-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: end;">
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Code (e.g. VIP2026)</label>
+                            <input type="text" id="p-code" required style="width: 100%; padding: 0.5rem; background: var(--bg-primary); color: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Reward PhryBucks</label>
+                            <input type="number" step="1" id="p-reward" value="100" style="width: 100%; padding: 0.5rem; background: var(--bg-primary); color: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Fee Waiver (Days)</label>
+                            <input type="number" id="p-waiver" value="30" style="width: 100%; padding: 0.5rem; background: var(--bg-primary); color: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Global Ceiling</label>
+                            <input type="number" id="p-global" value="100" style="width: 100%; padding: 0.5rem; background: var(--bg-primary); color: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Per-User Ceiling</label>
+                            <input type="number" id="p-user" value="1" style="width: 100%; padding: 0.5rem; background: var(--bg-primary); color: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        </div>
+                        <button type="submit" class="btn-primary" style="height: 38px;">Generate Code</button>
+                    </form>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Reward (PB)</th>
+                                <th>Fee Waiver (Days)</th>
+                                <th>Global Redemptions / Ceiling</th>
+                                <th>Per-User Limit</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promo-table-body">
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading promo codes...</td></tr>
                         </tbody>
                     </table>
                 </div>

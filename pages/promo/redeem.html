@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Promo Redemption - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .promo-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.15) 0%, transparent 50%);
+        }
+        .aura-blob {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+            animation: pulse-aura 8s infinite alternate ease-in-out;
+        }
+        .aura-blue { top: -100px; left: -100px; background: var(--accent-primary, #3b82f6); }
+        .aura-gold { bottom: -100px; right: -100px; background: #f59e0b; }
+        @keyframes pulse-aura {
+            0% { transform: scale(0.9) translate(0, 0); }
+            100% { transform: scale(1.1) translate(20px, -20px); }
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 3.5rem 3rem;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .vip-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+        }
+        .code-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            color: #f8fafc;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            outline: none;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .code-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+            background: rgba(15, 23, 42, 0.9);
+        }
+        .code-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 2px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        .btn-claim {
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-claim:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.6);
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+        }
+        .btn-claim:active {
+            transform: scale(0.98);
+        }
+        .btn-claim:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .success-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <div class="search-bar" style="flex: 1; max-width: 500px; margin: 0 2rem;">
+            <input type="text" placeholder="Search videos..." style="width: 100%; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); outline: none;">
+        </div>
+        <nav class="nav-links">
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins" style="width: 16px; height: 16px;"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/upload.html" class="btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Upload
+            </a>
+            <div class="user-menu-container" style="position: relative;">
+                <a href="#" id="user-menu-btn" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--bg-secondary); text-decoration: none;">
+                    <i data-lucide="user" style="color: var(--text-secondary);"></i>
+                </a>
+                <div id="user-dropdown" class="dropdown-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="../../"><i data-lucide="home"></i> Home</a>
+            <a href="../../pages/trending/index.html"><i data-lucide="trending-up"></i> Trending</a>
+            <a href="../../pages/explore/index.html"><i data-lucide="compass"></i> Explore</a>
+            <a href="../../pages/qna/index.html"><i data-lucide="help-circle"></i> QnA Forum</a>
+            <a href="../../pages/shop/index.html"><i data-lucide="shopping-cart"></i> Shop</a>
+        </aside>
+
+        <main class="content" style="padding: 0;">
+            <div class="promo-container">
+                <div class="aura-blob aura-blue"></div>
+                <div class="aura-blob aura-gold"></div>
+
+                <div class="glass-card" id="redeem-card">
+                    <div class="vip-icon-wrapper">
+                        <i data-lucide="gift" style="width: 42px; height: 42px; color: #f59e0b;"></i>
+                    </div>
+                    <h1 style="font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VIP Creator Rewards</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.75rem; font-size: 1.05rem; line-height: 1.6;">
+                        Enter your official VIP promo code below to instantly unlock PhryBucks grants and zero-fee upload exemptions.
+                    </p>
+
+                    <form id="redeem-form">
+                        <input type="text" id="promo-input" class="code-input" placeholder="ENTER VIP CODE" autocomplete="off" required maxlength="32">
+                        <button type="submit" id="submit-btn" class="btn-claim">
+                            <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i> Claim VIP Rewards
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-card success-box" id="success-card">
+                    <div class="vip-icon-wrapper" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);">
+                        <i data-lucide="check-circle" style="width: 46px; height: 46px; color: #10b981;"></i>
+                    </div>
+                    <h2 style="font-size: 2rem; font-weight: 800; color: #f8fafc;">Rewards Unlocked!</h2>
+                    <p id="success-details" style="color: #cbd5e1; font-size: 1.2rem; font-weight: 600; margin: 1rem 0; line-height: 1.6;"></p>
+                    <a href="../../" class="btn-claim" style="background: var(--accent-primary); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); text-decoration: none;">
+                        <i data-lucide="home"></i> Return to Studio Dashboard
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+    <script type="module" src="../../js/components/header.js"></script>
+    <script type="module" src="../../js/pages/redeem.js"></script>
+</body>
+</html>
