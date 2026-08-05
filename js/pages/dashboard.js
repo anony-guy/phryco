@@ -143,9 +143,14 @@ function renderUserRow(u) {
     if (u.is_suspended) statusHtml += `<span class="status-badge status-suspended">Suspended${u.suspension_end ? ' (Temp)' : ''}</span> `;
     if (!statusHtml) statusHtml = `<span class="status-badge status-user">Active</span>`;
     
-    let roleHtml = u.role === 'ADMIN' || u.role === 'OWNER' 
-        ? `<span class="status-badge status-admin">${u.role}</span>` 
-        : `<span class="status-badge status-user">USER</span>`;
+    let roleHtml = '';
+    if (u.role === 'ADMIN' || u.role === 'OWNER') {
+        roleHtml = `<span class="status-badge status-admin">${u.role}</span>`;
+    } else if (u.role === 'SUPPORTER') {
+        roleHtml = `<span class="status-badge" style="background: rgba(236, 72, 153, 0.2); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.4); padding: 2px 8px; border-radius: 9999px; font-weight: 600;">SUPPORTER 💖</span>`;
+    } else {
+        roleHtml = `<span class="status-badge status-user">USER</span>`;
+    }
         
     let badgesHtml = '';
     const trustedColor = u.is_trusted_creator ? '#10b981' : 'var(--text-secondary)';
@@ -259,6 +264,7 @@ window.openModal = function(userId, type, username) {
         modalInputContainer.innerHTML = `
             <select id="modal-input-val" style="width:100%; background:var(--bg-secondary); color:var(--text-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.5rem;">
                 <option value="USER">USER</option>
+                <option value="SUPPORTER">SUPPORTER 💖</option>
                 <option value="ADMIN">ADMIN</option>
             </select>
         `;

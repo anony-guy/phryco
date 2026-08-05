@@ -13,7 +13,7 @@ function formatDuration(seconds) {
 let scroller;
 
 async function setupChannelDetails(data, username) {
-    document.getElementById('channel-name').innerHTML = `${escapeHTML(data.username)}${renderCreatorBadges(data)}`;
+    document.getElementById('channel-name').innerHTML = `${escapeHTML(data.username)}${renderCreatorBadges(data, true)}`;
     const statsEl = document.getElementById('channel-stats');
     statsEl.textContent = `${data.subscriber_count.toLocaleString()} Subscribers`;
     

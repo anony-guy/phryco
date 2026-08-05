@@ -96,6 +96,7 @@ async function initHeader() {
                 </div>
                 <div class="dropdown-divider"></div>
                 <a href="../../pages/studio/index.html" class="dropdown-item"><i data-lucide="video" style="width: 16px; height: 16px;"></i> Studio</a>
+                <a href="../../pages/contact/index.html" class="dropdown-item"><i data-lucide="palette" style="width: 16px; height: 16px; color: #ec4899;"></i> Custom Themes</a>
                 <a href="#" id="dropdown-settings-btn" class="dropdown-item"><i data-lucide="settings" style="width: 16px; height: 16px;"></i> Settings</a>
                 ${adminLink}
                 <div class="dropdown-divider"></div>

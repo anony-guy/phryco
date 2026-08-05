@@ -29,7 +29,7 @@ async function loadAnalytics() {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 username = payload.sub;
-                document.getElementById('channel-name').innerHTML = `${escapeHTML(username)}'s Channel${renderCreatorBadges(data)}`;
+                document.getElementById('channel-name').innerHTML = `${escapeHTML(username)}'s Channel${renderCreatorBadges(data, true)}`;
                 
                 // Try to load custom avatar and banner
                 const avatarEl = document.getElementById('avatar-placeholder');

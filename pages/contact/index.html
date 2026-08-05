@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Request bespoke custom channel themes, UI decorations, webrings, and portfolio pages directly from Phryco designers. Available exclusively for Supporter-tier members with an intake cap of 10 projects per year.">
+    <title>Custom Themes & Design Hub - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --neon-pink: #ec4899;
+            --neon-purple: #a855f7;
+            --neon-cyan: #06b6d4;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: radial-gradient(circle at 15% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 85% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+                        var(--bg-primary, #0f172a);
+            min-height: 100vh;
+            color: var(--text-primary, #f8fafc);
+        }
+
+        .hub-container {
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-banner {
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl, 24px);
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            margin-bottom: 3.5rem;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 180deg at 50% 50%, var(--neon-pink), var(--neon-purple), var(--neon-cyan), var(--neon-pink));
+            animation: rotateGlow 12s linear infinite;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .exclusive-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2));
+            color: var(--neon-pink);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            padding: 0.4rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            color: var(--text-secondary, #94a3b8);
+            max-width: 700px;
+            margin: 0 auto 2.5rem auto;
+            line-height: 1.6;
+        }
+
+        .status-tracker-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg, 16px);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .quota-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .quota-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .quota-badge {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.15));
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: #38bdf8;
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-md, 12px);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg, 20px);
+            padding: 2.25rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(236, 72, 153, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(236, 72, 153, 0.25);
+        }
+
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--neon-pink);
+        }
+
+        .service-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .service-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.25rem;
+        }
+
+        .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-features li i {
+            color: #10b981;
+            width: 16px;
+            height: 16px;
+        }
+
+        .workflow-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl, 24px);
+            padding: 3.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-item {
+            text-align: left;
+            position: relative;
+        }
+
+        .step-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.08);
+            line-height: 1;
+            margin-bottom: -1rem;
+            position: relative;
+            z-index: 0;
+        }
+
+        .step-content {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            height: calc(100% - 2rem);
+        }
+
+        .step-content h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+        }
+
+        .step-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .contact-action-section {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.15));
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: var(--radius-xl, 24px);
+            padding: 3.5rem;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .contact-card-inner {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-card-inner h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .contact-card-inner p {
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .discord-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: #1e1f22;
+            border: 1px solid #5865f2;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md, 12px);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.3);
+        }
+
+        .discord-box:hover {
+            transform: scale(1.03);
+            background: #2b2d31;
+            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        .discord-box i {
+            color: #5865f2;
+        }
+
+        .copy-hint {
+            display: block;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: opacity 0.2s;
+        }
+
+        .transparency-note {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--neon-cyan);
+            border-radius: 4px var(--radius-md) var(--radius-md) 4px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .transparency-note strong {
+            color: var(--text-primary);
+        }
+
+        .user-status-bar {
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .status-unauthorized {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .status-authorized {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #a7f3d0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .hub-container { margin: 1.5rem auto; }
+            .hero-banner { padding: 2rem 1.25rem; }
+            .workflow-section, .contact-action-section { padding: 2rem 1.5rem; }
+            .status-tracker-card { flex-direction: column; text-align: center; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar injected by header.js -->
+
+    <main class="hub-container">
+        <section class="hero-banner">
+            <div class="hero-content">
+                <div class="exclusive-badge">
+                    <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+                    <span>Supporter On-Demand Exclusive</span>
+                </div>
+                <h1>Bespoke Channel Themes & Webring Aesthetics</h1>
+                <p class="hero-subtitle">
+                    Stand out from the default grid with custom tailored visual identity packages, interactive UI decorations, decentralized webrings, and dedicated portfolio layouts crafted by Phryco designers.
+                </p>
+
+                <div id="user-eligibility-status" class="user-status-bar">
+                    <div style="display:flex; align-items:center; gap: 0.75rem;">
+                        <i data-lucide="shield-alert" id="status-icon"></i>
+                        <span id="status-message">Checking Supporter role eligibility...</span>
+                    </div>
+                    <a href="../../index.html" class="btn-outline" id="action-link" style="padding: 0.35rem 0.85rem; font-size: 0.8rem; text-decoration:none; display:none;">Become a Supporter</a>
+                </div>
+
+                <div class="status-tracker-card">
+                    <div class="quota-info">
+                        <h3>Annual Custom Intake Quota</h3>
+                        <p>To ensure state-of-the-art craftsmanship and prevent operational backlog, design orders are capped per 12-month period.</p>
+                    </div>
+                    <div class="quota-badge">
+                        <i data-lucide="gauge" style="width:20px;height:20px;"></i>
+                        <span id="slots-remaining-display">10 / 10 Slots Available</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-header">
+            <h2>On-Demand Design Portfolio</h2>
+            <p>Select the custom aesthetic transformation that fits your creator vision.</p>
+        </div>
+
+        <section class="services-grid" id="services-grid">
+            <div class="service-card">
+                <div>
+                    <div class="service-icon"><i data-lucide="palette"></i></div>
+                    <h2>Custom Channel Themes</h2>
+                    <p>Complete transformation of your channel page colors, typography, glowing backgrounds, and tailored header animations that reflect your streaming personality.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i data-lucide="check-circle-2"></i> Custom CSS Token Override</li>
+                    <li><i data-lucide="check-circle-2"></i> Animated Banner & Avatar Border</li>
+                    <li><i data-lucide="check-circle-2"></i> Exclusive Color Palettes</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon"><i data-lucide="layout-template"></i></div>
+                    <h2>UI Decorations & Frames</h2>
+                    <p>Bespoke video frames, chat badges, custom emoji sets, and micro-animations that animate whenever viewers interact with your content.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i data-lucide="check-circle-2"></i> Tailored Video Player Frame</li>
+                    <li><i data-lucide="check-circle-2"></i> Custom Channel Emojis</li>
+                    <li><i data-lucide="check-circle-2"></i> Hover & Click Micro-Animations</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon"><i data-lucide="globe"></i></div>
+                    <h2>Webrings & Social Hubs</h2>
+                    <p>Connect with peer channels via custom retro-modern decentralized Webring navigation widgets and sleek integrated social media link portals.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i data-lucide="check-circle-2"></i> Interactive Webring Navigator</li>
+                    <li><i data-lucide="check-circle-2"></i> Social Feed Embeds</li>
+                    <li><i data-lucide="check-circle-2"></i> Community Cross-Linking</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon"><i data-lucide="briefcase"></i></div>
+                    <h2>Custom Portfolio Page</h2>
+                    <p>A completely customized standalone showcase page within Phryco designed for sponsorship kit presentations, highlight reels, and professional press media.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i data-lucide="check-circle-2"></i> Dedicated URL Endpoint</li>
+                    <li><i data-lucide="check-circle-2"></i> High-Converting Media Kit</li>
+                    <li><i data-lucide="check-circle-2"></i> Custom Analytics Integration</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="workflow-section">
+            <div class="section-header">
+                <h2>The Commission Workflow</h2>
+                <p>Direct, streamlined, and fast-tracked through state-of-the-art tooling.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Verify Eligibility</h3>
+                        <p>Ensure your account holds active Supporter status and that annual intake slots remain available before initiating contact.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Direct Discord Consultation</h3>
+                        <p>Reach out to our design lead with your vision, moodboards, reference colors, and target channel requirements.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Rapid Prototyping</h3>
+                        <p>We rapidly prototype your custom layout, style tokens, and interactive effects with rigorous attention to responsiveness and aesthetic depth.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Deployment & Sync</h3>
+                        <p>Your finished theme token or portfolio page is deployed directly to your channel and locked in across the Phryco platform.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-action-section">
+            <div class="contact-card-inner">
+                <h2>Ready to Transform Your Channel?</h2>
+                <p>To avoid traditional ticket queues and agency bureaucracy, all Supporter commissions are handled directly via Discord. Click below to copy our design handle and initiate your request.</p>
+                
+                <button class="discord-box" id="copy-discord-btn" aria-label="Copy Discord username painsel">
+                    <i data-lucide="message-square"></i>
+                    <span id="discord-handle">painsel</span>
+                    <i data-lucide="copy" style="width:18px;height:18px;opacity:0.7;margin-left:4px;"></i>
+                </button>
+                <span class="copy-hint" id="copy-feedback">Click to copy Discord handle to clipboard</span>
+
+                <div class="transparency-note">
+                    <strong><i data-lucide="shield-check" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> Direct Creator & Performance Guarantee:</strong><br>
+                    We bypass corporate ticket queues and slow agency turnaround times entirely. By directly communicating with our design lead via Discord, your ideas are translated into tailored CSS tokens and bespoke UI layouts rapidly and cleanly. Every custom layout is engineered for zero code bloat, seamless responsiveness, and native visual consistency across the entire Phryco ecosystem without operational delays.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+    <script type="module" src="../../js/pages/contact.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
+</body>
+</html>

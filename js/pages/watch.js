@@ -229,7 +229,7 @@ async function loadWatchPage() {
         });
         
         document.getElementById('video-desc').innerHTML = parseTimestamps(video.description || "No description provided.");
-        document.getElementById('video-owner').innerHTML = `${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}`;
+        document.getElementById('video-owner').innerHTML = `${escapeHTML(video.owner_username)}${renderCreatorBadges(video, true)}`;
         document.getElementById('channel-link').href = `/pages/channel/index.html?c=${video.owner_username}`;
         
         // Load Owner Avatar
