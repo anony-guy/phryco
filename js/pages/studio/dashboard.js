@@ -8,6 +8,19 @@ async function loadAnalytics() {
         document.getElementById('stat-likes').textContent = data.total_likes.toLocaleString();
         document.getElementById('stat-phrybucks').textContent = `${data.phrybucks_balance.toLocaleString()} PB`;
         
+        if (document.getElementById('stat-free-uploads')) {
+            document.getElementById('stat-free-uploads').textContent = data.free_uploads_remaining !== undefined ? data.free_uploads_remaining : 3;
+        }
+        if (document.getElementById('grant-badge')) {
+            if (data.received_bootstrap_grant) {
+                const badge = document.getElementById('grant-badge');
+                badge.textContent = '✨ +50 PB Grant Claimed!';
+                badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                badge.style.borderColor = '#10b981';
+                badge.style.color = '#10b981';
+            }
+        }
+        
         // Decoding JWT to get username for the UI
         let username = "";
         const token = localStorage.getItem('phryco_token');

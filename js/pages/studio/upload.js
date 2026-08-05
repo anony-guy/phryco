@@ -4,10 +4,29 @@ import { showToast } from '../../utils/toast.js';
 
 let currentFileSizeBytes = 0;
 let currentDurationSeconds = 0;
+let freeUploadsRemaining = 0;
+
+async function checkUserCredits() {
+    try {
+        const userData = await apiFetch('/api/users/me');
+        freeUploadsRemaining = userData.free_uploads_remaining !== undefined ? userData.free_uploads_remaining : 0;
+        calculateCost();
+    } catch (e) {
+        console.error("Failed to check user upload credits", e);
+    }
+}
 
 // Calculate dynamic cost
 function calculateCost() {
-    let cost = 1.0; // Base cost for submitting an upload
+    let baseCost = 1.0;
+    const waiverNotice = document.getElementById('freemium-waiver-notice');
+    if (freeUploadsRemaining > 0) {
+        baseCost = 0.0;
+        if (waiverNotice) waiverNotice.style.display = 'inline';
+    } else {
+        if (waiverNotice) waiverNotice.style.display = 'none';
+    }
+    let cost = baseCost; // Base cost for submitting an upload
     document.querySelectorAll('input[name="quality"]:checked').forEach(cb => {
         cost += parseFloat(cb.dataset.cost);
     });
@@ -253,3 +272,9 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
         showToast(`Upload failed: ${error.message}`, "error");
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkUserCredits();
+    calculateCost();
+});
+
