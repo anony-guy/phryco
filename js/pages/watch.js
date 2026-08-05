@@ -228,13 +228,13 @@ async function loadWatchPage() {
         avatarImg.onload = () => { document.getElementById('video-channel-avatar').innerHTML = `<img src="${avatarUrl}">`; };
         avatarImg.src = avatarUrl;
         
-        // Inject Frame Overlay if present
+        // Inject Frame Overlay around player exterior if present
         if (video.frame_path) {
-            const container = document.querySelector('.video-player-container');
+            const wrapper = document.getElementById('theater-wrapper') || document.querySelector('.video-player-container');
             const frameImg = document.createElement('img');
             frameImg.src = `../..${video.frame_path}`;
             frameImg.className = 'player-frame-overlay';
-            container.appendChild(frameImg);
+            wrapper.appendChild(frameImg);
         }
         
         // Set Video Player Source and Custom Controls
