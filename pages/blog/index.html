@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="theme-color" content="#0b0f19">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phryco Blog & Creator Engineering Dispatch</title>
+    <meta name="description" content="Authoritative platform roadmaps, engineering deep dives, design studio case studies, and brutally honest creator economy analyses from the Phryco leadership team.">
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --dispatch-bg: #080c16;
+            --dispatch-card: rgba(18, 25, 43, 0.75);
+            --dispatch-violet: #8b5cf6;
+            --dispatch-blue: #3b82f6;
+            --dispatch-cyan: #06b6d4;
+            --dispatch-pink: #ec4899;
+        }
+
+        body {
+            background-color: var(--dispatch-bg);
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(139, 92, 246, 0.16) 0px, transparent 50%),
+                radial-gradient(at 85% 35%, rgba(59, 130, 246, 0.12) 0px, transparent 55%),
+                radial-gradient(at 50% 90%, rgba(236, 72, 153, 0.08) 0px, transparent 60%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #f8fafc;
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .dispatch-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(8, 12, 22, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #f8fafc;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--dispatch-violet), var(--dispatch-pink));
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-hub-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .btn-hub-back:hover {
+            color: white;
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .main-container {
+            max-width: 1300px;
+            width: 90%;
+            margin: 2.5rem auto 5rem;
+        }
+
+        .hero-title-section {
+            margin-bottom: 2.5rem;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin: 0 0 0.75rem;
+            background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            color: #94a3b8;
+            font-size: 1.15rem;
+            max-width: 760px;
+            line-height: 1.6;
+        }
+
+        /* Hero Featured Card */
+        .hero-featured-card {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 2.5rem;
+            background: var(--dispatch-card);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 4rem;
+        }
+
+        .hero-featured-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 60px rgba(139, 92, 246, 0.25);
+        }
+
+        .featured-img-container {
+            position: relative;
+            height: 100%;
+            min-height: 380px;
+            overflow: hidden;
+        }
+
+        .featured-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-featured-card:hover .featured-img {
+            transform: scale(1.05);
+        }
+
+        .featured-badge-overlay {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--dispatch-violet);
+            color: #c4b5fd;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .featured-content {
+            padding: 2.5rem 2.5rem 2.5rem 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .meta-tags {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .meta-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        .author-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .featured-title {
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 0 0 1.25rem;
+            color: white;
+            transition: color 0.2s ease;
+        }
+
+        .hero-featured-card:hover .featured-title {
+            color: #c4b5fd;
+        }
+
+        .featured-summary {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: linear-gradient(135deg, var(--dispatch-violet), #6366f1);
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            width: fit-content;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .hero-featured-card:hover .read-action-btn {
+            transform: translateX(6px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Filter Pills */
+        .category-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+        }
+
+        .category-filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.6rem 1.25rem;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .filter-pill:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .filter-pill.active {
+            background: linear-gradient(135deg, var(--dispatch-violet), #6366f1);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+        }
+
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .article-card {
+            background: rgba(18, 25, 43, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .article-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.12);
+            background: rgba(22, 30, 52, 0.8);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: #111827;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover .card-img {
+            transform: scale(1.06);
+        }
+
+        .card-category-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-body {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 0.85rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin: 0 0 1rem;
+            color: #f8fafc;
+            transition: color 0.2s ease;
+        }
+
+        .article-card:hover .card-title {
+            color: #c4b5fd;
+        }
+
+        .card-summary {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.85rem;
+        }
+
+        .footer-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .read-link {
+            color: var(--dispatch-violet);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: transform 0.2s ease;
+        }
+
+        .article-card:hover .read-link {
+            transform: translateX(3px);
+            color: #a855f7;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 5rem 0;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .hero-featured-card {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .featured-img-container {
+                min-height: 300px;
+            }
+            .featured-content {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dispatch-nav {
+                padding: 1rem 1.25rem;
+            }
+            .main-container {
+                width: 92%;
+                margin: 1.5rem auto 4rem;
+            }
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="dispatch-nav" aria-label="Blog navigation">
+        <a href="../../" class="brand-logo">
+            <span>PHRYCO</span>
+            <span class="brand-badge">Dispatch</span>
+        </a>
+        <div class="nav-actions">
+            <a href="../../pages/services/index.html" class="btn-hub-back">
+                <i data-lucide="layers" style="width: 16px; height: 16px;"></i> Services Hub
+            </a>
+            <a href="../../pages/studio/index.html" class="btn-hub-back" style="border-color: rgba(6, 182, 212, 0.3); color: #06b6d4;">
+                <i data-lucide="video" style="width: 16px; height: 16px;"></i> Studio
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="hero-title-section">
+            <h1>Creator Engineering & Editorial Dispatch</h1>
+            <p class="hero-subtitle">
+                Authoritative platform roadmaps, engineering architectures, custom studio case studies, and brutally honest analyses on why the future of video belongs to sovereign creators.
+            </p>
+        </section>
+
+        <!-- Dynamic Featured Hero Card -->
+        <section id="featured-section" aria-label="Featured Story">
+            <div class="loading-state">Loading latest dispatch...</div>
+        </section>
+
+        <!-- Category Filters -->
+        <nav class="category-filter-bar" id="category-filters" aria-label="Filter blog categories">
+            <button class="filter-pill active" data-category="All">All Dispatches</button>
+            <button class="filter-pill" data-category="Engineering & Governance">Engineering & Governance</button>
+            <button class="filter-pill" data-category="Platform Updates">Platform Updates</button>
+            <button class="filter-pill" data-category="Creator Economy">Creator Economy</button>
+            <button class="filter-pill" data-category="Design Studio">Design Studio</button>
+        </nav>
+
+        <!-- Articles Grid -->
+        <section class="articles-grid" id="articles-grid" aria-label="Editorial articles list">
+            <!-- Dynamically loaded via index.js -->
+        </section>
+    </main>
+
+    <script src="../../js/pages/blog/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>

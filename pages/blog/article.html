@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="theme-color" content="#080c16">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Dispatch - Phryco Editorial</title>
+    <meta name="description" content="Phryco Creator Engineering and Editorial technical dispatch.">
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+    <style>
+        :root {
+            --reader-bg: #080c16;
+            --reader-text: #e2e8f0;
+            --reader-muted: #94a3b8;
+            --reader-violet: #8b5cf6;
+            --reader-cyan: #06b6d4;
+            --reader-pink: #ec4899;
+            --reader-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--reader-bg);
+            background-image: 
+                radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 60%),
+                radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--reader-text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Reading Progress Bar */
+        #reading-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--reader-violet), var(--reader-pink), var(--reader-cyan));
+            z-index: 9999;
+            transition: width 0.05s ease-out;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+        }
+
+        .reader-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 5%;
+            border-bottom: 1px solid var(--reader-border);
+            background: rgba(8, 12, 22, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .btn-back-dispatch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.5rem 1.1rem;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-back-dispatch:hover {
+            background: rgba(139, 92, 246, 0.22);
+            border-color: rgba(139, 92, 246, 0.6);
+            color: white;
+            transform: translateX(-4px);
+        }
+
+        .article-container {
+            max-width: 860px;
+            width: 90%;
+            margin: 3.5rem auto;
+            flex: 1;
+        }
+
+        .article-header {
+            margin-bottom: 3rem;
+            text-align: left;
+            border-bottom: 1px solid var(--reader-border);
+            padding-bottom: 2.5rem;
+        }
+
+        .article-category-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-main-title {
+            font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin: 0 0 1.5rem;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .article-author-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .author-info-box {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .author-avatar-lg {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .author-details-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .author-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .publish-date {
+            font-size: 0.85rem;
+            color: var(--reader-muted);
+        }
+
+        .read-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Cover Image Banner */
+        .article-cover-banner {
+            width: 100%;
+            height: auto;
+            max-height: 460px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            margin-bottom: 3.5rem;
+            background: #111827;
+        }
+
+        /* Markdown Typography Canvas */
+        .markdown-canvas {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+
+        .markdown-canvas h1, 
+        .markdown-canvas h2, 
+        .markdown-canvas h3, 
+        .markdown-canvas h4 {
+            color: #ffffff;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-top: 2.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .markdown-canvas h1 { font-size: 2.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        .markdown-canvas h2 { font-size: 1.75rem; color: #f8fafc; }
+        .markdown-canvas h3 { font-size: 1.35rem; color: #e2e8f0; }
+
+        .markdown-canvas p {
+            margin-bottom: 1.6rem;
+        }
+
+        .markdown-canvas ul, .markdown-canvas ol {
+            margin-bottom: 1.75rem;
+            padding-left: 1.75rem;
+        }
+
+        .markdown-canvas li {
+            margin-bottom: 0.6rem;
+            line-height: 1.7;
+        }
+
+        .markdown-canvas strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .markdown-canvas hr {
+            border: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 3.5rem 0;
+        }
+
+        .markdown-canvas blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--reader-violet);
+            border-radius: 0 16px 16px 0;
+            color: #e2e8f0;
+            font-style: italic;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Table Formatting for Comparison Article */
+        .markdown-canvas table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .markdown-canvas th, .markdown-canvas td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.98rem;
+        }
+
+        .markdown-canvas th {
+            background: rgba(139, 92, 246, 0.2);
+            color: #ffffff;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        .markdown-canvas tr:last-child td {
+            border-bottom: none;
+        }
+
+        .markdown-canvas tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code and Mermaid Formatting */
+        .markdown-canvas pre {
+            background: rgba(11, 15, 25, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin: 2rem 0;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .markdown-canvas code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            color: #a78bfa;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+        }
+
+        .markdown-canvas pre code {
+            background: transparent;
+            padding: 0;
+            color: #cbd5e1;
+        }
+
+        /* Author Dossier Box at Bottom */
+        .author-dossier-card {
+            margin-top: 5rem;
+            padding: 2.5rem;
+            background: rgba(18, 25, 43, 0.7);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .dossier-info h3 {
+            margin: 0 0 0.5rem;
+            color: white;
+            font-size: 1.35rem;
+        }
+
+        .dossier-info p {
+            color: #94a3b8;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Related Articles Section */
+        .related-section {
+            margin-top: 5rem;
+            padding-top: 3.5rem;
+            border-top: 1px solid var(--reader-border);
+        }
+
+        .related-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        .related-card {
+            background: rgba(18, 25, 43, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .related-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(22, 30, 52, 0.75);
+        }
+
+        .related-card h4 {
+            font-size: 1.2rem;
+            color: white;
+            margin: 0.5rem 0 0.75rem;
+            line-height: 1.4;
+        }
+
+        .related-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0 0 1.2rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .reader-nav {
+                padding: 1rem 1.25rem;
+            }
+            .article-container {
+                width: 92%;
+                margin: 2rem auto;
+            }
+            .author-dossier-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.75rem;
+            }
+            .related-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .markdown-canvas {
+                font-size: 1.05rem;
+            }
+            .markdown-canvas table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Reading Progress Bar -->
+    <div id="reading-progress-bar"></div>
+
+    <nav class="reader-nav">
+        <a href="index.html" class="btn-back-dispatch">
+            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> All Dispatches
+        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="../../pages/services/index.html" style="color: #94a3b8; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="layers" style="width: 15px; height: 15px;"></i> Services Hub
+            </a>
+        </div>
+    </nav>
+
+    <main class="article-container">
+        <!-- Article Header & Meta -->
+        <header class="article-header" id="article-header-box">
+            <div style="text-align: center; padding: 4rem 0; color: #94a3b8;">Loading dispatch...</div>
+        </header>
+
+        <!-- Cover Image -->
+        <div id="cover-image-container"></div>
+
+        <!-- Markdown Content Canvas -->
+        <article class="markdown-canvas" id="article-body">
+            <!-- Rendered via article.js -->
+        </article>
+
+        <!-- Author Dossier -->
+        <aside class="author-dossier-card" id="author-dossier" aria-label="About the creator author" style="display: none;">
+            <div class="author-avatar-lg" id="dossier-avatar" style="width: 76px; height: 76px; font-size: 1.6rem; flex-shrink: 0;">PE</div>
+            <div class="dossier-info">
+                <h3 id="dossier-name">Phryco Editorial Engine</h3>
+                <p>
+                    Dedicated technical architecture and governance dispatches published directly from the Phryco engineering team and verified sovereign creators. Building the future of high-resolution video streaming and fair digital rewards in 2026.
+                </p>
+            </div>
+        </aside>
+
+        <!-- Related Dispatches -->
+        <section class="related-section" id="related-section" aria-label="Related articles" style="display: none;">
+            <h2 class="related-title">
+                <i data-lucide="compass" style="color: #a78bfa;"></i> Related Technical Dispatches
+            </h2>
+            <div class="related-grid" id="related-grid"></div>
+        </section>
+    </main>
+
+    <script src="../../js/pages/blog/article.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
