@@ -1,23 +1,42 @@
 # Phryco 
 
-**The Ethical, Decentralized Video Streaming Platform**
+**Sovereign, Ethical Video Infrastructure for Niche Communities**
 
-Phryco is a modern, high-performance video streaming platform built with Python, FastAPI, and Vanilla JS. It is designed to be highly scalable, privacy-respecting, and ethically aligned, featuring a unique "Halal Mode" for content filtering and a decentralized global relay network.
+Phryco is a modern, high-performance video streaming platform built with Python, FastAPI, and Vanilla JS. Unlike global big-tech streaming giants, Phryco is explicitly designed to be self-hosted by high-trust niche communities and enterprises. It provides sovereign identity, mathematically enforced ethical content filtering (Halal Mode), and lightning-fast edge delivery.
 
 ## 🚀 Key Features
 
-- **Video Streaming & Processing**: Automated FFmpeg compression and adaptive bitrate streaming. Background processing powered by Celery & Redis.
-- **Halal Mode**: A specialized content moderation toggle that automatically filters out content flagged as Sharia non-compliant, containing unauthorized music, or taswir, ensuring a safe viewing environment.
-- **Phryco Network (Relay Nodes)**: A decentralized edge-delivery system. Anyone can download the Relay Software and host a sub-node to distribute Phryco video content globally, improving latency and reducing server load.
-- **Phryco SSO & Developer Portal**: A built-in OAuth 2.0 provider. Developers can register third-party applications and let their users "Sign in with Phryco", complete with secure token exchange and profile access.
-- **Phrybucks & Creator Economy**: An integrated virtual currency (`Phrybucks`) that powers channel memberships, donations, and ad campaigns.
-- **Enterprise Scalability**: Redis-backed rate limiting and background task queues ensure the platform remains lightning fast under heavy load.
+- **Sovereign Video Streaming**: Enterprise-grade adaptive bitrate streaming with Nginx `X-Accel-Redirect` zero-copy delivery and Edge CDN support.
+- **Mathematical Halal Mode**: Automated audio spectrogram checking via FFmpeg (`astats`) to detect and reject non-compliant instrumental music at the Celery pipeline level, bypassing fragile LLM text prompts.
+- **Perceptual Moderation**: pHash-based frame hashing and automated DMCA duplication blocking.
+- **Phryco Sovereign Identity**: A built-in OAuth 2.0 provider allowing communities to act as their own secure SSO identity hub for third-party tools.
+- **Community Phrybucks (PB)**: A strictly reputation-based, closed-loop virtual economy powered by a robust anti-Sybil ledger. Defends against botnets with algorithmic reward decay and VaultGuard fingerprinting.
+
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    Client[End User Client] --> Edge[Edge CDN / Load Balancer]
+    Edge --> Nginx[Nginx Reverse Proxy]
+    Nginx --> FastAPI[FastAPI Backend]
+    
+    subgraph "Asynchronous Video Pipeline"
+        FastAPI -- Queue Uploads --> Redis[(Redis Broker)]
+        Redis --> Celery[Celery Workers]
+        Celery -- "1. FFmpeg Spectrogram (Halal Check)" --> Celery
+        Celery -- "2. pHash Extraction (DMCA)" --> Celery
+        Celery -- "3. Transcode & Subtitles" --> Storage[(Video Storage)]
+    end
+    
+    FastAPI -- "Zero-Copy X-Accel-Redirect" --> Nginx
+    Nginx -- Stream --> Client
+```
 
 ## 🛠 Tech Stack
 
 - **Backend**: FastAPI, SQLAlchemy, Celery, Redis, SQLite/Supabase PostgreSQL
 - **Frontend**: Vanilla JavaScript (ES6+), HTML5, custom CSS
-- **Infrastructure**: FFmpeg, Uvicorn, Celery Beat
+- **Infrastructure**: FFmpeg, Nginx, Uvicorn, Celery Beat
 
 ## 📖 Quick Start
 
