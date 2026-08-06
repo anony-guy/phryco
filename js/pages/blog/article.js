@@ -92,7 +92,7 @@ function renderArticle(post) {
             <span style="display:flex;align-items:center;gap:0.4rem;color:#e2e8f0;font-weight:700;"><i data-lucide="user" style="width:16px;height:16px;color:#a855f7;"></i> ${post.author_name}</span>
             <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="calendar" style="width:16px;height:16px;"></i> ${dateStr}</span>
             <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="clock" style="width:16px;height:16px;"></i> ${readingMinutes} min read</span>
-            <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="eye" style="width:16px;height:16px;"></i> ${post.views_count || 1} views</span>
+            <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="eye" style="width:16px;height:16px;"></i> ${post.views_count === 1 ? '1 view' : `${post.views_count || 1} views`}</span>
         </div>
     `;
 

@@ -125,8 +125,16 @@
         }
 
         .article-header {
-            margin-bottom: 2.5rem;
-            text-align: center;
+            position: relative !important;
+            top: auto !important;
+            z-index: 1 !important;
+            display: block !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 0 1.5rem 0 !important;
+            text-align: left;
         }
         .category-badge {
             display: inline-flex;
@@ -135,51 +143,49 @@
             background: rgba(139, 92, 246, 0.15);
             color: #c084fc;
             border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 0.35rem 0.9rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 99px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+            margin-bottom: 0.85rem;
         }
         .article-title {
-            font-size: clamp(2.2rem, 4vw, 3.1rem);
+            font-size: clamp(1.7rem, 3.2vw, 2.3rem);
             font-weight: 800;
-            line-height: 1.2;
-            margin: 0 0 1.25rem;
+            line-height: 1.25;
+            margin: 0 0 0.75rem;
             color: #ffffff;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.02em;
         }
         .article-summary-hero {
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             color: #94a3b8;
-            line-height: 1.65;
-            margin-bottom: 2rem;
+            line-height: 1.55;
+            margin: 0 0 1.25rem;
         }
         .article-meta-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            font-size: 0.9rem;
+            justify-content: flex-start;
+            gap: 1.25rem;
+            font-size: 0.85rem;
             color: #64748b;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 1rem 0;
-            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.75rem;
             flex-wrap: wrap;
         }
 
         .cover-img-frame {
             width: 100%;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 3.5rem;
+            margin-bottom: 2.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            max-height: 480px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            max-height: 360px;
         }
         .cover-img-frame img {
             width: 100%;
@@ -458,9 +464,9 @@
 
     <main class="article-container">
         <!-- Article Header & Meta -->
-        <header class="article-header" id="article-header-box">
+        <section class="article-header" id="article-header-box">
             <div style="text-align: center; padding: 4rem 0; color: #94a3b8;">Loading technical dispatch...</div>
-        </header>
+        </section>
 
         <!-- Cover Image -->
         <div id="cover-image-container"></div>
