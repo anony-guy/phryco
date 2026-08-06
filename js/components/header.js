@@ -230,6 +230,12 @@ function initMobileMenu() {
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('mobile-open');
             overlay.classList.remove('active');
+            
+            // Also close search pop-up if active
+            const searchBar = document.querySelector('.search-bar-container') || document.querySelector('.search-bar');
+            if (searchBar) {
+                searchBar.classList.remove('mobile-active');
+            }
         });
     }
 }
@@ -252,15 +258,28 @@ function initMobileSearch() {
         e.preventDefault();
         e.stopPropagation();
         searchBar.classList.toggle('mobile-active');
-        const input = searchBar.querySelector('input');
-        if (searchBar.classList.contains('mobile-active') && input) {
-            input.focus();
+        const overlay = document.querySelector('.sidebar-overlay');
+        
+        if (searchBar.classList.contains('mobile-active')) {
+            if (overlay) overlay.classList.add('active');
+            const input = searchBar.querySelector('input');
+            if (input) input.focus();
+        } else {
+            const sidebar = document.querySelector('aside.sidebar');
+            if (overlay && sidebar && !sidebar.classList.contains('mobile-open')) {
+                overlay.classList.remove('active');
+            }
         }
     });
 
     document.addEventListener('click', (e) => {
         if (searchBar.classList.contains('mobile-active') && !searchBar.contains(e.target) && !toggleBtn.contains(e.target)) {
             searchBar.classList.remove('mobile-active');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const sidebar = document.querySelector('aside.sidebar');
+            if (overlay && sidebar && !sidebar.classList.contains('mobile-open')) {
+                overlay.classList.remove('active');
+            }
         }
     });
 
