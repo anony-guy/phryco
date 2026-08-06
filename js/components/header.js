@@ -301,10 +301,17 @@ function initResponsiveLayout() {
     function handleResize() {
         const userMenu = document.querySelector('.user-menu-container');
         const themesBtn = document.getElementById('ui-customizer-btn');
+        const searchBar = document.querySelector('.search-bar-container') || document.querySelector('.search-bar');
+        const header = document.querySelector('header');
         const isMobile = window.innerWidth <= 768;
         const sidebarFooter = sidebar.querySelector('.sidebar-footer');
 
         if (isMobile) {
+            // Move search to body to escape header z-index context for the overlay pop-up
+            if (searchBar && searchBar.parentElement !== document.body) {
+                document.body.appendChild(searchBar);
+            }
+
             if (themesBtn && themesBtn.parentElement !== sidebar) {
                 if (sidebarFooter) {
                     sidebar.insertBefore(themesBtn, sidebarFooter);
@@ -328,6 +335,10 @@ function initResponsiveLayout() {
                 userMenu.style.width = 'calc(100% - 2rem)';
             }
         } else {
+            if (searchBar && header && searchBar.parentElement !== header) {
+                header.insertBefore(searchBar, navLinks);
+            }
+
             if (userMenu && userMenu.parentElement !== navLinks) {
                 navLinks.appendChild(userMenu);
                 userMenu.style = '';
