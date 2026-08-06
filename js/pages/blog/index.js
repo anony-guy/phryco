@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../../utils/config.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'All';
     const featuredSection = document.getElementById('featured-section');
@@ -128,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const url = currentCategory === 'All' 
-                ? '/api/blog/posts?limit=50' 
-                : `/api/blog/posts?category=${encodeURIComponent(currentCategory)}&limit=50`;
+                ? `${API_BASE_URL}/api/blog/posts?limit=50` 
+                : `${API_BASE_URL}/api/blog/posts?category=${encodeURIComponent(currentCategory)}&limit=50`;
                 
             const response = await fetch(url);
             if (!response.ok) {

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="theme-color" content="#080c16">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Code & Publish Dispatch | Phryco Editorial</title>
+    <meta name="description" content="Phryco Creator Studio for authoring interactive technical blog dispatches with live Chart.js graphs, Mermaid flowcharts, and typography customization.">
+
+    <!-- Google Fonts for Creator Typography Blueprints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+    <!-- Highlight.js & CDNs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --studio-bg: #080c16;
+            --studio-panel: rgba(15, 23, 42, 0.75);
+            --studio-border: rgba(255, 255, 255, 0.12);
+            --studio-violet: #8b5cf6;
+            --studio-cyan: #06b6d4;
+        }
+
+        body {
+            background-color: var(--studio-bg);
+            background-image: 
+                radial-gradient(at 20% 10%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 90%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .studio-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 3%;
+            border-bottom: 1px solid var(--studio-border);
+            background: rgba(8, 12, 22, 0.9);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .studio-title-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+        .studio-title-badge span {
+            background: linear-gradient(90deg, #c084fc, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-publish {
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.6rem;
+            border-radius: 99px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-publish:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+        }
+
+        .studio-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 3%;
+            gap: 1.5rem;
+        }
+
+        .meta-deck {
+            background: var(--studio-panel);
+            border: 1px solid var(--studio-border);
+            border-radius: 18px;
+            padding: 1.75rem;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #c084fc;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .studio-input, .studio-select {
+            background: rgba(8, 12, 22, 0.8);
+            border: 1px solid var(--studio-border);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: white;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .studio-input:focus, .studio-select:focus {
+            border-color: #a855f7;
+        }
+        .studio-select { cursor: pointer; }
+
+        /* Interactive Code Toolbar */
+        .toolbar-deck {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(18, 25, 43, 0.85);
+            border: 1px solid var(--studio-border);
+            border-radius: 14px;
+            padding: 0.75rem 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-toolbar {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.5rem 0.95rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-toolbar:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Split-Screen Studio Canvas */
+        .studio-split-canvas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            flex: 1;
+            min-height: 650px;
+        }
+        .editor-pane {
+            display: flex;
+            flex-direction: column;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--studio-border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+        }
+        .pane-header {
+            background: rgba(8, 12, 22, 0.9);
+            border-bottom: 1px solid var(--studio-border);
+            padding: 0.85rem 1.25rem;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #editor-textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 1.5rem;
+            color: #f8fafc;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.96rem;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .preview-pane {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--studio-border);
+            border-radius: 18px;
+            overflow-y: auto;
+            max-height: 800px;
+            padding: 2.5rem;
+            box-sizing: border-box;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        /* Typography & Interactive Styles inside Preview */
+        .preview-pane.theme-sans { font-family: 'Inter', sans-serif; font-size: 1.08rem; line-height: 1.8; color: #d1d5db; }
+        .preview-pane.theme-serif { font-family: 'Merriweather', serif; font-size: 1.14rem; line-height: 1.95; color: #d1d5db; }
+        .preview-pane.theme-mono { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; line-height: 1.7; color: #d1d5db; }
+
+        .preview-pane h1 { font-family: 'Inter', sans-serif; font-size: 2rem; font-weight: 800; color: white; margin: 0 0 1rem; }
+        .preview-pane h2 { font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f8fafc; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem; }
+        .preview-pane h3 { font-family: 'Inter', sans-serif; font-size: 1.25rem; font-weight: 700; color: #f1f5f9; margin: 1.5rem 0 0.5rem; }
+        .preview-pane p { margin: 0 0 1.5rem; }
+
+        /* Chart Card inside Preview */
+        .interactive-chart-card {
+            background: rgba(8, 12, 22, 0.85);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+        .chart-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Alert & Code Wrapper inside Preview */
+        .github-alert {
+            margin: 1.75rem 0;
+            padding: 1.25rem 1.5rem;
+            border-left: 4px solid var(--studio-violet);
+            background: rgba(139, 92, 246, 0.08);
+            border-radius: 0 12px 12px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .github-alert.tip { border-left-color: #10b981; background: rgba(16, 185, 129, 0.08); }
+        .github-alert.important { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.08); }
+        .alert-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 0.9rem; margin-bottom: 0.4rem; text-transform: uppercase; }
+
+        .code-wrapper {
+            position: relative;
+            margin: 1.75rem 0;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .code-wrapper pre { margin: 0 !important; padding: 2.5rem 1.25rem 1.25rem !important; background: #0f172a !important; }
+
+        @media (max-width: 1024px) {
+            .studio-split-canvas { grid-template-columns: 1fr; }
+            .meta-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="studio-nav">
+        <div class="studio-title-badge">
+            <a href="index.html" style="color: #94a3b8; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; font-weight: 600; margin-right: 1rem;">
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> All Dispatches
+            </a>
+            <i data-lucide="terminal" style="color: #a855f7;"></i>
+            Phryco Creator Studio • <span>Interactive Dispatch Engine</span>
+        </div>
+        <button class="btn-publish" id="btn-publish">
+            <i data-lucide="send" style="width: 18px; height: 18px;"></i> Publish to Universe
+        </button>
+    </nav>
+
+    <div class="studio-container">
+        <!-- Metadata & Typography Deck -->
+        <section class="meta-deck">
+            <div class="meta-grid">
+                <div class="input-group">
+                    <label for="input-title">Dispatch Title</label>
+                    <input type="text" id="input-title" class="studio-input" placeholder="e.g., Architecting High-Resolution Video Streaming for 2026" value="Architecting High-Resolution Video Streaming for 2026">
+                </div>
+                <div class="input-group">
+                    <label for="input-category">Editorial Category</label>
+                    <select id="input-category" class="studio-select">
+                        <option value="Engineering & Governance" selected>Engineering & Governance</option>
+                        <option value="Platform Updates">Platform Updates</option>
+                        <option value="Creator Economy">Creator Economy</option>
+                        <option value="Design & Culture">Design & Culture</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="select-typography-theme">Typography Blueprint</label>
+                    <select id="select-typography-theme" class="studio-select">
+                        <option value="sans">Modern Geometric (Inter)</option>
+                        <option value="serif" selected>Editorial Serif (Merriweather)</option>
+                        <option value="mono">Technical Monospace (JetBrains Mono)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="meta-grid" style="grid-template-columns: 2fr 1fr; margin-bottom: 0;">
+                <div class="input-group">
+                    <label for="input-summary">Elevator Summary / Subtitle</label>
+                    <input type="text" id="input-summary" class="studio-input" placeholder="A brief summary of your technical findings and architectural goals..." value="A deep dive into zero-fee transcoding, decentralized creator economics, and why interactive visualizations represent the next leap in creator publishing.">
+                </div>
+                <div class="input-group">
+                    <label for="input-cover">Cover Image Banner URL</label>
+                    <input type="text" id="input-cover" class="studio-input" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80">
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Code Toolbar -->
+        <section class="toolbar-deck">
+            <div class="toolbar-group">
+                <span style="font-size:0.8rem; font-weight:800; color:#a855f7; text-transform:uppercase; letter-spacing:0.04em;">Code Insertion Tools:</span>
+                <button type="button" class="btn-toolbar" onclick="insertCodeSnippet('barchart')">
+                    <i data-lucide="bar-chart-2" style="width:16px;height:16px;color:#c084fc;"></i> Insert Bar Chart
+                </button>
+                <button type="button" class="btn-toolbar" onclick="insertCodeSnippet('linechart')">
+                    <i data-lucide="trending-up" style="width:16px;height:16px;color:#22d3ee;"></i> Insert Line Graph
+                </button>
+                <button type="button" class="btn-toolbar" onclick="insertCodeSnippet('mermaid')">
+                    <i data-lucide="git-branch" style="width:16px;height:16px;color:#10b981;"></i> Insert Mermaid Diagram
+                </button>
+                <button type="button" class="btn-toolbar" onclick="insertCodeSnippet('code')">
+                    <i data-lucide="code" style="width:16px;height:16px;color:#f472b6;"></i> Insert Python Code
+                </button>
+                <button type="button" class="btn-toolbar" onclick="insertCodeSnippet('alert')">
+                    <i data-lucide="flame" style="width:16px;height:16px;color:#f59e0b;"></i> Insert GitHub Alert
+                </button>
+            </div>
+            <div class="toolbar-group">
+                <input type="file" id="input-attach-file" style="display: none;" onchange="handleFileUpload(event)">
+                <button type="button" class="btn-toolbar" style="border-color:#a855f7; background:rgba(168,85,247,0.15);" onclick="document.getElementById('input-attach-file').click()">
+                    <i data-lucide="paperclip" style="width:16px;height:16px;color:#c084fc;"></i> Upload & Attach Technical File
+                </button>
+                <span id="attachment-status-pill" style="font-size:0.82rem; color:#10b981; font-weight:700;"></span>
+            </div>
+        </section>
+
+        <!-- Split Studio Canvas -->
+        <main class="studio-split-canvas">
+            <!-- Left: Authoring Editor -->
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="code" style="width:16px;height:16px;color:#a855f7;"></i> Interactive Markdown & Code Editor</span>
+                    <span style="color:#64748b; font-size:0.75rem;">Real-time compile enabled</span>
+                </div>
+                <textarea id="editor-textarea" placeholder="Write your technical dispatch here using Markdown, Chart.js JSON codes, and Mermaid syntax..."></textarea>
+            </div>
+
+            <!-- Right: Real-Time Rendered Preview -->
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="eye" style="width:16px;height:16px;color:#22d3ee;"></i> Live Public Reader Preview</span>
+                    <span id="preview-theme-indicator" style="color:#c084fc; font-size:0.75rem; font-weight:700;">Theme: Editorial Serif</span>
+                </div>
+                <div id="live-preview-box" class="preview-pane theme-serif">
+                    <!-- Real-time dynamic compiling via create.js -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../../js/pages/blog/create.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>

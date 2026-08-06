@@ -6,13 +6,15 @@
 // Otherwise, use the default Cloudflare Tunnel URL.
 let baseUrl = window.location.origin;
 
-if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
-    baseUrl = 'http://localhost:8000';
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) {
+    baseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
 } else if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
     baseUrl = 'https://battle-logistics-coffee-purchase.trycloudflare.com';
 }
 
 export const API_BASE_URL = window.PHRYCO_API_URL || baseUrl;
+export const VAULTGUARD_SERVER_URL = window.VAULTGUARD_API_URL || (API_BASE_URL.includes(':8000') ? API_BASE_URL.replace(':8000', ':8002') + '/api/vaultguard' : `${API_BASE_URL}/api/vaultguard`);
+
 
 
 
