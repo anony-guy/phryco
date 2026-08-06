@@ -283,17 +283,26 @@ function initResponsiveLayout() {
         const userMenu = document.querySelector('.user-menu-container');
         const themesBtn = document.getElementById('ui-customizer-btn');
         const isMobile = window.innerWidth <= 768;
+        const sidebarFooter = sidebar.querySelector('.sidebar-footer');
 
         if (isMobile) {
             if (themesBtn && themesBtn.parentElement !== sidebar) {
-                sidebar.appendChild(themesBtn);
+                if (sidebarFooter) {
+                    sidebar.insertBefore(themesBtn, sidebarFooter);
+                } else {
+                    sidebar.appendChild(themesBtn);
+                }
                 themesBtn.style.margin = '1rem';
                 themesBtn.style.display = 'flex';
                 themesBtn.style.justifyContent = 'flex-start';
                 themesBtn.style.width = 'calc(100% - 2rem)';
             }
             if (userMenu && userMenu.parentElement !== sidebar) {
-                sidebar.appendChild(userMenu);
+                if (sidebarFooter) {
+                    sidebar.insertBefore(userMenu, sidebarFooter);
+                } else {
+                    sidebar.appendChild(userMenu);
+                }
                 userMenu.style.margin = '0.5rem 1rem';
                 userMenu.style.display = 'flex';
                 userMenu.style.justifyContent = 'flex-start';
