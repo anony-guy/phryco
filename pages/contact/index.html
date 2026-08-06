@@ -328,25 +328,35 @@
             color: #ffffff;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.3);
         }
 
-        .discord-box:hover {
-            transform: scale(1.03);
-            background: #2b2d31;
-            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4);
+        .order-summary-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            transition: all 0.2s ease;
         }
 
-        .discord-box i {
-            color: #5865f2;
+        .order-summary-card:hover {
+            border-color: var(--neon-pink);
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-2px);
         }
 
-        .copy-hint {
-            display: block;
-            margin-top: 0.75rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            transition: opacity 0.2s;
+        .badge-status {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .transparency-note {
@@ -518,15 +528,15 @@
                 <div class="step-item">
                     <div class="step-number">02</div>
                     <div class="step-content">
-                        <h3>Direct Discord Consultation</h3>
-                        <p>Reach out to our design lead with your vision, moodboards, reference colors, and target channel requirements.</p>
+                        <h3>Submit Application Form</h3>
+                        <p>Submit your design vision, reference colors, and moodboards through our on-platform commission dashboard below.</p>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-number">03</div>
                     <div class="step-content">
-                        <h3>Rapid Prototyping</h3>
-                        <p>We rapidly prototype your custom layout, style tokens, and interactive effects with rigorous attention to responsiveness and aesthetic depth.</p>
+                        <h3>Quote & Interactive Thread</h3>
+                        <p>Our design lead reviews your request, starts a dedicated chat thread, discloses the official quote in real currency, and rapidly prototypes your custom layout.</p>
                     </div>
                 </div>
                 <div class="step-item">
@@ -542,18 +552,48 @@
         <section class="contact-action-section">
             <div class="contact-card-inner">
                 <h2>Ready to Transform Your Channel?</h2>
-                <p>To avoid traditional ticket queues and agency bureaucracy, all Supporter commissions are handled directly via Discord. Click below to copy our design handle and initiate your request.</p>
+                <p>Submit your custom theme requirements directly on-platform. Once submitted, a private interactive order thread will be initiated where our design lead will evaluate your request and provide a real-currency quote.</p>
                 
-                <button class="discord-box" id="copy-discord-btn" aria-label="Copy Discord username painsel">
-                    <i data-lucide="message-square"></i>
-                    <span id="discord-handle">painsel</span>
-                    <i data-lucide="copy" style="width:18px;height:18px;opacity:0.7;margin-left:4px;"></i>
-                </button>
-                <span class="copy-hint" id="copy-feedback">Click to copy Discord handle to clipboard</span>
+                <div id="my-orders-container" style="display: none; margin-top: 2rem; margin-bottom: 2.5rem; text-align: left;">
+                    <h3 style="color: var(--text-primary); font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="folder-kanban" style="width: 20px; height: 20px; color: var(--neon-cyan);"></i> My Custom Design Orders</h3>
+                    <div id="my-orders-list"></div>
+                </div>
+
+                <div id="commission-form-container" style="display: none; text-align: left; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); padding: 2rem; border-radius: var(--radius-lg); margin-top: 1.5rem;">
+                    <h3 style="color: var(--neon-pink); font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="send" style="width:20px;height:20px;"></i> Start Custom Commission Application</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Fill out your design specifications below. Once submitted, a dedicated order discussion thread will open with our design lead.</p>
+                    <form id="commission-application-form">
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">Select Service Package</label>
+                            <select id="form-service-type" required style="width: 100%; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; outline: none;">
+                                <option value="Custom Channel Theme">Custom Channel Theme</option>
+                                <option value="UI Decorations & Frames">UI Decorations & Frames</option>
+                                <option value="Webrings & Social Hubs">Webrings & Social Hubs</option>
+                                <option value="Custom Portfolio Page">Custom Portfolio Page</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">Project Title or Target Channel</label>
+                            <input type="text" id="form-project-title" required placeholder="e.g., Cyberpunk Neon Sunset Override for @Username" style="width: 100%; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; outline: none; box-sizing: border-box;">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">Detailed Aesthetic Requirements & Vision</label>
+                            <textarea id="form-requirements" required rows="5" placeholder="Describe your target vibe, color hex references, moodboard links, animation ideas, or specific visual preferences..." style="width: 100%; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; outline: none; box-sizing: border-box; resize: vertical;"></textarea>
+                        </div>
+                        <button type="submit" id="submit-commission-btn" class="btn-primary" style="width: 100%; padding: 1rem; font-weight: 700; font-size: 1rem; background: var(--gradient-primary); border: none; border-radius: var(--radius-md); cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i data-lucide="sparkles"></i> Submit Application & Open Order Thread
+                        </button>
+                        <div id="form-submit-feedback" style="margin-top: 1rem; font-weight: 600; font-size: 0.9rem;"></div>
+                    </form>
+                </div>
+
+                <div id="commission-locked-notice" style="display: none; padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-md); color: #fca5a5; font-weight: 600; margin-top: 1.5rem;">
+                    On-Demand application submission is currently restricted to active Supporters or annual intake slots have been filled.
+                </div>
 
                 <div class="transparency-note">
                     <strong><i data-lucide="shield-check" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> Direct Creator & Performance Guarantee:</strong><br>
-                    We bypass corporate ticket queues and slow agency turnaround times entirely. By directly communicating with our design lead via Discord, your ideas are translated into tailored CSS tokens and bespoke UI layouts rapidly and cleanly. Every custom layout is engineered for zero code bloat, seamless responsiveness, and native visual consistency across the entire Phryco ecosystem without operational delays.
+                    We bypass traditional agency boilerplate and slow turnarounds. Through our on-platform interactive order threads, your design requirements are reviewed directly by our design lead with transparent real-currency pricing and fast-tracked communication. Every bespoke theme and UI layout is engineered for zero code bloat, seamless responsiveness, and native visual consistency across the entire Phryco ecosystem without operational delays.
                 </div>
             </div>
         </section>
