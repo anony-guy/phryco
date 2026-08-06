@@ -274,6 +274,52 @@ function initThemeSwitcher() {
     customizer.initTrigger(navLinks, userMenu);
 }
 
+function initResponsiveLayout() {
+    const sidebar = document.querySelector('aside.sidebar');
+    const navLinks = document.querySelector('nav.nav-links');
+    if (!sidebar || !navLinks) return;
+
+    function handleResize() {
+        const userMenu = document.querySelector('.user-menu-container');
+        const themesBtn = document.getElementById('ui-customizer-btn');
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            if (themesBtn && themesBtn.parentElement !== sidebar) {
+                sidebar.appendChild(themesBtn);
+                themesBtn.style.margin = '1rem';
+                themesBtn.style.display = 'flex';
+                themesBtn.style.justifyContent = 'flex-start';
+                themesBtn.style.width = 'calc(100% - 2rem)';
+            }
+            if (userMenu && userMenu.parentElement !== sidebar) {
+                sidebar.appendChild(userMenu);
+                userMenu.style.margin = '0.5rem 1rem';
+                userMenu.style.display = 'flex';
+                userMenu.style.justifyContent = 'flex-start';
+                userMenu.style.width = 'calc(100% - 2rem)';
+            }
+        } else {
+            if (userMenu && userMenu.parentElement !== navLinks) {
+                navLinks.appendChild(userMenu);
+                userMenu.style = '';
+            }
+            if (themesBtn && themesBtn.parentElement !== navLinks) {
+                if (userMenu) {
+                    navLinks.insertBefore(themesBtn, userMenu);
+                } else {
+                    navLinks.appendChild(themesBtn);
+                }
+                themesBtn.style = '';
+            }
+        }
+    }
+
+    // Call once initially and add event listener
+    handleResize();
+    window.addEventListener('resize', handleResize);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initBrandingAndAnimations();
     initHeader();
@@ -281,5 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileSearch();
     initThemeSwitcher();
     initSearchBar();
+    initResponsiveLayout();
     if (window.lucide) window.lucide.createIcons();
 });
