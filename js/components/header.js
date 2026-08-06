@@ -96,7 +96,7 @@ async function initHeader() {
                 </div>
                 <div class="dropdown-divider"></div>
                 <a href="../../pages/studio/index.html" class="dropdown-item"><i data-lucide="video" style="width: 16px; height: 16px;"></i> Studio</a>
-                <a href="../../pages/contact/index.html" class="dropdown-item"><i data-lucide="palette" style="width: 16px; height: 16px; color: #ec4899;"></i> Custom Themes</a>
+                <a href="../../pages/services/index.html" class="dropdown-item"><i data-lucide="layers" style="width: 16px; height: 16px; color: #ec4899;"></i> Services Hub</a>
                 <a href="#" id="dropdown-settings-btn" class="dropdown-item"><i data-lucide="settings" style="width: 16px; height: 16px;"></i> Settings</a>
                 ${adminLink}
                 <div class="dropdown-divider"></div>
@@ -234,6 +234,39 @@ function initMobileMenu() {
     }
 }
 
+function initMobileSearch() {
+    const header = document.querySelector('header');
+    const searchBar = document.querySelector('.search-bar-container') || document.querySelector('.search-bar');
+    const navLinks = document.querySelector('nav.nav-links');
+    
+    if (!header || !searchBar || !navLinks || document.getElementById('mobile-search-toggle')) return;
+
+    const toggleBtn = document.createElement('a');
+    toggleBtn.href = '#';
+    toggleBtn.id = 'mobile-search-toggle';
+    toggleBtn.className = 'icon-btn mobile-search-btn';
+    toggleBtn.title = 'Toggle Search';
+    toggleBtn.innerHTML = '<i data-lucide="search" style="width: 18px; height: 18px;"></i>';
+
+    toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        searchBar.classList.toggle('mobile-active');
+        const input = searchBar.querySelector('input');
+        if (searchBar.classList.contains('mobile-active') && input) {
+            input.focus();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (searchBar.classList.contains('mobile-active') && !searchBar.contains(e.target) && !toggleBtn.contains(e.target)) {
+            searchBar.classList.remove('mobile-active');
+        }
+    });
+
+    navLinks.insertBefore(toggleBtn, navLinks.firstChild);
+}
+
 function initThemeSwitcher() {
     const navLinks = document.querySelector('nav.nav-links');
     if (!navLinks) return;
@@ -245,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBrandingAndAnimations();
     initHeader();
     initMobileMenu();
+    initMobileSearch();
     initThemeSwitcher();
     initSearchBar();
     if (window.lucide) window.lucide.createIcons();

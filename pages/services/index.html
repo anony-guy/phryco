@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phryco Special Services & Community Ecosystem</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --portal-bg: #0b0f19;
+            --card-glass: rgba(22, 30, 48, 0.7);
+            --neon-pink: #ec4899;
+            --neon-gold: #f59e0b;
+            --neon-emerald: #10b981;
+            --neon-cyan: #06b6d4;
+        }
+
+        body {
+            background-color: var(--portal-bg);
+            background-image: 
+                radial-gradient(at 15% 20%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+                radial-gradient(at 85% 25%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 85%, rgba(245, 158, 11, 0.1) 0px, transparent 60%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .portal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .portal-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #f8fafc;
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .portal-brand-badge {
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .portal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hero-banner {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 60%, #64748b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            max-width: 750px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .btn-walkthrough {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(6, 182, 212, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-walkthrough:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(6, 182, 212, 0.35));
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.25);
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .pillar-card {
+            background: var(--card-glass);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .pillar-card.pink:hover { border-color: rgba(236, 72, 153, 0.4); box-shadow: 0 20px 40px -15px rgba(236, 72, 153, 0.2); }
+        .pillar-card.gold:hover { border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 20px 40px -15px rgba(245, 158, 11, 0.2); }
+        .pillar-card.emerald:hover { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.2); }
+        .pillar-card.cyan:hover { border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 20px 40px -15px rgba(6, 182, 212, 0.2); }
+
+        .pillar-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        .icon-pink { background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.3); color: var(--neon-pink); }
+        .icon-gold { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--neon-gold); }
+        .icon-emerald { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--neon-emerald); }
+        .icon-cyan { background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--neon-cyan); }
+
+        .pillar-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+
+        .pillar-desc {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .pillar-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-pink { background: var(--neon-pink); color: #0f172a; }
+        .btn-pink:hover { background: #f472b6; transform: scale(1.02); }
+        
+        .btn-gold { background: var(--neon-gold); color: #0f172a; }
+        .btn-gold:hover { background: #fbbf24; transform: scale(1.02); }
+        
+        .btn-cyan { background: var(--neon-cyan); color: #0f172a; }
+        .btn-cyan:hover { background: #22d3ee; transform: scale(1.02); }
+
+        /* Integrated Promo Form */
+        .promo-card-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .promo-card-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 0.85rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .promo-card-input:focus { border-color: var(--neon-emerald); }
+        .promo-card-input::placeholder { font-weight: 400; font-size: 0.85rem; letter-spacing: 1px; color: #64748b; }
+        
+        .btn-emerald { background: var(--neon-emerald); color: #0f172a; }
+        .btn-emerald:hover { background: #34d399; transform: scale(1.02); }
+
+        /* Onboarding Walkthrough Modal */
+        .onboarding-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 7, 15, 0.85);
+            backdrop-filter: blur(14px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .onboarding-modal-backdrop.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .onboarding-card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 680px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(236, 72, 153, 0.15);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .slide-content { display: none; flex-direction: column; align-items: center; }
+        .slide-content.active { display: flex; animation: slideIn 0.3s ease forwards; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .slide-icon-box {
+            width: 84px;
+            height: 84px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .slide-title { font-size: 2rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem; }
+        .slide-text { font-size: 1.05rem; color: #94a3b8; line-height: 1.7; max-width: 520px; margin: 0 auto 2.5rem auto; }
+
+        .slide-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .dot-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .dot-indicator.active { width: 28px; border-radius: 999px; background: var(--neon-pink); }
+
+        .slide-footer-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-nav-modal {
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+        }
+        .btn-prev { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        .btn-prev:hover { background: rgba(255, 255, 255, 0.18); }
+        .btn-next { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #ffffff; }
+        .btn-next:hover { opacity: 0.95; transform: scale(1.02); }
+
+        .skip-link {
+            color: #64748b;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 1.25rem;
+            display: inline-block;
+        }
+        .skip-link:hover { color: #94a3b8; }
+
+        /* Responsive Breakpoints for Portal */
+        @media (max-width: 1024px) {
+            .portal-header { padding: 1rem 1.5rem; }
+            .hero-title { font-size: 2.5rem; }
+            .pillars-grid { gap: 1.5rem; }
+        }
+
+        @media (max-width: 640px) {
+            .portal-header { padding: 0.85rem 1rem; flex-direction: column; gap: 0.75rem; }
+            .hero-title { font-size: 2rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .portal-container { padding: 2rem 1rem; }
+            .onboarding-card { padding: 2rem 1.25rem; }
+            .slide-title { font-size: 1.5rem; }
+            .slide-text { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="portal-header">
+        <a href="#" class="portal-brand">
+            <i data-lucide="layers" style="color: var(--neon-pink); width: 28px; height: 28px;"></i>
+            <span>Phryco <span style="font-weight:400; color:#94a3b8;">Portal</span></span>
+            <span class="portal-brand-badge">Services & Ecosystem</span>
+        </a>
+        <div style="display:flex; align-items:center; gap: 1.25rem;">
+            <div class="phrybucks-badge" id="phrybucks-display" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:0.4rem 1rem; border-radius:999px; display:flex; align-items:center; gap:0.5rem; font-weight:800; color:#fbbf24;">
+                <i data-lucide="coins" style="width: 18px; height: 18px; color:#f59e0b;"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+            <a href="../../pages/studio/index.html" style="color:#ffffff; text-decoration:none; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; background:rgba(255,255,255,0.08); border-radius:10px; transition:background 0.2s;">
+                <i data-lucide="video" style="width:16px;height:16px;"></i>
+                <span>Back to Studio</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="portal-container">
+        <div class="hero-banner">
+            <h1 class="hero-title">The Special Services & Community Hub</h1>
+            <p class="hero-subtitle">
+                Welcome to Phryco’s decoupled commercial and community ecosystem. Here, you can commission custom aesthetic themes, spend your Phrybucks rewards in the shop, redeem VIP promo code grants, or collaborate in the engineering Q&A forum—all in a dedicated workspace designed to keep your video streaming dashboard entirely distraction-free.
+            </p>
+            <button id="btn-open-guide" class="btn-walkthrough">
+                <i data-lucide="compass" style="width:20px;height:20px;"></i>
+                <span>Launch Interactive Ecosystem Guide</span>
+            </button>
+        </div>
+
+        <div class="pillars-grid">
+            <!-- Pillar 1: Custom Themes -->
+            <div class="pillar-card pink">
+                <div>
+                    <div class="pillar-icon icon-pink"><i data-lucide="palette"></i></div>
+                    <h2 class="pillar-title">Custom Themes Studio</h2>
+                    <p class="pillar-desc">
+                        Commission custom UI themes, personalized aesthetic overlays, and channel modifications directly from Phryco master designers. Features real-currency valuation quotes, structured creative briefs, 10 MB media attachments, and private collaborative studio canvases.
+                    </p>
+                </div>
+                <a href="../../pages/contact/index.html" class="pillar-action-btn btn-pink">
+                    <span>Enter Custom Studio</span>
+                    <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </a>
+            </div>
+
+            <!-- Pillar 2: Merch & Collectibles Shop -->
+            <div class="pillar-card gold">
+                <div>
+                    <div class="pillar-icon icon-gold"><i data-lucide="shopping-bag"></i></div>
+                    <h2 class="pillar-title">Merch & Rewards Shop</h2>
+                    <p class="pillar-desc">
+                        Redeem your earned Phrybucks (PB) balance for exclusive cosmetic avatar frames, profile flairs, and limited-edition physical apparel. Support the creator ecosystem without cluttering your core viewing timeline.
+                    </p>
+                </div>
+                <a href="../../pages/shop/index.html" class="pillar-action-btn btn-gold">
+                    <span>Explore Shop Catalog</span>
+                    <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </a>
+            </div>
+
+            <!-- Pillar 3: Promo & Drops Hub (In-Place Form!) -->
+            <div class="pillar-card emerald">
+                <div>
+                    <div class="pillar-icon icon-emerald"><i data-lucide="gift"></i></div>
+                    <h2 class="pillar-title">VIP Promo & Drops</h2>
+                    <p class="pillar-desc">
+                        Have an official VIP promo code or supporter grant token? Enter your code below to instantly apply Phrybucks reward bonuses and zero-fee upload exemptions directly to your active account balance.
+                    </p>
+                </div>
+                <form id="portal-promo-form" class="promo-card-form">
+                    <input type="text" id="portal-promo-input" class="promo-card-input" placeholder="ENTER VIP PROMO CODE" autocomplete="off" maxlength="32">
+                    <button type="submit" id="portal-promo-submit" class="pillar-action-btn btn-emerald">
+                        <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+                        <span>Redeem Promo Code</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Pillar 4: Community Q&A Forum -->
+            <div class="pillar-card cyan">
+                <div>
+                    <div class="pillar-icon icon-cyan"><i data-lucide="help-circle"></i></div>
+                    <h2 class="pillar-title">Community Q&A Forum</h2>
+                    <p class="pillar-desc">
+                        Collaborate with fellow creators and engineers. Ask technical streaming questions, discuss encoder best practices, share architectural guides, and upvote verified solutions in our community-driven knowledge archive.
+                    </p>
+                </div>
+                <a href="../../pages/qna/index.html" class="pillar-action-btn btn-cyan">
+                    <span>Open Q&A Forum</span>
+                    <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align:center; color:#64748b; font-size:0.85rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.06);">
+            <p>© 2026 Phryco Media Platform • Dedicated Ecosystem Hub & Services Portal</p>
+        </div>
+    </div>
+
+    <!-- Onboarding Walkthrough Modal -->
+    <div id="onboarding-modal" class="onboarding-modal-backdrop">
+        <div class="onboarding-card">
+            <!-- Slide 1 -->
+            <div class="slide-content active" data-slide="0">
+                <div class="slide-icon-box" style="color:var(--neon-pink); border-color:rgba(236,72,153,0.3); background:rgba(236,72,153,0.1);"><i data-lucide="layers"></i></div>
+                <h3 class="slide-title">Welcome to the Services Hub</h3>
+                <p class="slide-text">
+                    To keep your video streaming platform fast, cinematic, and clean, we’ve placed all special services—like custom designer commissions, merch shopping, and promo redemption—into this dedicated ecosystem hub!
+                </p>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide-content" data-slide="1">
+                <div class="slide-icon-box" style="color:var(--neon-pink); border-color:rgba(236,72,153,0.3); background:rgba(236,72,153,0.1);"><i data-lucide="palette"></i></div>
+                <h3 class="slide-title">Custom Themes & Commissions</h3>
+                <p class="slide-text">
+                    Need a custom aesthetic or unique platform theme? In our Custom Themes Studio, you can submit creative briefs, receive real-currency valuations from designers, attach up to 10 MB of media, and discuss iterations on a private collaborative canvas.
+                </p>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide-content" data-slide="2">
+                <div class="slide-icon-box" style="color:var(--neon-gold); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);"><i data-lucide="shopping-bag"></i></div>
+                <h3 class="slide-title">Phrybucks Economy & Merch</h3>
+                <p class="slide-text">
+                    As you engage on Phryco, you earn Phrybucks (PB). You can redeem your PB in the Merch & Rewards Shop for physical gear or virtual avatar frames—without cluttered shopping banners appearing on your video dashboard!
+                </p>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide-content" data-slide="3">
+                <div class="slide-icon-box" style="color:var(--neon-emerald); border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i data-lucide="sparkles"></i></div>
+                <h3 class="slide-title">VIP Promos & Community Q&A</h3>
+                <p class="slide-text">
+                    Redeem exclusive VIP promo codes instantly from this portal to claim PB drops and upload exemptions. When you need technical streaming advice or design help, join our peer-to-peer Q&A forum!
+                </p>
+            </div>
+
+            <!-- Indicators -->
+            <div class="slide-indicators">
+                <div class="dot-indicator active" data-dot="0"></div>
+                <div class="dot-indicator" data-dot="1"></div>
+                <div class="dot-indicator" data-dot="2"></div>
+                <div class="dot-indicator" data-dot="3"></div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="slide-footer-buttons">
+                <button id="btn-modal-prev" class="btn-nav-modal btn-prev" style="visibility:hidden;">Previous</button>
+                <button id="btn-modal-next" class="btn-nav-modal btn-next">Next: Custom Themes ➔</button>
+            </div>
+
+            <span id="btn-close-modal" class="skip-link">Got it, close guide and explore portal</span>
+        </div>
+    </div>
+
+    <script type="module" src="../../js/pages/services/services.js"></script>
+</body>
+</html>
