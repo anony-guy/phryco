@@ -6,6 +6,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const articlesGrid = document.getElementById('articles-grid');
     const filterPills = document.querySelectorAll('.filter-pill');
 
+    let isAdminOrOwner = false;
+    try {
+        const cachedUser = JSON.parse(localStorage.getItem('phryco_user') || 'null');
+        if (cachedUser && (cachedUser.role === 'ADMIN' || cachedUser.role === 'OWNER' || cachedUser.username === 'Phryco Inc.')) {
+            isAdminOrOwner = true;
+        }
+    } catch (e) {
+        console.warn("Could not check user role", e);
+    }
+
+    window.featurePostFromHub = async (postId, event) => {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const token = localStorage.getItem('phryco_token');
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/blog/posts/${postId}/feature`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) throw new Error("Failed to designate featured post");
+            alert("Featured dispatch updated successfully!");
+            window.location.reload();
+        } catch (err) {
+            alert("Could not update featured dispatch: " + err.message);
+        }
+    };
+
     function escapeHTML(str) {
         if (!str) return '';
         return String(str)
@@ -44,6 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const authorInitials = (post.author_name || 'PE').split(' ').map(w => w[0]).join('').substring(0, 2);
         const imageUrl = post.cover_image_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
 
+        const adminBtn = isAdminOrOwner ? `
+            <button onclick="featurePostFromHub(${post.id}, event)" style="margin-top: 1rem; background: ${post.is_featured ? 'rgba(234,179,8,0.2)' : 'rgba(255,255,255,0.08)'}; color: ${post.is_featured ? '#facc15' : '#e2e8f0'}; border: 1px solid ${post.is_featured ? '#facc15' : 'rgba(255,255,255,0.2)'}; padding: 0.4rem 0.85rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; z-index: 10; position: relative; transition: all 0.2s;">
+                <i data-lucide="star" style="width:14px;height:14px;fill:${post.is_featured ? '#facc15' : 'none'};color:${post.is_featured ? '#facc15' : '#e2e8f0'};"></i> ${post.is_featured ? 'Featured Dispatch ★ (Active)' : 'Set as Featured Dispatch'}
+            </button>
+        ` : '';
+
         featuredSection.innerHTML = `
             <a href="article.html?slug=${encodeURIComponent(post.slug)}" class="hero-featured-card">
                 <div class="featured-img-container">
@@ -62,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <h2 class="featured-title">${escapeHTML(post.title)}</h2>
                     <p class="featured-summary">${escapeHTML(post.summary)}</p>
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                    ${adminBtn}
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
                         <div class="meta-author">
                             <div class="author-avatar">${escapeHTML(authorInitials)}</div>
                             <span>${escapeHTML(post.author_name || 'Phryco Editorial Engine')}</span>
@@ -96,6 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const authorInitials = (post.author_name || 'PE').split(' ').map(w => w[0]).join('').substring(0, 2);
             const imageUrl = post.cover_image_url || 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80';
 
+            const cardAdminBtn = isAdminOrOwner ? `
+                <div style="padding: 0 1.25rem 0.5rem;">
+                    <button onclick="featurePostFromHub(${post.id}, event)" style="width: 100%; background: ${post.is_featured ? 'rgba(234,179,8,0.2)' : 'rgba(255,255,255,0.06)'}; color: ${post.is_featured ? '#facc15' : '#cbd5e1'}; border: 1px solid ${post.is_featured ? '#facc15' : 'rgba(255,255,255,0.15)'}; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; z-index: 10; position: relative; transition: all 0.2s;">
+                        <i data-lucide="star" style="width:12px;height:12px;fill:${post.is_featured ? '#facc15' : 'none'};color:${post.is_featured ? '#facc15' : '#cbd5e1'};"></i> ${post.is_featured ? 'Featured Dispatch ★' : '★ Feature This Dispatch'}
+                    </button>
+                </div>
+            ` : '';
+
             return `
                 <a href="article.html?slug=${encodeURIComponent(post.slug)}" class="article-card">
                     <div class="card-img-wrapper">
@@ -109,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <h3 class="card-title">${escapeHTML(post.title)}</h3>
                         <p class="card-summary">${escapeHTML(post.summary)}</p>
+                        ${cardAdminBtn}
                         <div class="card-footer">
                             <div class="footer-author">
                                 <div class="author-avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">${escapeHTML(authorInitials)}</div>
@@ -142,9 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const posts = json.data || [];
 
             if (currentCategory === 'All' && posts.length > 0) {
-                // In 'All' view, promote the first article to Featured Hero
-                renderFeaturedHero(posts[0]);
-                renderArticlesGrid(posts.slice(1));
+                const featuredPost = posts.find(p => p.is_featured) || posts[0];
+                const otherPosts = posts.filter(p => p.id !== featuredPost.id);
+                renderFeaturedHero(featuredPost);
+                renderArticlesGrid(otherPosts);
                 featuredSection.style.display = 'block';
             } else {
                 // In category views, show everything in the grid

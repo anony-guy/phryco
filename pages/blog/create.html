@@ -183,13 +183,13 @@
             transform: translateY(-1px);
         }
 
-        /* Split-Screen Studio Canvas */
+        /* Studio Canvas */
         .studio-split-canvas {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1.5rem;
             flex: 1;
-            min-height: 650px;
+            min-height: 750px;
         }
         .editor-pane {
             display: flex;
@@ -378,30 +378,22 @@
                 <button type="button" class="btn-toolbar" style="border-color:#a855f7; background:rgba(168,85,247,0.15);" onclick="document.getElementById('input-attach-file').click()">
                     <i data-lucide="paperclip" style="width:16px;height:16px;color:#c084fc;"></i> Upload & Attach Technical File
                 </button>
+                <button type="button" class="btn-toolbar" style="border-color:#22d3ee; background:rgba(34,211,238,0.15); color:#22d3ee; font-weight:700;" onclick="openPrivatePreview()">
+                    <i data-lucide="external-link" style="width:16px;height:16px;color:#22d3ee;"></i> Open Private Live Preview
+                </button>
                 <span id="attachment-status-pill" style="font-size:0.82rem; color:#10b981; font-weight:700;"></span>
             </div>
         </section>
 
-        <!-- Split Studio Canvas -->
+        <!-- Studio Editor Canvas -->
         <main class="studio-split-canvas">
-            <!-- Left: Authoring Editor -->
+            <!-- Full-Width Authoring Editor -->
             <div class="editor-pane">
                 <div class="pane-header">
-                    <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="code" style="width:16px;height:16px;color:#a855f7;"></i> Interactive Markdown & Code Editor</span>
-                    <span style="color:#64748b; font-size:0.75rem;">Real-time compile enabled</span>
+                    <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="code" style="width:16px;height:16px;color:#a855f7;"></i> Interactive Markdown & Code Editor (Full-Width Studio)</span>
+                    <span style="color:#64748b; font-size:0.75rem;">Real-time sync enabled for private preview window</span>
                 </div>
                 <textarea id="editor-textarea" placeholder="Write your technical dispatch here using Markdown, Chart.js JSON codes, and Mermaid syntax..."></textarea>
-            </div>
-
-            <!-- Right: Real-Time Rendered Preview -->
-            <div class="editor-pane">
-                <div class="pane-header">
-                    <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="eye" style="width:16px;height:16px;color:#22d3ee;"></i> Live Public Reader Preview</span>
-                    <span id="preview-theme-indicator" style="color:#c084fc; font-size:0.75rem; font-weight:700;">Theme: Editorial Serif</span>
-                </div>
-                <div id="live-preview-box" class="preview-pane theme-serif">
-                    <!-- Real-time dynamic compiling via create.js -->
-                </div>
             </div>
         </main>
     </div>

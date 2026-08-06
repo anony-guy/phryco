@@ -44,6 +44,29 @@ async function loadArticleContent() {
     const bodyBox = document.getElementById('article-body');
     const coverContainer = document.getElementById('cover-image-container');
 
+    if (window.location.pathname.includes('preview.html')) {
+        const cachedDraft = localStorage.getItem('phryco_blog_draft');
+        const draft = cachedDraft ? JSON.parse(cachedDraft) : {
+            title: "Untitled Studio Preview Draft",
+            category: "Preview Mode",
+            summary: "Return to the studio editor and begin typing to synchronize your draft here in real time.",
+            content: "# Waiting for content...\nStart drafting in the Studio Editor tab to see your live interactive preview here.",
+            author_name: "Phryco Inc. (Studio Preview)",
+            created_at: new Date().toISOString()
+        };
+        renderArticle(draft);
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'phryco_blog_draft' && e.newValue) {
+                try {
+                    renderArticle(JSON.parse(e.newValue));
+                } catch(err) {
+                    console.error("Failed to sync live draft", err);
+                }
+            }
+        });
+        return;
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}/api/blog/posts/${encodeURIComponent(slug)}`);
         if (!response.ok) {
@@ -95,6 +118,8 @@ function renderArticle(post) {
             <span style="display:flex;align-items:center;gap:0.4rem;"><i data-lucide="eye" style="width:16px;height:16px;"></i> ${post.views_count === 1 ? '1 view' : `${post.views_count || 1} views`}</span>
         </div>
     `;
+
+    appendAdminFeatureButton(post.id, post.is_featured);
 
     if (post.cover_image_url) {
         coverContainer.innerHTML = `
@@ -349,4 +374,49 @@ function executeInteractiveRuntime(container, attachments) {
             });
         }
     });
+}
+
+async function appendAdminFeatureButton(postId, isFeatured) {
+    if (!postId || window.location.pathname.includes('preview.html')) return;
+    try {
+        let u = JSON.parse(localStorage.getItem('phryco_user') || 'null');
+        const token = localStorage.getItem('phryco_token');
+        if (!u && token) {
+            const res = await fetch(`${API_BASE_URL}/api/users/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (res.ok) u = await res.json();
+        }
+        if (u && (u.role === 'ADMIN' || u.role === 'OWNER' || u.username === 'Phryco Inc.')) {
+            const metaBar = document.querySelector('.article-meta-bar');
+            if (metaBar && !document.getElementById('btn-feature-article')) {
+                const btn = document.createElement('button');
+                btn.id = 'btn-feature-article';
+                btn.className = 'btn-feature-dispatch';
+                btn.style.cssText = `background: ${isFeatured ? 'rgba(234, 179, 8, 0.2)' : 'rgba(255,255,255,0.08)'}; color: ${isFeatured ? '#facc15' : '#e2e8f0'}; border: 1px solid ${isFeatured ? '#facc15' : 'rgba(255,255,255,0.2)'}; padding: 0.35rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; margin-left: auto; transition: all 0.2s ease;`;
+                btn.innerHTML = `<i data-lucide="star" style="width:14px;height:14px;fill: ${isFeatured ? '#facc15' : 'none'};color: ${isFeatured ? '#facc15' : '#e2e8f0'};"></i> ${isFeatured ? 'Featured Dispatch ★' : 'Set as Featured'}`;
+                btn.onclick = async () => {
+                    btn.disabled = true;
+                    btn.innerHTML = `<i data-lucide="loader" class="animate-spin" style="width:14px;height:14px;"></i> Updating...`;
+                    if (window.lucide) window.lucide.createIcons();
+                    try {
+                        const r = await fetch(`${API_BASE_URL}/api/blog/posts/${postId}/feature`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                        });
+                        if (!r.ok) throw new Error("Failed to designate as featured dispatch.");
+                        alert("Article successfully designated as the Featured Dispatch!");
+                        window.location.reload();
+                    } catch (e) {
+                        alert(e.message);
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="star" style="width:14px;height:14px;"></i> Set as Featured`;
+                        if (window.lucide) window.lucide.createIcons();
+                    }
+                };
+                metaBar.appendChild(btn);
+                if (window.lucide) window.lucide.createIcons();
+            }
+        }
+    } catch (err) {
+        console.warn("Could not check admin governance role:", err);
+    }
 }

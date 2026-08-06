@@ -94,34 +94,59 @@ function initTypographySelector() {
     if (select) {
         select.addEventListener('change', () => {
             const theme = select.value || "sans";
-            previewBox.className = `preview-pane theme-${theme}`;
+            if (previewBox) previewBox.className = `preview-pane theme-${theme}`;
             if (indicator) {
                 const names = { sans: 'Modern Geometric', serif: 'Editorial Serif', mono: 'Technical Monospace' };
                 indicator.textContent = `Theme: ${names[theme] || 'Custom'}`;
             }
+            updateLivePreview();
         });
     }
+
+    ['input-title', 'input-category', 'input-summary', 'input-cover'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => updateLivePreview());
+    });
 }
 
 function updateLivePreview() {
     const textarea = document.getElementById('editor-textarea');
+    if (!textarea) return;
+
+    const title = document.getElementById('input-title')?.value || 'Untitled Technical Dispatch';
+    const category = document.getElementById('input-category')?.value || 'Creator Economy';
+    const summary = document.getElementById('input-summary')?.value || 'No summary provided yet.';
+    const cover_image_url = document.getElementById('input-cover')?.value || null;
+    const typography_theme = document.getElementById('select-typography-theme')?.value || "sans";
+    const content = textarea.value;
+
+    const draft = {
+        title,
+        category,
+        summary,
+        cover_image_url,
+        typography_theme,
+        content,
+        author_name: "Phryco Inc. (Private Studio Preview)",
+        created_at: new Date().toISOString(),
+        views_count: 0
+    };
+    localStorage.setItem('phryco_blog_draft', JSON.stringify(draft));
+
     const previewBox = document.getElementById('live-preview-box');
-    if (!textarea || !previewBox) return;
-
-    const rawContent = textarea.value;
-
-    if (window.marked && window.DOMPurify) {
-        marked.setOptions({ gfm: true, breaks: true });
-        const html = DOMPurify.sanitize(marked.parse(rawContent), {
-            ADD_TAGS: ['canvas', 'pre', 'code'],
-            ADD_ATTR: ['id', 'class', 'style', 'data-lucide']
-        });
-        previewBox.innerHTML = html;
-    } else {
-        previewBox.innerHTML = `<pre style="white-space:pre-wrap;">${rawContent}</pre>`;
+    if (previewBox) {
+        if (window.marked && window.DOMPurify) {
+            marked.setOptions({ gfm: true, breaks: true });
+            const html = DOMPurify.sanitize(marked.parse(content), {
+                ADD_TAGS: ['canvas', 'pre', 'code'],
+                ADD_ATTR: ['id', 'class', 'style', 'data-lucide']
+            });
+            previewBox.innerHTML = html;
+        } else {
+            previewBox.innerHTML = `<pre style="white-space:pre-wrap;">${content}</pre>`;
+        }
+        executeLiveStudioRuntime(previewBox);
     }
-
-    executeLiveStudioRuntime(previewBox);
 
     if (window.lucide) {
         window.lucide.createIcons();
@@ -433,3 +458,12 @@ function initPublishingHandler() {
         }
     });
 }
+
+function openPrivatePreview() {
+    updateLivePreview();
+    window.open('preview.html', '_blank');
+}
+
+window.insertCodeSnippet = insertCodeSnippet;
+window.handleFileUpload = handleFileUpload;
+window.openPrivatePreview = openPrivatePreview;
