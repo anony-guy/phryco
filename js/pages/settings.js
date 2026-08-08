@@ -144,6 +144,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                 connectBtnLink.href = connectUrl;
             }
         }
+
+        // Handle PIN Generation
+        const pinBtn = document.getElementById('btn-generate-discord-pin');
+        const pinDisplay = document.getElementById('discord-pin-display');
+        if (pinBtn && pinDisplay) {
+            pinBtn.addEventListener('click', async () => {
+                try {
+                    pinBtn.textContent = "Generating...";
+                    pinBtn.disabled = true;
+                    const res = await apiFetch('/api/discord/generate-link-code', { method: 'POST' });
+                    pinDisplay.style.display = 'block';
+                    pinDisplay.innerHTML = `Your Link Code: <span style="letter-spacing: 2px;">${res.code}</span><br><span style="font-size: 0.75rem; font-weight: normal; color: #94a3b8;">Run '/link code:${res.code}' in Discord (expires in 10m)</span>`;
+                } catch (e) {
+                    alert("Failed to generate PIN code.");
+                } finally {
+                    pinBtn.textContent = "🔑 Generate 6-Digit PIN";
+                    pinBtn.disabled = false;
+                }
+            });
+        }
+
+        // Handle Webhook Save
+        const webhookBtn = document.getElementById('btn-save-discord-webhook');
+        const webhookInput = document.getElementById('discord-webhook-input');
+        if (webhookBtn && webhookInput) {
+            webhookBtn.addEventListener('click', async () => {
+                const urlVal = webhookInput.value.trim();
+                try {
+                    webhookBtn.textContent = "Saving...";
+                    webhookBtn.disabled = true;
+                    const res = await apiFetch('/api/discord/webhook-settings', {
+                        method: 'POST',
+                        body: { webhook_url: urlVal }
+                    });
+                    alert(res.message);
+                } catch (e) {
+                    alert("Error: " + (e.detail || e.message || "Failed to save Discord webhook URL. Check URL format."));
+                } finally {
+                    webhookBtn.textContent = "Save Webhook";
+                    webhookBtn.disabled = false;
+                }
+            });
+        }
     }
     
     // Resend Verification

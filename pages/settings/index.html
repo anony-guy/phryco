@@ -281,6 +281,32 @@
                     </a>
                 </div>
             </div>
+
+            <!-- PIN Code Link Card -->
+            <div style="margin-top: 1.25rem; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="font-weight: 700; color: white; font-size: 0.95rem; margin-bottom: 0.25rem;">Direct In-Discord Link Code</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Generate a 6-digit PIN code to run <code>/link code:PH-XXXXX</code> directly inside Discord.</div>
+                    </div>
+                    <button id="btn-generate-discord-pin" style="background: rgba(88, 101, 242, 0.2); color: #a5b4fc; border: 1px solid #5865F2; padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">
+                        🔑 Generate 6-Digit PIN
+                    </button>
+                </div>
+                <div id="discord-pin-display" style="display: none; margin-top: 1rem; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px; font-family: monospace; font-size: 1.1rem; color: #10b981; text-align: center; font-weight: 800;">
+                    <!-- Code rendered here -->
+                </div>
+            </div>
+
+            <!-- Creator Webhook Alerts Card -->
+            <div style="margin-top: 1.25rem; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="font-weight: 700; color: white; font-size: 0.95rem; margin-bottom: 0.25rem;">Creator Discord Channel Upload Alerts</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Automatically post rich embed cards to your Discord channel whenever you publish a new video.</div>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <input type="url" id="discord-webhook-input" placeholder="https://discord.com/api/webhooks/..." style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: white; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); flex: 1; min-width: 240px; font-size: 0.85rem;">
+                    <button id="btn-save-discord-webhook" style="background: #10b981; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Save Webhook</button>
+                </div>
+            </div>
         </div>
 
         <div class="settings-section" style="border: 1px solid rgba(139, 92, 246, 0.25); background: linear-gradient(135deg, rgba(30, 27, 75, 0.4), rgba(15, 23, 42, 0.6)); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-top: 1.5rem;">
