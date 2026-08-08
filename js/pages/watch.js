@@ -181,7 +181,28 @@ async function loadWatchPage() {
         }
 
         if (!token || !currentUser || !currentUser.religion) {
-            document.getElementById('religion-required-modal').style.display = 'flex';
+            const relModal = document.getElementById('religion-required-modal');
+            relModal.style.display = 'flex';
+
+            const notMuslimBtn = document.getElementById('btn-set-non-muslim');
+            if (notMuslimBtn && token) {
+                notMuslimBtn.onclick = async () => {
+                    try {
+                        notMuslimBtn.textContent = 'Saving...';
+                        notMuslimBtn.disabled = true;
+                        await apiFetch('/api/users/me/settings', {
+                            method: 'PUT',
+                            body: { religion: 'Non-Muslim', halal_mode: false }
+                        });
+                        relModal.style.display = 'none';
+                        loadWatchPage();
+                    } catch (err) {
+                        alert("Failed to update religion setting.");
+                        notMuslimBtn.textContent = 'I Am Not Muslim';
+                        notMuslimBtn.disabled = false;
+                    }
+                };
+            }
             return; // Block execution completely
         }
         
