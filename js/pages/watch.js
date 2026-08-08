@@ -232,6 +232,7 @@ async function loadWatchPage() {
         // Populate Video Details
         document.getElementById('video-title').textContent = video.title;
         currentVideoOwner = video.owner_username;
+        window.currentVideoOwnerId = video.owner_id || null;
         
         let dateStr = '';
         if (video.created_at) {
