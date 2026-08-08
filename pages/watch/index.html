@@ -148,11 +148,24 @@
                 <div class="comments-section">
                     <h3 style="margin-bottom: 1.5rem;">Comments</h3>
                     
-                    <div class="comment-input-area" style="position: relative;">
-                        <input type="text" id="comment-input" placeholder="Add a comment...">
-                        <button id="emoji-picker-btn" style="background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; padding: 0 0.5rem;"><i data-lucide="smile"></i></button>
-                        <button id="post-comment-btn" class="btn-primary" style="padding: 0.5rem 1.5rem;">Post</button>
-                        
+                    <div class="comment-input-area" style="position: relative; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; gap: 0.5rem; width: 100%; align-items: center;">
+                            <input type="text" id="comment-input" placeholder="Add a comment..." style="flex: 1;">
+                            <button id="emoji-picker-btn" style="background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; padding: 0 0.5rem;"><i data-lucide="smile"></i></button>
+                            <button id="post-comment-btn" class="btn-primary" style="padding: 0.5rem 1.5rem;">Post</button>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-weight: 600; color: #f59e0b;">
+                                <input type="checkbox" id="super-comment-checkbox" style="cursor: pointer; accent-color: #f59e0b;">
+                                ⭐ Super Comment (Donate Phrybucks)
+                            </label>
+                            <div id="super-comment-input-container" style="display: none; align-items: center; gap: 0.4rem;">
+                                <input type="number" id="super-comment-amount" placeholder="Amount (e.g. 50)" min="1" step="1" style="width: 140px; padding: 0.35rem 0.6rem; background: var(--bg-tertiary); border: 1px solid #f59e0b; color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.85rem;">
+                                <span style="font-size: 0.75rem; color: #06b6d4; font-weight: 600;">PB Direct Creator Tip</span>
+                            </div>
+                        </div>
+
                         <div id="emoji-picker-popup" style="display: none; position: absolute; bottom: 100%; right: 0; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1rem; width: 300px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); z-index: 100; margin-bottom: 0.5rem;">
                             <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; padding-bottom: 0.5rem;">
                                 <button id="tab-global-emojis" style="background: none; border: none; color: var(--accent-primary); cursor: pointer; font-weight: bold;">Phryco Emojis</button>

@@ -1043,9 +1043,43 @@ async function loadWatchPage() {
     }
 }
 
+function getSuperCommentStyle(amount) {
+    const amt = parseFloat(amount || 0);
+    if (amt >= 500) {
+        return {
+            containerStyle: 'background: linear-gradient(135deg, rgba(236, 72, 153, 0.18), rgba(239, 68, 68, 0.18)); border: 1.5px solid #ec4899; box-shadow: 0 0 12px rgba(236,72,153,0.3); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;',
+            badgeHtml: `<span style="background: #ec4899; color: white; padding: 0.15rem 0.55rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;">⭐ Super Comment +${amt} PB</span>`
+        };
+    } else if (amt >= 200) {
+        return {
+            containerStyle: 'background: linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(139, 92, 246, 0.18)); border: 1.5px solid #a855f7; box-shadow: 0 0 10px rgba(168,85,247,0.25); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;',
+            badgeHtml: `<span style="background: #a855f7; color: white; padding: 0.15rem 0.55rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;">⭐ Super Comment +${amt} PB</span>`
+        };
+    } else if (amt >= 50) {
+        return {
+            containerStyle: 'background: linear-gradient(135deg, rgba(234, 179, 8, 0.18), rgba(245, 158, 11, 0.18)); border: 1.5px solid #eab308; box-shadow: 0 0 8px rgba(234,179,8,0.2); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;',
+            badgeHtml: `<span style="background: #eab308; color: black; padding: 0.15rem 0.55rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;">⭐ Super Comment +${amt} PB</span>`
+        };
+    } else if (amt > 0) {
+        return {
+            containerStyle: 'background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(59, 130, 246, 0.18)); border: 1.5px solid #06b6d4; box-shadow: 0 0 6px rgba(6,182,212,0.2); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;',
+            badgeHtml: `<span style="background: #06b6d4; color: black; padding: 0.15rem 0.55rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;">⭐ Super Comment +${amt} PB</span>`
+        };
+    }
+    return { containerStyle: '', badgeHtml: '' };
+}
+
 async function loadComments() {
     const list = document.getElementById('comments-list');
     list.innerHTML = '';
+
+    const superCb = document.getElementById('super-comment-checkbox');
+    const superContainer = document.getElementById('super-comment-input-container');
+    if (superCb && superContainer) {
+        superCb.onchange = () => {
+            superContainer.style.display = superCb.checked ? 'flex' : 'none';
+        };
+    }
     
     commentsScroller = new InfiniteScroller({
         endpoint: `/api/videos/${currentVideoId}/comments`,
@@ -1061,15 +1095,19 @@ async function loadComments() {
                 contentHtml = contentHtml.replace(/;;MEM_EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/memberships/emojis/$1/image" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Membership Emoji">`);
                 
                 const badgeHtml = c.author_badge_path ? `<img src="${API_BASE_URL}${c.author_badge_path}" style="height: 1.25em; margin-left: 0.5em; vertical-align: middle;" title="Channel Member">` : '';
-                
+                const superStyle = getSuperCommentStyle(c.donation_amount);
+
                 const div = document.createElement('div');
                 div.className = 'comment';
+                if (superStyle.containerStyle) {
+                    div.setAttribute('style', superStyle.containerStyle);
+                }
                 div.innerHTML = `
                     <div class="comment-avatar">
                         <img src="${avatarUrl}" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">
                     </div>
                     <div class="comment-content">
-                        <h4>${escapeHTML(c.user_username)}${badgeHtml} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">${date}</span></h4>
+                        <h4>${escapeHTML(c.user_username)}${badgeHtml}${superStyle.badgeHtml} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">${date}</span></h4>
                         <p>${contentHtml}</p>
                     </div>
                 `;
@@ -1173,22 +1211,37 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
         return;
     }
     
+    let donationAmount = 0;
+    const superCb = document.getElementById('super-comment-checkbox');
+    const superAmtInput = document.getElementById('super-comment-amount');
+    if (superCb && superCb.checked && superAmtInput) {
+        donationAmount = parseFloat(superAmtInput.value) || 0;
+        if (donationAmount < 1) {
+            showToast("Minimum Super Comment donation is 1 PB.", "error");
+            return;
+        }
+    }
+
     const list = document.getElementById('comments-list');
     
     let contentHtml = parseTimestamps(content);
     contentHtml = contentHtml.replace(/;;EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/emojis/image/$1" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Emoji">`);
     contentHtml = contentHtml.replace(/;;MEM_EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/memberships/emojis/$1/image" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Membership Emoji">`);
     
+    const superStyle = getSuperCommentStyle(donationAmount);
     const tempDiv = document.createElement('div');
     tempDiv.className = 'comment';
     tempDiv.style.opacity = '0.5';
     tempDiv.style.transition = 'opacity 0.3s';
+    if (superStyle.containerStyle) {
+        tempDiv.setAttribute('style', superStyle.containerStyle);
+    }
     tempDiv.innerHTML = `
         <div class="comment-avatar">
             <img src="${API_BASE_URL}/api/users/${user.username}/avatar" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">
         </div>
         <div class="comment-content">
-            <h4>${escapeHTML(user.username)} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">Just now</span></h4>
+            <h4>${escapeHTML(user.username)}${superStyle.badgeHtml} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">Just now</span></h4>
             <p>${contentHtml}</p>
         </div>
     `;
@@ -1200,9 +1253,13 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
     try {
         await apiFetch(`/api/videos/${currentVideoId}/comments`, {
             method: 'POST',
-            body: { content: content }
+            body: { content: content, donation_amount: donationAmount }
         });
         tempDiv.style.opacity = '1';
+        if (superCb) superCb.checked = false;
+        if (superAmtInput) superAmtInput.value = '';
+        const superContainer = document.getElementById('super-comment-input-container');
+        if (superContainer) superContainer.style.display = 'none';
     } catch (error) {
         tempDiv.remove();
         input.value = content;
