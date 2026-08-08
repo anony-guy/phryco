@@ -1130,7 +1130,8 @@ function renderSingleCommentCard(c, isChild = false) {
 
     const userStr = localStorage.getItem('phryco_user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
-    const isOwnerOrAdmin = window.currentVideoOwnerId && currentUser && (currentUser.id === window.currentVideoOwnerId || currentUser.role === 'ADMIN' || currentUser.role === 'OWNER');
+    const isVideoUploader = window.currentVideoOwnerId && currentUser &&
+        (currentUser.id === window.currentVideoOwnerId);
 
     const pinnedHeader = c.is_pinned ? `<div style="font-size: 0.75rem; color: var(--accent-primary); font-weight: 700; display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.35rem;"><i data-lucide="pin" style="width: 14px; height: 14px;"></i> Pinned by creator</div>` : '';
     const heartBadge = c.is_hearted ? `<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 0.1rem 0.4rem; border-radius: 99px; font-size: 0.7rem; font-weight: 700; margin-left: 0.4rem;" title="Hearted by creator">❤️ Creator Heart</span>` : '';
@@ -1138,8 +1139,8 @@ function renderSingleCommentCard(c, isChild = false) {
     const likeColor = c.user_vote === 'like' ? 'var(--accent-primary)' : 'var(--text-secondary)';
     const dislikeColor = c.user_vote === 'dislike' ? '#ef4444' : 'var(--text-secondary)';
 
-    const pinBtn = isOwnerOrAdmin ? `<button onclick="pinComment(${c.id})" style="background:none; border:none; color:${c.is_pinned?'var(--accent-primary)':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="pin" style="width:13px;height:13px;"></i> ${c.is_pinned?'Unpin':'Pin'}</button>` : '';
-    const heartBtn = isOwnerOrAdmin ? `<button onclick="heartComment(${c.id})" style="background:none; border:none; color:${c.is_hearted?'#ef4444':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="heart" style="width:13px;height:13px;"></i> ${c.is_hearted?'Unheart':'Heart'}</button>` : '';
+    const pinBtn = isVideoUploader ? `<button onclick="pinComment(${c.id})" style="background:none; border:none; color:${c.is_pinned?'var(--accent-primary)':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="pin" style="width:13px;height:13px;"></i> ${c.is_pinned?'Unpin':'Pin'}</button>` : '';
+    const heartBtn = isVideoUploader ? `<button onclick="heartComment(${c.id})" style="background:none; border:none; color:${c.is_hearted?'#ef4444':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="heart" style="width:13px;height:13px;"></i> ${c.is_hearted?'Unheart':'Heart'}</button>` : '';
 
     const div = document.createElement('div');
     div.className = 'comment';
