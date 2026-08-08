@@ -135,7 +135,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </a>
                     </div>
                 `;
-            if (discordData.discord_webhook_url) {
+            }
+            if (discordData && discordData.discord_webhook_url) {
                 const webhookInput = document.getElementById('discord-webhook-input');
                 if (webhookInput) webhookInput.value = discordData.discord_webhook_url;
             }

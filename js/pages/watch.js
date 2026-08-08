@@ -774,6 +774,7 @@ async function loadWatchPage() {
         let activeAd = null;
         let adSkipped = false;
         let adCompletedOrSkipped = true;
+        let isMainVideoActive = false;
         
         if (video.monetization_enabled !== false) {
             try {
@@ -796,6 +797,14 @@ async function loadWatchPage() {
                 loadVideoStream(url, player, video.id);
                 document.getElementById('pr-overlay').style.display = 'none';
                 
+                const autoOverlay = document.getElementById('autoplay-overlay');
+                if (autoOverlay) autoOverlay.style.display = 'none';
+
+                // Delay main video active state so queued ad ended events are completely ignored
+                setTimeout(() => {
+                    isMainVideoActive = true;
+                }, 300);
+
                 player.play().then(() => {
                     playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
                     lucide.createIcons();
@@ -920,7 +929,7 @@ async function loadWatchPage() {
         }
         let autoplayCountdownInterval = null;
         player.addEventListener('ended', () => {
-            if (window.currentPlayingVideoId == video.id && adCompletedOrSkipped && document.getElementById('pr-overlay').style.display === 'none') {
+            if (isMainVideoActive && window.currentPlayingVideoId == video.id && adCompletedOrSkipped && document.getElementById('pr-overlay').style.display === 'none') {
                 if (autoplayToggle && autoplayToggle.checked) {
                     const firstRecommended = document.querySelector('#recommended-videos .up-next-card, #recommended-videos .video-card');
                     if (firstRecommended) {
