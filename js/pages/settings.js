@@ -71,16 +71,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             initialBirthDate = profile.birth_date;
         }
 
-        loadDiscordConnectionStatus();
+        loadDiscordConnectionStatus(profile);
     } catch (e) {
         console.error("Failed to load settings", e);
         // Toast notification could go here
     }
 
-    async function loadDiscordConnectionStatus() {
+    async function loadDiscordConnectionStatus(userProfile = null) {
         const discordContainer = document.getElementById('discord-connection-container');
         if (!discordContainer) return;
         
+        const userIdParam = (userProfile && userProfile.id) ? `?user_id=${userProfile.id}` : '';
+        const connectUrl = `${API_BASE_URL}/api/discord/user-connect${userIdParam}`;
+
         try {
             const discordData = await apiFetch('/api/discord/me');
             if (discordData.is_connected) {
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             disconnectBtn.textContent = "Disconnecting...";
                             disconnectBtn.disabled = true;
                             await apiFetch('/api/discord/disconnect', { method: 'POST' });
-                            loadDiscordConnectionStatus();
+                            loadDiscordConnectionStatus(userProfile);
                         } catch (err) {
                             alert("Failed to disconnect Discord account.");
                             disconnectBtn.textContent = "Disconnect";
@@ -127,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Phryco Inc. Discord Bot & Role Connections</div>
                             <div style="font-size: 0.85rem; color: var(--text-secondary);">Connect your Discord account to display your Phryco Supporter tier, Creator badges, and Phrybucks metrics on Discord.</div>
                         </div>
-                        <a id="connect-discord-btn-link" href="${API_BASE_URL}/api/discord/user-connect" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                        <a id="connect-discord-btn-link" href="${connectUrl}" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
                             <i data-lucide="bot" style="width: 18px; height: 18px;"></i> Connect Discord Account
                         </a>
                     </div>
@@ -138,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn("Discord connection status check fallback:", err);
             const connectBtnLink = document.getElementById('connect-discord-btn-link');
             if (connectBtnLink) {
-                connectBtnLink.href = `${API_BASE_URL}/api/discord/user-connect`;
+                connectBtnLink.href = connectUrl;
             }
         }
     }
