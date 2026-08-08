@@ -38,6 +38,10 @@ function loadVideoStream(url, playerElement, vidId) {
         window.hlsInstance.loadSource(url);
         window.hlsInstance.attachMedia(playerElement);
         
+        window.hlsInstance.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+            setupQualitySelectorMenu(data.levels, url);
+        });
+        
         window.hlsInstance.on(Hls.Events.ERROR, function (event, data) {
             if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
                 console.warn("HLS Network Error, falling back to legacy MP4.", data);
@@ -59,6 +63,52 @@ function loadVideoStream(url, playerElement, vidId) {
     } else {
         playerElement.src = url;
     }
+}
+
+function setupQualitySelectorMenu(levels, baseUrl) {
+    const menuContainer = document.getElementById('quality-dropdown-menu');
+    const btn = document.getElementById('quality-selector-btn');
+    if (!menuContainer || !btn) return;
+    
+    let html = `<div class="quality-option-item selected" data-level="-1">Auto (Adaptive)</div>`;
+    if (levels && levels.length > 0) {
+        levels.forEach((lvl, idx) => {
+            const label = lvl.height ? `${lvl.height}p` : `Level ${idx+1}`;
+            html += `<div class="quality-option-item" data-level="${idx}">${label}</div>`;
+        });
+    }
+    html += `<div class="quality-option-item" data-level="audio">🎵 Audio-Only (64k)</div>`;
+    
+    menuContainer.innerHTML = html;
+    
+    btn.onclick = (e) => {
+        e.stopPropagation();
+        menuContainer.classList.toggle('active');
+    };
+    
+    document.addEventListener('click', () => menuContainer.classList.remove('active'));
+    
+    menuContainer.querySelectorAll('.quality-option-item').forEach(item => {
+        item.onclick = (e) => {
+            e.stopPropagation();
+            menuContainer.querySelectorAll('.quality-option-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            
+            const lvl = item.getAttribute('data-level');
+            if (lvl === "audio") {
+                if (window.hlsInstance) {
+                    const audioUrl = baseUrl.replace('master.m3u8', 'audio_only.m3u8');
+                    window.hlsInstance.loadSource(audioUrl);
+                    btn.textContent = "Audio-Only";
+                }
+            } else if (window.hlsInstance) {
+                const targetLvl = parseInt(lvl);
+                window.hlsInstance.currentLevel = targetLvl;
+                btn.textContent = targetLvl === -1 ? "Quality (Auto)" : item.textContent;
+            }
+            menuContainer.classList.remove('active');
+        };
+    });
 }
 let commentsScroller;
 let upNextScroller;
