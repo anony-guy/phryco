@@ -1072,7 +1072,7 @@ function getSuperCommentStyle(amount) {
 
 window.voteComment = async (commentId, isLike) => {
     try {
-        await apiFetch(`/api/comments/${commentId}/vote`, { method: 'POST', body: { is_like: isLike } });
+        await apiFetch(`/api/videos/comments/${commentId}/vote`, { method: 'POST', body: { is_like: isLike } });
         loadComments();
     } catch (e) {
         showToast("Failed to vote comment: " + e.message, "error");
@@ -1081,7 +1081,7 @@ window.voteComment = async (commentId, isLike) => {
 
 window.pinComment = async (commentId) => {
     try {
-        await apiFetch(`/api/comments/${commentId}/pin`, { method: 'POST' });
+        await apiFetch(`/api/videos/comments/${commentId}/pin`, { method: 'POST' });
         loadComments();
     } catch (e) {
         showToast("Failed to pin comment: " + e.message, "error");
@@ -1090,7 +1090,7 @@ window.pinComment = async (commentId) => {
 
 window.heartComment = async (commentId) => {
     try {
-        await apiFetch(`/api/comments/${commentId}/heart`, { method: 'POST' });
+        await apiFetch(`/api/videos/comments/${commentId}/heart`, { method: 'POST' });
         loadComments();
     } catch (e) {
         showToast("Failed to heart comment: " + e.message, "error");
