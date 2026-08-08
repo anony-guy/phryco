@@ -78,13 +78,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function loadDiscordConnectionStatus() {
-        const connectionsContainer = document.getElementById('connections-container');
-        if (!connectionsContainer) return;
+        const discordContainer = document.getElementById('discord-connection-container');
+        if (!discordContainer) return;
         
         try {
             const discordData = await apiFetch('/api/discord/me');
             if (discordData.is_connected) {
-                connectionsContainer.innerHTML = `
+                discordContainer.innerHTML = `
                     <div style="background: rgba(88, 101, 242, 0.1); border: 1px solid rgba(88, 101, 242, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -121,13 +121,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                 }
             } else {
-                connectionsContainer.innerHTML = `
+                discordContainer.innerHTML = `
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                         <div>
-                            <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Discord Integration & Linked Roles</div>
+                            <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Phryco Inc. Discord Bot & Role Connections</div>
                             <div style="font-size: 0.85rem; color: var(--text-secondary);">Connect your Discord account to display your Phryco Supporter tier, Creator badges, and Phrybucks metrics on Discord.</div>
                         </div>
-                        <a href="${API_BASE_URL}/api/discord/user-connect?redirect_base_url=${encodeURIComponent(window.location.origin)}" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                        <a id="connect-discord-btn-link" href="${API_BASE_URL}/api/discord/user-connect?redirect_base_url=${encodeURIComponent(window.location.origin)}" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
                             <i data-lucide="bot" style="width: 18px; height: 18px;"></i> Connect Discord Account
                         </a>
                     </div>
