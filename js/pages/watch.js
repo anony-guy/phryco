@@ -1069,6 +1069,110 @@ function getSuperCommentStyle(amount) {
     return { containerStyle: '', badgeHtml: '' };
 }
 
+window.voteComment = async (commentId, isLike) => {
+    try {
+        await apiFetch(`/api/comments/${commentId}/vote`, { method: 'POST', body: { is_like: isLike } });
+        loadComments();
+    } catch (e) {
+        showToast("Failed to vote comment: " + e.message, "error");
+    }
+};
+
+window.pinComment = async (commentId) => {
+    try {
+        await apiFetch(`/api/comments/${commentId}/pin`, { method: 'POST' });
+        loadComments();
+    } catch (e) {
+        showToast("Failed to pin comment: " + e.message, "error");
+    }
+};
+
+window.heartComment = async (commentId) => {
+    try {
+        await apiFetch(`/api/comments/${commentId}/heart`, { method: 'POST' });
+        loadComments();
+    } catch (e) {
+        showToast("Failed to heart comment: " + e.message, "error");
+    }
+};
+
+window.toggleReplyInput = (commentId) => {
+    const box = document.getElementById(`reply-box-${commentId}`);
+    if (box) box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+};
+
+window.submitReply = async (parentId) => {
+    const input = document.getElementById(`reply-input-${parentId}`);
+    if (!input || !input.value.trim()) return;
+    const content = input.value.trim();
+    try {
+        await apiFetch(`/api/videos/${currentVideoId}/comments`, {
+            method: 'POST',
+            body: { content: content, parent_id: parentId }
+        });
+        loadComments();
+    } catch (e) {
+        showToast("Failed to post reply: " + e.message, "error");
+    }
+};
+
+function renderSingleCommentCard(c, isChild = false) {
+    const date = new Date(c.created_at).toLocaleDateString();
+    const avatarUrl = `${API_BASE_URL}/api/users/${c.user_username}/avatar`;
+    
+    let contentHtml = parseTimestamps(c.content);
+    contentHtml = contentHtml.replace(/;;EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/emojis/image/$1" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Emoji">`);
+    contentHtml = contentHtml.replace(/;;MEM_EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/memberships/emojis/$1/image" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Membership Emoji">`);
+    
+    const badgeHtml = c.author_badge_path ? `<img src="${API_BASE_URL}${c.author_badge_path}" style="height: 1.25em; margin-left: 0.5em; vertical-align: middle;" title="Channel Member">` : '';
+    const superStyle = getSuperCommentStyle(c.donation_amount);
+
+    const userStr = localStorage.getItem('phryco_user');
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const isOwnerOrAdmin = window.currentVideoOwnerId && currentUser && (currentUser.id === window.currentVideoOwnerId || currentUser.role === 'ADMIN' || currentUser.role === 'OWNER');
+
+    const pinnedHeader = c.is_pinned ? `<div style="font-size: 0.75rem; color: var(--accent-primary); font-weight: 700; display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.35rem;"><i data-lucide="pin" style="width: 14px; height: 14px;"></i> Pinned by creator</div>` : '';
+    const heartBadge = c.is_hearted ? `<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 0.1rem 0.4rem; border-radius: 99px; font-size: 0.7rem; font-weight: 700; margin-left: 0.4rem;" title="Hearted by creator">❤️ Creator Heart</span>` : '';
+
+    const likeColor = c.user_vote === 'like' ? 'var(--accent-primary)' : 'var(--text-secondary)';
+    const dislikeColor = c.user_vote === 'dislike' ? '#ef4444' : 'var(--text-secondary)';
+
+    const pinBtn = isOwnerOrAdmin ? `<button onclick="pinComment(${c.id})" style="background:none; border:none; color:${c.is_pinned?'var(--accent-primary)':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="pin" style="width:13px;height:13px;"></i> ${c.is_pinned?'Unpin':'Pin'}</button>` : '';
+    const heartBtn = isOwnerOrAdmin ? `<button onclick="heartComment(${c.id})" style="background:none; border:none; color:${c.is_hearted?'#ef4444':'var(--text-secondary)'}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="heart" style="width:13px;height:13px;"></i> ${c.is_hearted?'Unheart':'Heart'}</button>` : '';
+
+    const div = document.createElement('div');
+    div.className = 'comment';
+    div.id = `comment-${c.id}`;
+    if (isChild) div.style.marginBottom = '0.5rem';
+    if (superStyle.containerStyle) {
+        div.setAttribute('style', superStyle.containerStyle);
+    }
+
+    div.innerHTML = `
+        <div class="comment-avatar">
+            <img src="${avatarUrl}" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">
+        </div>
+        <div class="comment-content" style="flex: 1;">
+            ${pinnedHeader}
+            <h4>${escapeHTML(c.user_username)}${badgeHtml}${heartBadge}${superStyle.badgeHtml} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">${date}</span></h4>
+            <p style="margin: 0.35rem 0 0.5rem 0;">${contentHtml}</p>
+            <div style="display: flex; align-items: center; gap: 0.85rem; font-size: 0.8rem; margin-top: 0.25rem;">
+                <button onclick="voteComment(${c.id}, true)" style="background:none; border:none; color:${likeColor}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="thumbs-up" style="width:13px;height:13px;"></i> <span>${c.likes_count||0}</span></button>
+                <button onclick="voteComment(${c.id}, false)" style="background:none; border:none; color:${dislikeColor}; cursor:pointer; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:0.25rem;"><i data-lucide="thumbs-down" style="width:13px;height:13px;"></i> <span>${c.dislikes_count||0}</span></button>
+                <button onclick="toggleReplyInput(${c.id})" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.75rem; font-weight:600;">Reply</button>
+                ${pinBtn}
+                ${heartBtn}
+            </div>
+            <div id="reply-box-${c.id}" style="display: none; gap: 0.4rem; margin-top: 0.5rem; width: 100%;">
+                <input type="text" id="reply-input-${c.id}" placeholder="Write a reply..." style="flex: 1; padding: 0.35rem 0.6rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem;">
+                <button onclick="submitReply(${c.id})" class="btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">Reply</button>
+            </div>
+            <div id="replies-container-${c.id}" style="margin-left: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 0.75rem; margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+        </div>
+    `;
+    return div;
+}
+
 async function loadComments() {
     const list = document.getElementById('comments-list');
     list.innerHTML = '';
@@ -1086,34 +1190,40 @@ async function loadComments() {
         container: list,
         emptyHTML: '<p style="color: var(--text-secondary);">No comments yet. Be the first to comment!</p>',
         renderCallback: (items, sentinel) => {
-            items.forEach(c => {
-                const date = new Date(c.created_at).toLocaleDateString();
-                const avatarUrl = `${API_BASE_URL}/api/users/${c.user_username}/avatar`;
-                
-                let contentHtml = parseTimestamps(c.content);
-                contentHtml = contentHtml.replace(/;;EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/emojis/image/$1" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Emoji">`);
-                contentHtml = contentHtml.replace(/;;MEM_EMOJI:(\d+);;/g, `<img src="${API_BASE_URL}/api/memberships/emojis/$1/image" style="height: 1.5em; vertical-align: middle; margin: 0 0.1em;" title="Membership Emoji">`);
-                
-                const badgeHtml = c.author_badge_path ? `<img src="${API_BASE_URL}${c.author_badge_path}" style="height: 1.25em; margin-left: 0.5em; vertical-align: middle;" title="Channel Member">` : '';
-                const superStyle = getSuperCommentStyle(c.donation_amount);
-
-                const div = document.createElement('div');
-                div.className = 'comment';
-                if (superStyle.containerStyle) {
-                    div.setAttribute('style', superStyle.containerStyle);
-                }
-                div.innerHTML = `
-                    <div class="comment-avatar">
-                        <img src="${avatarUrl}" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">
-                    </div>
-                    <div class="comment-content">
-                        <h4>${escapeHTML(c.user_username)}${badgeHtml}${superStyle.badgeHtml} <span style="color: var(--text-secondary); font-size: 0.75rem; font-weight: normal; margin-left: 0.5rem;">${date}</span></h4>
-                        <p>${contentHtml}</p>
-                    </div>
-                `;
-                list.insertBefore(div, sentinel);
+            const topLevel = items.filter(c => !c.parent_id);
+            const replies = items.filter(c => c.parent_id);
+            const replyMap = {};
+            replies.forEach(r => {
+                if (!replyMap[r.parent_id]) replyMap[r.parent_id] = [];
+                replyMap[r.parent_id].push(r);
             });
-            lucide.createIcons();
+
+            topLevel.forEach(c => {
+                const card = renderSingleCommentCard(c, false);
+                list.insertBefore(card, sentinel);
+
+                const childReplies = replyMap[c.id] || [];
+                const repliesContainer = card.querySelector(`#replies-container-${c.id}`);
+                if (repliesContainer && childReplies.length > 0) {
+                    childReplies.forEach(child => {
+                        const childCard = renderSingleCommentCard(child, true);
+                        repliesContainer.appendChild(childCard);
+                    });
+                }
+            });
+
+            // Handle replies whose parents might be on previous pages
+            replies.forEach(r => {
+                if (!topLevel.some(t => t.id === r.parent_id)) {
+                    const parentContainer = list.querySelector(`#replies-container-${r.parent_id}`);
+                    if (parentContainer && !parentContainer.querySelector(`#comment-${r.id}`)) {
+                        const childCard = renderSingleCommentCard(r, true);
+                        parentContainer.appendChild(childCard);
+                    }
+                }
+            });
+
+            if (window.lucide) lucide.createIcons();
         }
     });
     
