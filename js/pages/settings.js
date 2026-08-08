@@ -69,9 +69,74 @@ document.addEventListener('DOMContentLoaded', async () => {
             birthDateInput.disabled = true;
             initialBirthDate = profile.birth_date;
         }
+
+        loadDiscordConnectionStatus();
     } catch (e) {
         console.error("Failed to load settings", e);
         // Toast notification could go here
+    }
+
+    async function loadDiscordConnectionStatus() {
+        const connectionsContainer = document.getElementById('connections-container');
+        if (!connectionsContainer) return;
+        
+        try {
+            const discordData = await apiFetch('/api/discord/me');
+            if (discordData.is_connected) {
+                connectionsContainer.innerHTML = `
+                    <div style="background: rgba(88, 101, 242, 0.1); border: 1px solid rgba(88, 101, 242, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div style="background: #5865F2; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem;">
+                                    D
+                                </div>
+                                <div>
+                                    <div style="font-weight: 700; color: white; font-size: 1.05rem;">Connected to Discord</div>
+                                    <div style="font-size: 0.85rem; color: #a5b4fc; font-weight: 600;">@${discordData.discord_username || 'Discord User'} (ID: ${discordData.discord_user_id})</div>
+                                </div>
+                            </div>
+                            <button id="btn-disconnect-discord" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: all 0.2s;">Disconnect</button>
+                        </div>
+                        <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.1); font-size: 0.8rem; color: #10b981; font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+                            <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i> Discord Linked Roles Active (Supporter, Creator Status, & Phrybucks Balance synchronized)
+                        </div>
+                    </div>
+                `;
+                
+                const disconnectBtn = document.getElementById('btn-disconnect-discord');
+                if (disconnectBtn) {
+                    disconnectBtn.addEventListener('click', async () => {
+                        if (!confirm("Are you sure you want to disconnect your Discord account? Linked Roles will be unlinked.")) return;
+                        try {
+                            disconnectBtn.textContent = "Disconnecting...";
+                            disconnectBtn.disabled = true;
+                            await apiFetch('/api/discord/disconnect', { method: 'POST' });
+                            loadDiscordConnectionStatus();
+                        } catch (err) {
+                            alert("Failed to disconnect Discord account.");
+                            disconnectBtn.textContent = "Disconnect";
+                            disconnectBtn.disabled = false;
+                        }
+                    });
+                }
+            } else {
+                connectionsContainer.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Discord Integration & Linked Roles</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Connect your Discord account to display your Phryco Supporter tier, Creator badges, and Phrybucks metrics on Discord.</div>
+                        </div>
+                        <a href="/api/discord/user-connect" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                            <i data-lucide="bot" style="width: 18px; height: 18px;"></i> Connect Discord Account
+                        </a>
+                    </div>
+                `;
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        } catch (err) {
+            console.error("Failed to load Discord connection status:", err);
+            connectionsContainer.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.875rem;">Unable to load connected applications.</p>`;
+        }
     }
     
     // Resend Verification
