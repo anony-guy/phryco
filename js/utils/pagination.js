@@ -142,3 +142,100 @@ export class InfiniteScroller {
         }
     }
 }
+
+/**
+ * ManualPager — like InfiniteScroller but the user explicitly clicks
+ * "Load more" instead of auto-triggering on scroll. Ideal for comment
+ * sections where auto-loading blocks access to content below.
+ */
+export class ManualPager {
+    constructor({
+        endpoint,
+        container,
+        renderCallback,
+        limit = 20,
+        emptyHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No items found.</div>',
+        transformResponse = null,
+        buttonLabel = 'Load more',
+        endLabel = 'All loaded'
+    }) {
+        this.endpoint = endpoint;
+        this.container = container;
+        this.renderCallback = renderCallback;
+        this.limit = limit;
+        this.skip = 0;
+        this.isFetching = false;
+        this.hasMore = true;
+        this.emptyHTML = emptyHTML;
+        this.transformResponse = transformResponse;
+        this.buttonLabel = buttonLabel;
+        this.endLabel = endLabel;
+
+        this._btn = document.createElement('div');
+        this._btn.style.cssText = 'text-align:center;padding:1rem 0;';
+        this.container.appendChild(this._btn);
+    }
+
+    async initialize() {
+        this.skip = 0;
+        this.hasMore = true;
+        this.isFetching = false;
+        Array.from(this.container.children).forEach(child => {
+            if (child !== this._btn) child.remove();
+        });
+        await this._fetch();
+    }
+
+    async _fetch() {
+        if (this.isFetching || !this.hasMore) return;
+        this.isFetching = true;
+        this._btn.innerHTML = '<span style="color:var(--text-secondary);font-size:0.875rem;">Loading...</span>';
+
+        try {
+            const url = new URL(this.endpoint, window.location.origin);
+            url.searchParams.set('skip', this.skip);
+            url.searchParams.set('limit', this.limit);
+
+            const { apiFetch } = await import('../api/client.js');
+            const response = await apiFetch(url.pathname + url.search);
+            const items = this.transformResponse ? this.transformResponse(response) : response;
+            const count = Array.isArray(items) ? items.length : 0;
+
+            if (!items || count === 0) {
+                this.hasMore = false;
+                if (this.skip === 0) {
+                    this._btn.insertAdjacentHTML('beforebegin', this.emptyHTML);
+                }
+                this._btn.innerHTML = `<span style="color:var(--text-secondary);font-size:0.8rem;">${this.endLabel}</span>`;
+            } else {
+                this.renderCallback(items, this._btn);
+                this.skip += this.limit;
+                if (count < this.limit) {
+                    this.hasMore = false;
+                    this._btn.innerHTML = `<span style="color:var(--text-secondary);font-size:0.8rem;">${this.endLabel}</span>`;
+                } else {
+                    this._btn.innerHTML = `<button style="background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);padding:0.5rem 1.5rem;border-radius:var(--radius-md);cursor:pointer;font-size:0.875rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-primary)'" onmouseout="this.style.borderColor='var(--border-color)'" onclick="this.closest('[data-pager]')?.__pager?.loadMore()">${this.buttonLabel}</button>`;
+                    // Store reference for the button's onclick
+                    this.container.setAttribute('data-pager', '1');
+                    this.container.__pager = this;
+                }
+            }
+            if (window.lucide) window.lucide.createIcons();
+        } catch (err) {
+            console.error('ManualPager fetch error:', err);
+            this._btn.innerHTML = `<span style="color:var(--danger);font-size:0.875rem;">Failed to load. <button onclick="this.closest('[data-pager]').__pager?.loadMore()" style="color:var(--accent-primary);background:none;border:none;cursor:pointer;">Retry</button></span>`;
+        } finally {
+            this.isFetching = false;
+        }
+    }
+
+    loadMore() {
+        this._fetch();
+    }
+
+    destroy() {
+        if (this._btn && this._btn.parentNode) {
+            this._btn.parentNode.removeChild(this._btn);
+        }
+    }
+}

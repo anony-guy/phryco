@@ -1,7 +1,7 @@
 import { apiFetch } from '../api/client.js';
 import { API_BASE_URL } from '../utils/config.js';
 import { escapeHTML, renderCreatorBadges } from '../utils/security.js';
-import { InfiniteScroller } from '../utils/pagination.js';
+import { InfiniteScroller, ManualPager } from '../utils/pagination.js';
 import { showToast } from '../utils/toast.js';
 import { initAmbientAura } from '../components/ambient_aura.js';
 
@@ -1003,13 +1003,16 @@ async function loadWatchPage() {
             initVODChatReplay();
         }
         
-        // Populate Up Next
-        const recommendedContainer = document.getElementById('recommended-videos');
+        // Populate Up Next — mobile slot or sidebar depending on viewport
+        const isMobile = window.innerWidth < 900;
+        const upNextTarget = isMobile
+            ? (document.getElementById('up-next-mobile') || document.getElementById('recommended-videos'))
+            : document.getElementById('recommended-videos');
         try {
-            recommendedContainer.innerHTML = '';
+            upNextTarget.innerHTML = '';
             upNextScroller = new InfiniteScroller({
                 endpoint: `/api/videos/${currentVideoId}/up-next`,
-                container: recommendedContainer,
+                container: upNextTarget,
                 emptyHTML: '',
                 renderCallback: (items, sentinel) => {
                     items.forEach(v => {
@@ -1029,7 +1032,7 @@ async function loadWatchPage() {
                                 <p class="up-next-views">${v.views.toLocaleString()} views</p>
                             </div>
                         `;
-                        recommendedContainer.insertBefore(card, sentinel);
+                        upNextTarget.insertBefore(card, sentinel);
                     });
                 }
             });
@@ -1175,6 +1178,65 @@ function renderSingleCommentCard(c, isChild = false) {
     return div;
 }
 
+// Lazy-loads replies for a comment on first user click
+window.loadReplies = async (commentId, replyCount) => {
+    const container = document.getElementById(`replies-container-${commentId}`);
+    const toggleBtn = document.getElementById(`replies-toggle-${commentId}`);
+    if (!container || !toggleBtn) return;
+
+    if (container.dataset.loaded) {
+        // Already loaded — just toggle visibility
+        const isHidden = container.style.display === 'none';
+        container.style.display = isHidden ? 'flex' : 'none';
+        toggleBtn.textContent = isHidden ? `▼ Hide replies` : `► ${replyCount} repl${replyCount === 1 ? 'y' : 'ies'}`;
+        return;
+    }
+
+    toggleBtn.textContent = 'Loading replies...';
+    toggleBtn.disabled = true;
+
+    try {
+        const firstBatch = await apiFetch(`/api/videos/comments/${commentId}/replies?skip=0&limit=10`);
+        if (!firstBatch || firstBatch.length === 0) {
+            toggleBtn.textContent = 'No replies';
+            return;
+        }
+        container.dataset.loaded = '1';
+        container.style.display = 'flex';
+        firstBatch.forEach(r => {
+            container.appendChild(renderSingleCommentCard(r, true));
+        });
+        toggleBtn.textContent = `▼ Hide replies`;
+        toggleBtn.disabled = false;
+
+        if (firstBatch.length >= 10) {
+            let replySkip = 10;
+            const moreBtn = document.createElement('button');
+            moreBtn.textContent = 'Load more replies';
+            moreBtn.style.cssText = 'background:none;border:1px solid var(--border-color);color:var(--text-secondary);padding:0.3rem 0.85rem;border-radius:var(--radius-sm);font-size:0.75rem;cursor:pointer;margin-top:0.35rem;';
+            moreBtn.onclick = async () => {
+                moreBtn.textContent = 'Loading...';
+                moreBtn.disabled = true;
+                try {
+                    const more = await apiFetch(`/api/videos/comments/${commentId}/replies?skip=${replySkip}&limit=10`);
+                    if (!more || more.length === 0) { moreBtn.remove(); return; }
+                    more.forEach(r => container.insertBefore(renderSingleCommentCard(r, true), moreBtn));
+                    replySkip += 10;
+                    if (more.length < 10) moreBtn.remove();
+                    else { moreBtn.textContent = 'Load more replies'; moreBtn.disabled = false; }
+                    if (window.lucide) lucide.createIcons();
+                } catch(e) { moreBtn.textContent = 'Failed. Retry'; moreBtn.disabled = false; }
+            };
+            container.appendChild(moreBtn);
+        }
+        if (window.lucide) lucide.createIcons();
+    } catch(e) {
+        toggleBtn.textContent = `► View replies`;
+        toggleBtn.disabled = false;
+        showToast('Failed to load replies.', 'error');
+    }
+};
+
 async function loadComments() {
     const list = document.getElementById('comments-list');
     list.innerHTML = '';
@@ -1187,44 +1249,18 @@ async function loadComments() {
         };
     }
     
-    commentsScroller = new InfiniteScroller({
+    commentsScroller = new ManualPager({
         endpoint: `/api/videos/${currentVideoId}/comments`,
         container: list,
-        emptyHTML: '<p style="color: var(--text-secondary);">No comments yet. Be the first to comment!</p>',
+        limit: 20,
+        emptyHTML: '<p style="color: var(--text-secondary); padding: 0.5rem 0;">No comments yet. Be the first to comment!</p>',
+        buttonLabel: 'Show more comments',
+        endLabel: 'All comments loaded ✓',
         renderCallback: (items, sentinel) => {
-            const topLevel = items.filter(c => !c.parent_id);
-            const replies = items.filter(c => c.parent_id);
-            const replyMap = {};
-            replies.forEach(r => {
-                if (!replyMap[r.parent_id]) replyMap[r.parent_id] = [];
-                replyMap[r.parent_id].push(r);
-            });
-
-            topLevel.forEach(c => {
+            items.forEach(c => {
                 const card = renderSingleCommentCard(c, false);
                 list.insertBefore(card, sentinel);
-
-                const childReplies = replyMap[c.id] || [];
-                const repliesContainer = card.querySelector(`#replies-container-${c.id}`);
-                if (repliesContainer && childReplies.length > 0) {
-                    childReplies.forEach(child => {
-                        const childCard = renderSingleCommentCard(child, true);
-                        repliesContainer.appendChild(childCard);
-                    });
-                }
             });
-
-            // Handle replies whose parents might be on previous pages
-            replies.forEach(r => {
-                if (!topLevel.some(t => t.id === r.parent_id)) {
-                    const parentContainer = list.querySelector(`#replies-container-${r.parent_id}`);
-                    if (parentContainer && !parentContainer.querySelector(`#comment-${r.id}`)) {
-                        const childCard = renderSingleCommentCard(r, true);
-                        parentContainer.appendChild(childCard);
-                    }
-                }
-            });
-
             if (window.lucide) lucide.createIcons();
         }
     });
