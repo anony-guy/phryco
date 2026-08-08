@@ -62,7 +62,11 @@ async function loadQueue() {
         renderCallback: (items, sentinel) => {
             items.forEach(v => {
                 const tr = renderQueueRow(v);
-                tbody.insertBefore(tr, sentinel);
+                if (sentinel && sentinel.parentNode) {
+                    sentinel.parentNode.insertBefore(tr, sentinel);
+                } else {
+                    tbody.appendChild(tr);
+                }
             });
         }
     });
@@ -120,7 +124,11 @@ async function loadAllVideos() {
         renderCallback: (items, sentinel) => {
             items.forEach(v => {
                 const tr = renderAllVideoRow(v);
-                tbody.insertBefore(tr, sentinel);
+                if (sentinel && sentinel.parentNode) {
+                    sentinel.parentNode.insertBefore(tr, sentinel);
+                } else {
+                    tbody.appendChild(tr);
+                }
             });
         }
     });
@@ -197,7 +205,11 @@ async function loadUsers() {
         renderCallback: (items, sentinel) => {
             items.forEach(u => {
                 const tr = renderUserRow(u);
-                tbody.insertBefore(tr, sentinel);
+                if (sentinel && sentinel.parentNode) {
+                    sentinel.parentNode.insertBefore(tr, sentinel);
+                } else {
+                    tbody.appendChild(tr);
+                }
             });
         }
     });
