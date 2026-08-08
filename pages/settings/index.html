@@ -264,7 +264,15 @@
         <div class="settings-section">
             <h2><i data-lucide="link"></i> Connected Applications</h2>
             <div id="connections-container">
-                <p style="color: var(--text-secondary); font-size: 0.875rem;">Loading connections...</p>
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Discord Integration & Linked Roles</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">Connect your Discord account to display your Phryco Supporter tier, Creator badges, and Phrybucks metrics on Discord.</div>
+                    </div>
+                    <a id="connect-discord-btn-link" href="https://fancy-beautiful-flush-homes.trycloudflare.com/api/discord/user-connect?redirect_base_url=https%3A%2F%2Fphryco.vercel.app" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                        <i data-lucide="bot" style="width: 18px; height: 18px;"></i> Connect Discord Account
+                    </a>
+                </div>
             </div>
         </div>
 

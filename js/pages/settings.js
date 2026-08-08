@@ -135,8 +135,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         } catch (err) {
-            console.error("Failed to load Discord connection status:", err);
-            connectionsContainer.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.875rem;">Unable to load connected applications.</p>`;
+            console.warn("Discord connection status check fallback:", err);
+            const connectBtnLink = document.getElementById('connect-discord-btn-link');
+            if (connectBtnLink) {
+                connectBtnLink.href = `${API_BASE_URL}/api/discord/user-connect?redirect_base_url=${encodeURIComponent(window.location.origin)}`;
+            }
         }
     }
     
