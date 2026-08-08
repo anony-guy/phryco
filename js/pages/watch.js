@@ -1005,8 +1005,9 @@ async function loadWatchPage() {
         
         // Populate Up Next — mobile slot or sidebar depending on viewport
         const isMobile = window.innerWidth < 900;
-        const upNextTarget = isMobile
-            ? (document.getElementById('up-next-mobile') || document.getElementById('recommended-videos'))
+        const upNextWrapper = isMobile ? document.getElementById('up-next-mobile') : null;
+        const upNextTarget = upNextWrapper
+            ? (upNextWrapper.querySelector('div[style*="flex-direction:column"]') || upNextWrapper)
             : document.getElementById('recommended-videos');
         try {
             upNextTarget.innerHTML = '';
@@ -1109,16 +1110,56 @@ window.submitReply = async (parentId) => {
     const input = document.getElementById(`reply-input-${parentId}`);
     if (!input || !input.value.trim()) return;
     const content = input.value.trim();
+    input.value = '';
+    document.getElementById(`reply-box-${parentId}`).style.display = 'none';
     try {
-        await apiFetch(`/api/videos/${currentVideoId}/comments`, {
+        const newReply = await apiFetch(`/api/videos/${currentVideoId}/comments`, {
             method: 'POST',
             body: { content: content, parent_id: parentId }
         });
-        loadComments();
+
+        // Update the toggle button count
+        const toggleBtn = document.getElementById(`replies-toggle-${parentId}`);
+        const container = document.getElementById(`replies-container-${parentId}`);
+
+        if (container && container.dataset.loaded) {
+            // Container already open — append the reply directly
+            // The API returns { message: "Comment posted" } not the comment itself,
+            // so refresh only this thread
+            const fresh = await apiFetch(`/api/videos/comments/${parentId}/replies?skip=0&limit=100`);
+            // Find the reply we just posted (last in array)
+            const last = fresh[fresh.length - 1];
+            if (last) {
+                // Remove existing "Load more replies" btn if present before appending
+                const moreBtn = container.querySelector('button:last-child');
+                container.appendChild(renderSingleCommentCard(last, true));
+                if (window.lucide) lucide.createIcons();
+            }
+        } else {
+            // Container not open yet — trigger load which will open it
+            const currentCount = toggleBtn
+                ? parseInt((toggleBtn.textContent.match(/(\d+)/) || ['0','0'])[1]) || 0
+                : 0;
+            loadReplies(parentId, currentCount + 1);
+        }
+
+        // Bump the count on the toggle button
+        if (toggleBtn) {
+            const currentCount = parseInt((toggleBtn.textContent.match(/(\d+)/) || ['0','0'])[1]) || 0;
+            const newCount = currentCount + 1;
+            // Only update text if button is in "show" state (not "hide")
+            if (!toggleBtn.textContent.includes('Hide')) {
+                toggleBtn.textContent = `▶ ${newCount} repl${newCount === 1 ? 'y' : 'ies'}`;
+            }
+        } else {
+            // Toggle button didn't exist — this is first reply, re-render card
+            loadComments();
+        }
     } catch (e) {
         showToast("Failed to post reply: " + e.message, "error");
     }
 };
+
 
 function renderSingleCommentCard(c, isChild = false) {
     const date = new Date(c.created_at).toLocaleDateString();
@@ -1172,7 +1213,11 @@ function renderSingleCommentCard(c, isChild = false) {
                 <input type="text" id="reply-input-${c.id}" placeholder="Write a reply..." style="flex: 1; padding: 0.35rem 0.6rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem;">
                 <button onclick="submitReply(${c.id})" class="btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">Reply</button>
             </div>
-            <div id="replies-container-${c.id}" style="margin-left: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 0.75rem; margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+            ${!isChild && c.reply_count > 0 ? `
+            <button id="replies-toggle-${c.id}" onclick="loadReplies(${c.id}, ${c.reply_count})" style="background:none; border:none; color:var(--accent-primary); cursor:pointer; font-size:0.78rem; font-weight:700; margin-top:0.35rem; padding:0; text-align:left;">
+                &#9658; ${c.reply_count} repl${c.reply_count === 1 ? 'y' : 'ies'}
+            </button>` : ''}
+            <div id="replies-container-${c.id}" style="margin-left: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 0.75rem; margin-top: 0.5rem; display: none; flex-direction: column; gap: 0.5rem;"></div>
         </div>
     `;
     return div;

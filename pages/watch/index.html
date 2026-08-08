@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="../../css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Mobile: show inline Up Next above comments, hide sidebar */
+        @media (max-width: 900px) {
+            .secondary-column { display: none !important; }
+            #up-next-mobile { display: block !important; }
+        }
+        /* Desktop: hide inline Up Next, show sidebar */
+        @media (min-width: 901px) {
+            #up-next-mobile { display: none !important; }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -143,6 +154,14 @@
                     <div id="video-desc" style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-lg); font-size: 0.875rem; line-height: 1.5;">
                         <!-- Description -->
                     </div>
+                </div>
+
+                <!-- Mobile Up Next slot: shown < 900px, hidden on desktop -->
+                <div id="up-next-mobile" style="display:none; margin-bottom: 1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+                        <h3 style="margin:0;">Up Next</h3>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:1rem;"></div>
                 </div>
 
                 <div class="comments-section">
