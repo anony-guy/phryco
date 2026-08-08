@@ -1,4 +1,5 @@
 import { apiFetch } from '../api/client.js';
+import { API_BASE_URL } from '../utils/config.js';
 
 let initialBirthDate = null;
 
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div style="font-weight: 700; color: white; font-size: 1rem; margin-bottom: 0.25rem;">Discord Integration & Linked Roles</div>
                             <div style="font-size: 0.85rem; color: var(--text-secondary);">Connect your Discord account to display your Phryco Supporter tier, Creator badges, and Phrybucks metrics on Discord.</div>
                         </div>
-                        <a href="/api/discord/user-connect" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                        <a href="${API_BASE_URL}/api/discord/user-connect?redirect_base_url=${encodeURIComponent(window.location.origin)}" style="background: #5865F2; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
                             <i data-lucide="bot" style="width: 18px; height: 18px;"></i> Connect Discord Account
                         </a>
                     </div>
