@@ -1004,8 +1004,8 @@ async function loadWatchPage() {
         }
         
         // Populate Up Next — mobile slot or sidebar depending on viewport
-        const isMobile = window.innerWidth < 900;
-        const upNextWrapper = isMobile ? document.getElementById('up-next-mobile') : null;
+        const isMobileViewport = window.innerWidth < 900;
+        const upNextWrapper = isMobileViewport ? document.getElementById('up-next-mobile') : null;
         const upNextTarget = upNextWrapper
             ? (upNextWrapper.querySelector('div[style*="flex-direction:column"]') || upNextWrapper)
             : document.getElementById('recommended-videos');
