@@ -773,10 +773,14 @@ async function loadWatchPage() {
         // Initial setup and Ad Logic
         let activeAd = null;
         let adSkipped = false;
+        let adCompletedOrSkipped = true;
         
         if (video.monetization_enabled !== false) {
             try {
                 activeAd = await apiFetch('/api/ads/random');
+                if (activeAd) {
+                    adCompletedOrSkipped = false;
+                }
             } catch (e) {
                 console.error("Ad fetch failed", e);
             }
@@ -784,20 +788,29 @@ async function loadWatchPage() {
         
         const startPlaybackSequence = () => {
             const startMainVideo = () => {
+                adCompletedOrSkipped = true;
                 const token = localStorage.getItem('phryco_token');
                 const tokenParam = token ? `?token=${token}` : '';
                 let qualityFile = availableQualities.length > 1 ? 'master' : availableQualities[0];
                 const url = `${API_BASE_URL}/api/videos/${video.id}/hls/${qualityFile}.m3u8${tokenParam}`;
                 loadVideoStream(url, player, video.id);
-                playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
-                lucide.createIcons();
                 document.getElementById('pr-overlay').style.display = 'none';
+                
+                player.play().then(() => {
+                    playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
+                    lucide.createIcons();
+                }).catch(err => {
+                    console.warn("Main video playback auto-start blocked by browser:", err);
+                    playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+                    lucide.createIcons();
+                });
             };
 
             if (activeAd) {
                 // Play ad first
                 const url = `${API_BASE_URL}/api/videos/${activeAd.video_id}/hls/720p.m3u8`;
                 loadVideoStream(url, player, activeAd.video_id);
+                player.play().catch(e => console.warn("Ad auto-play blocked", e));
                 playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
                 document.getElementById('pr-overlay').style.display = 'flex';
                 
@@ -907,7 +920,7 @@ async function loadWatchPage() {
         }
         let autoplayCountdownInterval = null;
         player.addEventListener('ended', () => {
-            if (window.currentPlayingVideoId == video.id) {
+            if (window.currentPlayingVideoId == video.id && adCompletedOrSkipped && document.getElementById('pr-overlay').style.display === 'none') {
                 if (autoplayToggle && autoplayToggle.checked) {
                     const firstRecommended = document.querySelector('#recommended-videos .up-next-card, #recommended-videos .video-card');
                     if (firstRecommended) {
