@@ -59,38 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             bundleCatalog = data.bundles || [];
             liveRate = data.rate;
-            renderBundleModal();
         } catch (err) {
             console.error('Rates load error:', err);
         }
-    }
-
-    function renderBundleModal() {
-        const rowsContainer = document.getElementById('bundle-rows');
-        if (!rowsContainer) return;
-        
-        rowsContainer.innerHTML = '';
-        const items = [
-            { pb: 500, price: (500 / 1080 * liveRate).toFixed(2) },
-            { pb: 1500, price: (1500 / 1080 * liveRate).toFixed(2) },
-            { pb: 2500, price: (2500 / 1080 * liveRate).toFixed(2) },
-            { pb: 5000, price: (5000 / 1080 * liveRate).toFixed(2) }
-        ];
-
-        items.forEach(item => {
-            const row = document.createElement('div');
-            row.className = 'bundle-row';
-            row.innerHTML = `
-                <div class="bundle-item">${item.pb} PB</div>
-                <div class="bundle-price">${item.price} EGP</div>
-                <div class="quantity-control">
-                    <button class="qty-btn" onclick="updateQty(${item.pb}, -1)">−</button>
-                    <span class="qty-val" id="qty-${item.pb}">0</span>
-                    <button class="qty-btn" onclick="updateQty(${item.pb}, 1)">+</button>
-                </div>
-            `;
-            rowsContainer.appendChild(row);
-        });
     }
 
     window.updateQty = function(pb, delta) {

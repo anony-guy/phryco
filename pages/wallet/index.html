@@ -35,10 +35,10 @@
 
     <!-- Quick Action Buttons -->
     <div class="action-buttons">
-      <div class="action-btn" id="open-topup-modal">
+      <a href="https://checkout.kashier.io/en/prepaymentpages?ppLink=PP-4909734401,test" target="_blank" rel="noopener" class="action-btn" id="open-kashier-page" style="text-decoration: none;">
         <h3>💳 Buy PhryBucks</h3>
-        <p>Top up your PB balance via Kashier (Credit/Debit Card, Mobile Wallet).</p>
-      </div>
+        <p>Open official Kashier Payment Page to choose PhryBucks bundles and complete payment.</p>
+      </a>
       <div class="action-btn" onclick="document.getElementById('cashout-section').scrollIntoView({behavior: 'smooth'})">
         <h3>🏦 Cash Out</h3>
         <p>Withdraw earned PB directly to your Egyptian bank account (IBAN).</p>
@@ -54,39 +54,6 @@
     </div>
 
   </main>
-
-  <!-- PhryBucks Bundle Modal (Matching Catalog Screenshot) -->
-  <div class="modal-overlay" id="topup-modal">
-    <div class="bundle-modal">
-      <button class="close-btn" id="close-modal">&times;</button>
-      
-      <div class="modal-header">
-        <div class="modal-icon-box">
-          <img src="/favicon.ico" alt="Phryco Logo">
-        </div>
-        <div class="modal-title-box">
-          <h2>PhryBucks Bundle</h2>
-          <div class="modal-price-range">22.98 EGP - 229.78 EGP</div>
-        </div>
-      </div>
-
-      <div class="bundle-table">
-        <div class="bundle-table-header">
-          <div>ITEM</div>
-          <div>PRICE</div>
-          <div>QUANTITY</div>
-        </div>
-        <div id="bundle-rows">
-          <!-- Dynamically Rendered Bundle Rows -->
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-secondary" id="add-to-cart-btn">Add To Cart</button>
-        <button class="btn-primary" id="buy-now-btn">Buy Now</button>
-      </div>
-    </div>
-  </div>
 
   <script src="/js/vendor/vaultguard/vaultguard.js"></script>
   <script src="/pages/wallet/js/wallet.js"></script>
