@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phryco-cache-v128';
+const CACHE_NAME = 'phryco-cache-v129';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
