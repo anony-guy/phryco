@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction History — Phryco Wallet</title>
+  <link rel="stylesheet" href="css/wallet.css">
+</head>
+<body>
+
+  <header class="wallet-header">
+    <div class="wallet-logo">
+      <img src="/favicon.ico" alt="Phryco">
+      <span>PHRYCO WALLET LEDGER</span>
+    </div>
+    <div class="wallet-header-right">
+      <a href="/pages/wallet/index.html" class="back-link">← Wallet Dashboard</a>
+    </div>
+  </header>
+
+  <main class="wallet-container">
+    <div class="cashout-panel">
+      <h2>📜 Cashout Requests</h2>
+      <table class="transaction-table" id="cashout-history-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tier</th>
+            <th>Amount (PB)</th>
+            <th>Fee (PB)</th>
+            <th>Net EGP</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="cashout-history-rows">
+          <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading cashout history...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cashout-panel">
+      <h2>💳 Transaction Ledger</h2>
+      <table class="transaction-table" id="tx-ledger-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Amount (PB)</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="tx-ledger-rows">
+          <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading transaction ledger...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="js/history.js"></script>
+</body>
+</html>

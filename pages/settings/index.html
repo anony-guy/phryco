@@ -258,9 +258,24 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-            </div>
         </div>
         
+        <div class="settings-section" style="border: 1px solid rgba(0, 211, 149, 0.3); background: linear-gradient(135deg, rgba(0, 211, 149, 0.08), rgba(10, 42, 31, 0.8));">
+            <h2><i data-lucide="wallet" style="color: #00d395;"></i> Phrybucks Wallet</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 500px; margin-top: 0.25rem;">
+                        Manage your PB balance, buy PhryBucks bundles via Kashier, view live exchange rates, and submit cashout requests on the dedicated Wallet portal.
+                    </p>
+                </div>
+                <a href="/pages/wallet/index.html" 
+                   style="background: #00d395; color: #0a2a1f; text-decoration: none; padding: 0.65rem 1.4rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s;"
+                   onmouseover="this.style.background='#00b882'" onmouseout="this.style.background='#00d395'">
+                    <i data-lucide="external-link" style="width: 17px; height: 17px;"></i> Open Wallet Portal →
+                </a>
+            </div>
+        </div>
+
         <div class="settings-section">
             <h2><i data-lucide="link"></i> Connected Applications</h2>
             <div id="connections-container">
