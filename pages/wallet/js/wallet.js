@@ -229,18 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Modal Control
-    const modal = document.getElementById('topup-modal');
-    const openBtn = document.getElementById('open-topup-modal');
-    const closeBtn = document.getElementById('close-modal');
-
-    if (openBtn && modal) {
-        openBtn.addEventListener('click', () => modal.classList.add('active'));
-    }
-    if (closeBtn && modal) {
-        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-    }
-
     loadBalance();
     loadRates();
 });
