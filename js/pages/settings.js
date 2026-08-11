@@ -340,7 +340,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             let fp = localStorage.getItem('phryco_vg_fp');
             if (!fp) {
-                fp = 'vg_' + Math.random().toString(36).substring(2, 10) + '_' + (navigator.userAgent || '').length;
+                const uaLen = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent.length : 12;
+                fp = 'vg_' + Math.random().toString(36).substring(2, 10) + '_' + uaLen;
                 localStorage.setItem('phryco_vg_fp', fp);
             }
             await apiFetch('/api/users/me/vaultguard', {

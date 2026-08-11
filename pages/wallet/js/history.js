@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('phryco_token') || localStorage.getItem('token');
     if (!token) {
         window.location.href = '/pages/login/index.html';
         return;
