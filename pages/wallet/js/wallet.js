@@ -5,6 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    function getApiBaseUrl() {
+        if (window.PHRYCO_API_URL) return window.PHRYCO_API_URL;
+        const host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0' || host.startsWith('192.168.') || host.startsWith('10.')) {
+            return `${window.location.protocol}//${host}:8000`;
+        }
+        if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
+            return 'https://outer-bufing-draws-experts.trycloudflare.com';
+        }
+        return window.location.origin;
+    }
+
+    const apiBase = getApiBaseUrl();
+
     let bundleCatalog = [];
     let liveRate = 49.63;
     let selectedQuantities = { 500: 0, 1500: 0, 2500: 0, 5000: 0 };
@@ -12,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch Wallet Balance & System Info
     async function loadBalance() {
         try {
-            const res = await fetch('/api/wallet/balance', {
+            const res = await fetch(`${apiBase}/api/wallet/balance`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) {
@@ -41,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch Public Bundle Rates & Prices
     async function loadRates() {
         try {
-            const res = await fetch('/api/wallet/rate');
+            const res = await fetch(`${apiBase}/api/wallet/rate`);
             const data = await res.json();
             bundleCatalog = data.bundles || [];
             liveRate = data.rate;
@@ -104,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 buyNowBtn.disabled = true;
                 buyNowBtn.textContent = 'Redirecting to Kashier...';
                 
-                const res = await fetch('/api/wallet/topup/session', {
+                const res = await fetch(`${apiBase}/api/wallet/topup/session`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
