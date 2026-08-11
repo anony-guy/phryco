@@ -5,10 +5,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    function getApiBaseUrl() {
+        if (window.PHRYCO_API_URL) return window.PHRYCO_API_URL;
+        const host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0' || host.startsWith('192.168.') || host.startsWith('10.')) {
+            return `${window.location.protocol}//${host}:8000`;
+        }
+        if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
+            return 'https://outer-bufing-draws-experts.trycloudflare.com';
+        }
+        return window.location.origin;
+    }
+
+    const apiBase = getApiBaseUrl();
+
     async function loadCashouts() {
         const tbody = document.getElementById('cashout-history-rows');
         try {
-            const res = await fetch('/api/wallet/cashout/history', {
+            const res = await fetch(`${apiBase}/api/wallet/cashout/history`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -42,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadTransactions() {
         const tbody = document.getElementById('tx-ledger-rows');
         try {
-            const res = await fetch('/api/wallet/transactions', {
+            const res = await fetch(`${apiBase}/api/wallet/transactions`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();

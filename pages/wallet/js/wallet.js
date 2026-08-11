@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cashout Eligibility & Submission
     async function loadEligibility() {
         try {
-            const res = await fetch('/api/wallet/cashout/eligibility', {
+            const res = await fetch(`${apiBase}/api/wallet/cashout/eligibility`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('cashout-form').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     try {
-                        const res = await fetch('/api/wallet/cashout/request', {
+                        const res = await fetch(`${apiBase}/api/wallet/cashout/request`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${token}`,
