@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!res.ok) {
                 if (res.status === 401) {
+                    localStorage.removeItem('phryco_token');
                     localStorage.removeItem('token');
                     window.location.href = '/pages/login/index.html';
                     return;
