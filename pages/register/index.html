@@ -92,19 +92,28 @@
                 <div class="form-group" style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
                     <label style="font-weight: 700; color: #ffffff; margin-bottom: 0.75rem; display: block;">Mandatory Legal Agreements</label>
                     
-                    <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="agree-tos" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;">
-                        <span>I have read and agree to the Terms of Service</span>
+                    <label style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.65rem;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="agree-tos" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; cursor: pointer;">
+                            <span>I agree to the Terms of Service</span>
+                        </span>
+                        <button type="button" class="legal-doc-trigger" data-doc="tos" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Read Document</button>
                     </label>
 
-                    <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="agree-privacy" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;">
-                        <span>I have read and agree to the Privacy Policy</span>
+                    <label style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.65rem;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="agree-privacy" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; cursor: pointer;">
+                            <span>I agree to the Privacy Policy</span>
+                        </span>
+                        <button type="button" class="legal-doc-trigger" data-doc="privacy" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Read Document</button>
                     </label>
 
-                    <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1; cursor: pointer;">
-                        <input type="checkbox" id="agree-license" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;">
-                        <span>I have read and agree to the Ethical Source License</span>
+                    <label style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="agree-license" required style="width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; cursor: pointer;">
+                            <span>I agree to the Ethical Source License</span>
+                        </span>
+                        <button type="button" class="legal-doc-trigger" data-doc="license" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Read Document</button>
                     </label>
                 </div>
                 
@@ -140,6 +149,7 @@
             }
         });</script>
     <script type="module" src="../../js/pages/register.js"></script>
-<script type="module" src="../../js/components/header.js"></script>
+    <script type="module" src="../../js/components/legal_reader_modal.js"></script>
+    <script type="module" src="../../js/components/header.js"></script>
     </body>
 </html>
