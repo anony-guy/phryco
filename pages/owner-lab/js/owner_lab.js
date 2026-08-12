@@ -1,5 +1,5 @@
-import { apiFetch } from '../../../js/api/client.js';
-import { checkAndPromptLegalReagreement } from '../../../js/components/legal_reagreement_modal.js';
+import { apiFetch } from '/js/api/client.js';
+import { checkAndPromptLegalReagreement } from '/js/components/legal_reagreement_modal.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Verify OWNER Role Access
