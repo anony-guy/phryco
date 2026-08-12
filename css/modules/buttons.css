@@ -95,11 +95,11 @@
 
 .search-bar-container {
   flex: 1;
-  max-width: 500px;
+  max-width: 440px;
   min-height: 40px;
-  min-width: 280px;
+  min-width: 180px;
   contain: layout style;
-  margin: 0 2rem;
+  margin: 0 1rem;
   position: relative;
 }
 
