@@ -139,7 +139,7 @@ async function initHeader() {
 function renderLoggedOutDropdown(dropdown) {
     dropdown.innerHTML = `
         <a href="../../pages/login/index.html" class="dropdown-item"><i data-lucide="log-in" style="width: 16px; height: 16px;"></i> Sign In</a>
-        <a href="../../pages/signup/index.html" class="dropdown-item"><i data-lucide="user-plus" style="width: 16px; height: 16px;"></i> Sign Up</a>
+        <a href="../../pages/register/index.html" class="dropdown-item"><i data-lucide="user-plus" style="width: 16px; height: 16px;"></i> Sign Up</a>
     `;
 }
 

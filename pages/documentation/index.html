@@ -113,17 +113,18 @@
 
     <div class="doc-layout">
         <aside class="doc-sidebar">
-            <a href="#introduction" class="active">Introduction</a>
-            <a href="#phrybucks">The Phrybucks Economy</a>
-            <a href="#content-lifecycle">Content Lifecycle</a>
-            <a href="#creator-tools">Creator Tools</a>
-            <a href="#community-features">Community Features</a>
-            <a href="#watch-experience">The Watch Experience</a>
-            <a href="#ad-free">Ad-Free Experience</a>
-            <a href="#developers">For Developers (SSO & Security)</a>
-            <div style="height: 1px; background: var(--border-color); margin: 1rem 0;"></div>
-            <a href="../legal/terms.html">Terms of Service</a>
-            <a href="../legal/privacy.html">Privacy Policy</a>
+            <a href="#introduction" class="active"><i data-lucide="sparkles" style="width: 15px; height: 15px; vertical-align: middle;"></i> Introduction</a>
+            <a href="#phrybucks"><i data-lucide="coins" style="width: 15px; height: 15px; vertical-align: middle;"></i> The Phrybucks Economy</a>
+            <a href="#content-lifecycle"><i data-lucide="recycle" style="width: 15px; height: 15px; vertical-align: middle;"></i> Content Lifecycle</a>
+            <a href="#creator-tools"><i data-lucide="sliders-horizontal" style="width: 15px; height: 15px; vertical-align: middle;"></i> Creator Tools</a>
+            <a href="#community-features"><i data-lucide="users" style="width: 15px; height: 15px; vertical-align: middle;"></i> Community Features</a>
+            <a href="#watch-experience"><i data-lucide="play-circle" style="width: 15px; height: 15px; vertical-align: middle;"></i> The Watch Experience</a>
+            <a href="#ad-free"><i data-lucide="zap-off" style="width: 15px; height: 15px; vertical-align: middle;"></i> Ad-Free Experience</a>
+            <a href="#developers"><i data-lucide="code" style="width: 15px; height: 15px; vertical-align: middle;"></i> For Developers</a>
+            <div style="height: 1px; background: var(--border-color); margin: 0.75rem 0;"></div>
+            <a href="#" class="legal-doc-trigger" data-doc="tos"><i data-lucide="file-text" style="width: 15px; height: 15px; vertical-align: middle;"></i> Terms of Service</a>
+            <a href="#" class="legal-doc-trigger" data-doc="privacy"><i data-lucide="shield-check" style="width: 15px; height: 15px; vertical-align: middle;"></i> Privacy Policy</a>
+            <a href="#" class="legal-doc-trigger" data-doc="license"><i data-lucide="scale" style="width: 15px; height: 15px; vertical-align: middle;"></i> Ethical License</a>
         </aside>
 
         <main class="doc-content markdown-body">
@@ -289,14 +290,20 @@
 
             navLinks.forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#') && targetId.length > 1) {
+                        e.preventDefault();
+                        const targetEl = document.querySelector(targetId);
+                        if (targetEl) {
+                            targetEl.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
                 });
             });
         });
     </script>
+    <script type="module" src="../../js/components/info_hub_modal.js"></script>
+    <script type="module" src="../../js/components/legal_reader_modal.js"></script>
     <script type="module" src="../../js/components/header.js"></script>
 </body>
 </html>
