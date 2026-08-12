@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return `${window.location.protocol}//${host}:8000`;
         }
         if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
-            return 'https://programme-each-salad-marsh.trycloudflare.com';
+            return 'https://refuse-forecast-joseph-relationship.trycloudflare.com';
         }
         return window.location.origin;
     }
@@ -89,3 +89,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadCashouts();
     loadTransactions();
 });
+
