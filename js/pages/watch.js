@@ -231,6 +231,47 @@ async function loadWatchPage() {
         
         // Populate Video Details
         document.getElementById('video-title').textContent = video.title;
+        document.title = `${video.title} - Phryco`;
+
+        // Inject meta description for SEO
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.name = 'description';
+            document.head.appendChild(metaDesc);
+        }
+        metaDesc.content = video.description || `Watch ${video.title} on Phryco. Stream high quality cinematic videos.`;
+
+        // Inject Google VideoObject JSON-LD Schema for Rich Search Snippets
+        let jsonLdScript = document.getElementById('jsonld-video-schema');
+        if (!jsonLdScript) {
+            jsonLdScript = document.createElement('script');
+            jsonLdScript.id = 'jsonld-video-schema';
+            jsonLdScript.type = 'application/ld+json';
+            document.head.appendChild(jsonLdScript);
+        }
+        
+        const videoSchema = {
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": video.title,
+            "description": video.description || `Watch ${video.title} on Phryco`,
+            "thumbnailUrl": [`${API_BASE_URL}/api/videos/${video.id}/thumbnail`],
+            "uploadDate": video.created_at || new Date().toISOString(),
+            "contentUrl": window.location.href,
+            "embedUrl": window.location.href,
+            "interactionStatistic": {
+                "@type": "InteractionCounter",
+                "interactionType": { "@type": "https://schema.org/WatchAction" },
+                "userInteractionCount": video.views || 0
+            },
+            "author": {
+                "@type": "Person",
+                "name": video.owner_username || "Phryco Creator"
+            }
+        };
+        jsonLdScript.textContent = JSON.stringify(videoSchema);
+
         currentVideoOwner = video.owner_username;
         window.currentVideoOwnerId = video.owner_id || null;
         
