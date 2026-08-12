@@ -74,6 +74,40 @@
   border-color: rgba(251, 191, 36, 0.6);
 }
 
+/* GitHub Open Source Badge */
+.github-os-badge {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+
+.github-os-badge:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.github-badge-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+}
+
 /* Standard Pill Inputs & Search */
 .input-pill {
   width: 100%;
