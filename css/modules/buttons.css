@@ -96,6 +96,9 @@
 .search-bar-container {
   flex: 1;
   max-width: 500px;
+  min-height: 40px;
+  min-width: 280px;
+  contain: layout style;
   margin: 0 2rem;
   position: relative;
 }

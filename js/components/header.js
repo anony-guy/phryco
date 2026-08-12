@@ -82,7 +82,7 @@ async function initHeader() {
             const avatarUrl = `${API_BASE_URL}/api/users/${user.username}/avatar`;
             
             // Update the top icon to the avatar
-            userBtn.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">`;
+            userBtn.innerHTML = `<img src="${avatarUrl}" alt="${escapeHTML(user.username)}'s avatar" width="38" height="38" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML='<i data-lucide=\\'user\\' style=\\'color: var(--text-secondary);\\'></i>'">`;
             
             let adminLink = '';
             if (user.role === 'ADMIN' || user.role === 'OWNER') {
@@ -91,7 +91,7 @@ async function initHeader() {
             
             dropdown.innerHTML = `
                 <div class="dropdown-header">
-                    <img src="${avatarUrl}" onerror="this.src=''; this.style.display='none';" class="dropdown-avatar">
+                    <img src="${avatarUrl}" alt="${escapeHTML(user.username)}'s avatar" width="42" height="42" onerror="this.src=''; this.style.display='none';" class="dropdown-avatar">
                     <div class="dropdown-user-info">
                         <strong>${escapeHTML(user.username)}</strong>
                     </div>
