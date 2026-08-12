@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWNER Secret Testing Lab - Phryco</title>
+    <link rel="stylesheet" href="../../css/index.css">
+    <script defer src="/js/vendor/lucide.min.js"></script>
+    <style>
+        .owner-lab-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(239, 68, 68, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 3rem auto;
+            color: #f8fafc;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .test-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(239, 68, 68, 0.5);
+            background: linear-gradient(135deg, #f87171, #ef4444);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../../" class="logo">
+            <i data-lucide="play-circle" style="color: var(--accent-primary);"></i>
+            Phryco
+        </a>
+        <div class="nav-links">
+            <button class="info-hub-badge" id="info-hub-btn">
+                <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                <span>Info</span>
+            </button>
+            <div class="phrybucks-badge" id="phrybucks-display">
+                <i data-lucide="coins"></i>
+                <span id="pb-balance">0 PB</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout" style="display: block;">
+        <div class="owner-lab-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 2rem;">🛡️</span>
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 900; color: #ffffff;">OWNER Secret Testing Lab</h1>
+                        <div style="font-size: 0.85rem; color: #ef4444; font-weight: 700;">Restricted OWNER Access Diagnostics & Feature Testing</div>
+                    </div>
+                </div>
+                <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.35rem 0.85rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">OWNER ONLY</span>
+            </div>
+
+            <!-- Test 1: Legal Re-Agreement Modal Preview -->
+            <div class="test-section">
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+                    <span style="font-size: 1.3rem;">📜</span>
+                    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">Test 1: Legal Re-Agreement Modal Preview</h3>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.88rem; margin: 0 0 1.25rem; line-height: 1.5;">
+                    Triggers the non-dismissible Legal Re-Agreement Modal overlay as experienced by existing users when ToS, Privacy Policy, or Ethical Source License are updated on disk.
+                </p>
+                <button id="btn-test-preview-reagreement" class="test-btn">
+                    <span>📜 Preview Legal Re-Agreement Modal</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/components/info_hub_modal.js"></script>
+    <script type="module" src="/js/components/legal_reagreement_modal.js"></script>
+    <script type="module" src="./js/owner_lab.js"></script>
+</body>
+</html>
