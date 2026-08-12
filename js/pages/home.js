@@ -13,7 +13,7 @@ function formatDuration(seconds) {
 
 let scroller;
 
-function renderVideoCard(video) {
+function renderVideoCard(video, index = 1) {
     const card = document.createElement('div');
     card.className = 'video-card animate-fade-in';
     card.onclick = () => window.location.href = `/pages/watch/index.html?v=${video.id}`;
@@ -26,19 +26,26 @@ function renderVideoCard(video) {
         }
     }
     
+    const safeTitle = escapeHTML(video.title);
+    const isLcp = index === 0;
+    const loadingAttr = isLcp ? 'eager' : 'lazy';
+    const fetchPriorityAttr = isLcp ? 'fetchpriority="high"' : '';
+    
     card.innerHTML = `
-        <div class="video-thumbnail" style="position: relative; overflow: hidden;">
+        <div class="video-thumbnail" style="position: relative; overflow: hidden; aspect-ratio: 16 / 9; width: 100%;">
             ${video.is_ad ? `<div style="position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.8); color: var(--phrybucks-gold); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--phrybucks-gold); z-index: 2; display: flex; align-items: center; gap: 4px;"><i data-lucide="megaphone" style="width:12px; height:12px;"></i> Includes Paid Promotion</div>` : ''}
-            <img src="${API_BASE_URL}/api/videos/${video.id}/thumbnail" loading="lazy" class="thumbnail-img" style="width:100%; height:100%; object-fit:cover; transition: opacity 0.3s;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <img src="${API_BASE_URL}/api/videos/${video.id}/thumbnail" ${loadingAttr} ${fetchPriorityAttr} alt="${safeTitle}" width="640" height="360" class="thumbnail-img" style="width:100%; height:100%; object-fit:cover; transition: opacity 0.3s;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <!-- Placeholder thumbnail (fallback) -->
             <div class="thumbnail-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(45deg, #1e293b, #334155); align-items:center; justify-content:center;">
                 <i data-lucide="play" style="color: rgba(255,255,255,0.2); width: 48px; height: 48px;"></i>
             </div>
             <!-- Video preview element -->
-            <video class="video-preview" muted playsinline loop style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.3s; pointer-events:none;"></video>
+            <video class="video-preview" muted playsinline loop style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.3s; pointer-events:none;">
+                <track kind="captions" src="" label="English" default>
+            </video>
         ${video.duration_seconds ? `<div class="video-duration">${formatDuration(video.duration_seconds)}</div>` : ""}</div>
         <div class="video-info">
-            <div class="video-title">${escapeHTML(video.title)}</div>
+            <div class="video-title">${safeTitle}</div>
             <div class="video-meta">
                 <span>${escapeHTML(video.owner_username)}${renderCreatorBadges(video)}</span>
                 <span>${video.views} views • ${video.likes} likes${dateHtml}</span>
@@ -101,8 +108,8 @@ async function loadVideos() {
             const skeletons = container.querySelectorAll('.skeleton-card');
             skeletons.forEach(s => s.remove());
             
-            items.forEach(video => {
-                const card = renderVideoCard(video);
+            items.forEach((video, idx) => {
+                const card = renderVideoCard(video, idx);
                 container.insertBefore(card, sentinel);
             });
         }
