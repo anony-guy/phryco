@@ -113,9 +113,9 @@ export async function checkAndPromptLegalReagreement(userData) {
                 tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const target = tab.getAttribute('data-tab');
-                if (target === 'tos') contentBox.textContent = docs.tos;
-                else if (target === 'privacy') contentBox.textContent = docs.privacy_policy;
-                else if (target === 'license') contentBox.textContent = docs.ethical_license;
+                if (target === 'tos') contentBox.innerHTML = docs.tos;
+                else if (target === 'privacy') contentBox.innerHTML = docs.privacy_policy;
+                else if (target === 'license') contentBox.innerHTML = docs.ethical_license;
             };
         });
 
