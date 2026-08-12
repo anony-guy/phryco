@@ -100,12 +100,30 @@
   color: #ffffff;
 }
 
-.github-badge-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  object-fit: cover;
-  vertical-align: middle;
+/* Info Hub Badge Button */
+.info-hub-badge {
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.info-hub-badge:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+  color: #ffffff;
 }
 
 /* Standard Pill Inputs & Search */
