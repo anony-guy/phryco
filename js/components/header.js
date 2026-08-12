@@ -3,6 +3,8 @@ import { API_BASE_URL } from '../utils/config.js';
 import { escapeHTML } from '../utils/security.js';
 import { customizer } from './ui_customizer.js';
 
+import { checkAndPromptLegalReagreement } from './legal_reagreement_modal.js';
+
 function initBrandingAndAnimations() {
     const logoEl = document.querySelector('header .logo');
     if (logoEl) {
@@ -71,6 +73,7 @@ async function initHeader() {
             localStorage.setItem('phryco_user', JSON.stringify(user));
             
             checkAndPromptReligionModal(user);
+            checkAndPromptLegalReagreement(user);
             
             // Update Phrybucks badge
             const pbBalance = document.getElementById('pb-balance');

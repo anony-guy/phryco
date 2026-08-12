@@ -58,5 +58,25 @@
             <p>For privacy requests or data inquiries: <code>privacy@phryco.com</code></p>
         </div>
     </div>
+    <script type="module">
+        import { apiFetch } from '../../js/api/client.js';
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const docs = await apiFetch('/api/legal/documents');
+                if (docs && docs.privacy_policy) {
+                    const card = document.querySelector('.legal-card');
+                    if (card) {
+                        card.innerHTML = `
+                            <span class="badge">Privacy & Data Governance (Server Verified)</span>
+                            <div style="font-size: 0.8rem; color: #64748b; font-family: monospace; margin-bottom: 1rem;">Dynamic Hash: ${docs.version}</div>
+                            <div style="white-space: pre-wrap; color: #cbd5e1; line-height: 1.7;">${docs.privacy_policy}</div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.warn("Using fallback static Privacy Policy:", err);
+            }
+        });
+    </script>
 </body>
 </html>
