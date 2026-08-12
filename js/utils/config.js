@@ -13,6 +13,9 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 }
 
 export const API_BASE_URL = window.PHRYCO_API_URL || baseUrl;
+if (typeof window !== 'undefined') {
+    window.PHRYCO_API_URL = API_BASE_URL;
+}
 export const VAULTGUARD_SERVER_URL = window.VAULTGUARD_API_URL || (API_BASE_URL.includes(':8000') ? API_BASE_URL.replace(':8000', ':8002') + '/api/vaultguard' : `${API_BASE_URL}/api/vaultguard`);
 
 

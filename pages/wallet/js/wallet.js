@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `${window.location.protocol}//${host}:8000`;
         }
         if (window.location.origin.includes('vercel.app') || window.location.origin.includes('github.io')) {
-            return 'https://outer-bufing-draws-experts.trycloudflare.com';
+            return 'https://carol-folks-vip-achievements.trycloudflare.com';
         }
         return window.location.origin;
     }

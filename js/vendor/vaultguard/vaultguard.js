@@ -56,6 +56,13 @@
         return jsHash.toString(16);
     }
 
+    // Dynamic Syntax Token Generator
+    function generateSyntaxToken() {
+        const windowIdx = Math.floor(Date.now() / 300000);
+        const salt = "phryco_syntax_alternation_salt_2026";
+        return jsFnv1a(`guest:${windowIdx}:${salt}`).toString(16);
+    }
+
     // Intercept Form Submissions & Inject Headers
     function attachDomShield() {
         const originalFetch = window.fetch;
@@ -63,7 +70,7 @@
             options = options || {};
             options.headers = options.headers || {};
 
-            // Add DOM Integrity Hash for state-modifying requests
+            // Add DOM Integrity Hash & Syntax Token for state-modifying requests
             const method = (options.method || 'GET').toUpperCase();
             if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
                 const bodyStr = typeof options.body === 'string' ? options.body : (options.body ? JSON.stringify(options.body) : '');
@@ -71,12 +78,15 @@
                 const combinedPayload = `${url}|${method}|${bodyStr}|${domSubtree}`;
                 
                 const integrityHash = computeDomHash(combinedPayload);
+                const syntaxToken = generateSyntaxToken();
                 
                 if (options.headers instanceof Headers) {
                     options.headers.set('X-UI-Integrity-Hash', integrityHash);
+                    options.headers.set('X-Syntax-Token', syntaxToken);
                     options.headers.set('X-WASM-Shield-Active', wasmReady ? 'true' : 'fallback');
                 } else {
                     options.headers['X-UI-Integrity-Hash'] = integrityHash;
+                    options.headers['X-Syntax-Token'] = syntaxToken;
                     options.headers['X-WASM-Shield-Active'] = wasmReady ? 'true' : 'fallback';
                 }
             }
@@ -87,5 +97,5 @@
 
     initWasm();
     attachDomShield();
-    window.VaultGuardWasm = { computeDomHash, isReady: () => wasmReady };
+    window.VaultGuardWasm = { computeDomHash, generateSyntaxToken, isReady: () => wasmReady };
 })();
