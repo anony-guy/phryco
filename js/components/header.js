@@ -70,6 +70,8 @@ async function initHeader() {
             const user = await apiFetch('/api/users/me');
             localStorage.setItem('phryco_user', JSON.stringify(user));
             
+            checkAndPromptReligionModal(user);
+            
             // Update Phrybucks badge
             const pbBalance = document.getElementById('pb-balance');
             if (pbBalance && user.phrybucks_balance !== undefined) {
@@ -357,6 +359,63 @@ function initResponsiveLayout() {
     // Call once initially and add event listener
     handleResize();
     window.addEventListener('resize', handleResize);
+}
+
+function checkAndPromptReligionModal(user) {
+    if (!user || user.religion) return;
+    if (sessionStorage.getItem('phryco_religion_prompt_dismissed')) return;
+    if (document.getElementById('religion-required-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'religion-required-modal';
+    modal.style.cssText = 'position: fixed; inset: 0; z-index: 999999; background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem;';
+
+    modal.innerHTML = `
+        <div style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(0, 211, 149, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); border-radius: 16px; padding: 2.25rem; max-width: 440px; width: 100%; text-align: center; color: white; font-family: system-ui, -apple-system, sans-serif;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(0, 211, 149, 0.15); border: 2px solid rgba(0, 211, 149, 0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 1.8rem;">
+                🌐
+            </div>
+            <h2 style="font-size: 1.35rem; font-weight: 700; margin: 0 0 0.5rem; color: #f8fafc;">Community Preference Required</h2>
+            <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5; margin: 0 0 1.5rem;">
+                Please select your religion preference to customize your content guidelines and Halal Mode filtering settings.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <button id="btn-select-islam" style="background: linear-gradient(135deg, #00d395, #0a2a1f); color: white; border: none; padding: 0.85rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: transform 0.15s ease;">
+                    ☪️ Islam (Halal Mode Option)
+                </button>
+                <button id="btn-select-not-muslim" style="background: rgba(255, 255, 255, 0.08); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.85rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s ease;">
+                    ✝️ / ☸️ / ✡️ I Am Not Muslim
+                </button>
+                <button id="btn-dismiss-religion-modal" style="background: transparent; border: none; color: #64748b; font-size: 0.85rem; cursor: pointer; text-decoration: underline; margin-top: 0.25rem;">
+                    Remind Me Later
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const saveChoice = async (religionChoice) => {
+        try {
+            await apiFetch('/api/users/me/settings', {
+                method: 'PUT',
+                body: { religion: religionChoice, halal_mode: false }
+            });
+            user.religion = religionChoice;
+            localStorage.setItem('phryco_user', JSON.stringify(user));
+            modal.remove();
+        } catch (err) {
+            console.error("Failed to update religion choice:", err);
+            modal.remove();
+        }
+    };
+
+    document.getElementById('btn-select-islam').addEventListener('click', () => saveChoice('Islam'));
+    document.getElementById('btn-select-not-muslim').addEventListener('click', () => saveChoice('I Am Not Muslim'));
+    document.getElementById('btn-dismiss-religion-modal').addEventListener('click', () => {
+        sessionStorage.setItem('phryco_religion_prompt_dismissed', 'true');
+        modal.remove();
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
