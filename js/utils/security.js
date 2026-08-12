@@ -11,6 +11,16 @@ export function escapeHTML(str) {
     );
 }
 
+export function sanitizeURL(urlStr) {
+    if (!urlStr || typeof urlStr !== 'string') return '';
+    const trimmed = urlStr.trim();
+    if (trimmed.startsWith('/') || trimmed.startsWith('https://') || trimmed.startsWith('http://')) {
+        return trimmed;
+    }
+    // Block dangerous URI schemes (javascript:, data:text/html, vbscript:, blob: malicious injections)
+    return '';
+}
+
 export function renderCreatorBadges(item, includeSupporter = false) {
     if (!item) return '';
     let html = '';
