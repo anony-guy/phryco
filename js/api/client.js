@@ -102,7 +102,7 @@ export async function apiFetch(endpoint, options = {}) {
     }
 
     const url = `${API_BASE_URL}${endpoint}`;
-    const headers = {
+    let headers = {
         ...getAuthHeaders(),
         ...options.headers
     };
@@ -115,7 +115,14 @@ export async function apiFetch(endpoint, options = {}) {
         headers['Content-Type'] = headers['Content-Type'] || 'application/json';
     }
 
+    // Attach DBSC (Device-Bound Session Credentials) hardware signatures
+    if (typeof window !== 'undefined' && window.attachDBSCSignatureHeaders) {
+        const bodyStr = typeof options.body === 'string' ? options.body : '';
+        headers = await window.attachDBSCSignatureHeaders(headers, options.method || 'GET', endpoint, bodyStr);
+    }
+
     const config = {
+        credentials: 'same-origin',
         ...options,
         headers
     };
